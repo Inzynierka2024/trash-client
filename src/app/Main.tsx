@@ -1,30 +1,23 @@
-import { useContext } from "react";
-import { StyleSheet, View } from "react-native";
-import { ThemeContext } from "../theme/theme";
+import React, { useState } from "react";
+import { UIManager, useWindowDimensions } from "react-native";
 import { MapContainer } from "./Views/Map/MapContainer";
+import { NavigationContainer } from "@react-navigation/native";
+import { ProfileContainer } from "./Views/Profile/ProfileContainer";
+import { RankingContainer } from "./Views/Ranking/RankingContainer";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+UIManager
+
+
+const Tab = createBottomTabNavigator();
 
 export const Main = () => {
-  const themeFromContext = useContext(ThemeContext);
-
   return (
-    <>
-      <View
-        style={{
-          ...styles.container,
-          backgroundColor: themeFromContext.colors.background,
-        }}
-      >
-        <MapContainer></MapContainer>
-      </View>
-    </>
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Ranking" component={RankingContainer} />
+        <Tab.Screen name="Mapa" component={MapContainer} />
+        <Tab.Screen name="Profil" component={ProfileContainer} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-});

@@ -14,8 +14,6 @@ export default function App() {
     useColorScheme() === "dark" ? true : false
   );
 
-  const themeFromContext = useContext(ThemeContext);
-
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
       <StatusBar style="auto" />

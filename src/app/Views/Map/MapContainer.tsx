@@ -16,10 +16,28 @@ export const MapContainer = () => {
       }}
     >
       <MapLibreGL.MapView
+        attributionEnabled={true}
         style={styles.map}
         logoEnabled={false}
-        styleURL="https://demotiles.maplibre.org/style.json"
-      />
+      >
+        <MapLibreGL.RasterSource
+          id="OSMSource"
+          tileSize={256}
+          maxZoomLevel={19}
+          // FIXME: add attribution corrctly
+          // @ts-ignore
+          attribution="&copy; OpenStreetMap Contributors"
+          tileUrlTemplates={[
+            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          ]}
+        >
+          <MapLibreGL.RasterLayer
+            id="OSMLayer"
+            sourceID="OSMSource"
+            style={{ rasterOpacity: 1 }}
+          ></MapLibreGL.RasterLayer>
+        </MapLibreGL.RasterSource>
+      </MapLibreGL.MapView>
     </View>
   );
 };

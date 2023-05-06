@@ -2,6 +2,8 @@ import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
+import Ionicons from 'react-native-ionicons';
+
 
 export const MapContainer = () => {
   const themeFromContext = useContext(ThemeContext);

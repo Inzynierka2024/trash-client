@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { View, Text } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
+import Ionicons from 'react-native-ionicons';
 
 export const RankingContainer = () => {
   const themeFromContext = useContext(ThemeContext);

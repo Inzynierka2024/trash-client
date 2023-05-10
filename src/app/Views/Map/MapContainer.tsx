@@ -2,11 +2,11 @@ import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
-import Ionicons from 'react-native-ionicons';
-
 
 export const MapContainer = () => {
   const themeFromContext = useContext(ThemeContext);
+
+  const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
 
   return (
     <View
@@ -21,16 +21,17 @@ export const MapContainer = () => {
         attributionEnabled={true}
         style={styles.map}
         logoEnabled={false}
+        attributionPosition={{ bottom: 8, right: 8 }}
       >
+        <MapLibreGL.Camera
+          defaultSettings={{ centerCoordinate: [20, 50], zoomLevel: 3 }}
+        />
         <MapLibreGL.RasterSource
           id="OSMSource"
           tileSize={256}
           maxZoomLevel={19}
-          // FIXME: add attribution corrctly
-          // @ts-ignore
-          attribution="&copy; OpenStreetMap Contributors"
           tileUrlTemplates={[
-            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`,
           ]}
         >
           <MapLibreGL.RasterLayer

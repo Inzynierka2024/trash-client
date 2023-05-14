@@ -1,6 +1,6 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View, Text, Button, useColorScheme } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
 
@@ -44,6 +44,11 @@ export const MapComponent = () => {
   let MapRef: MapLibreGL.MapView = undefined;
   let CameraRef: MapLibreGL.Camera = undefined;
   let UserLocationRef: MapLibreGL.UserLocation = undefined;
+
+  const MapTileURL =
+    useColorScheme() === "dark"
+      ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`
+      : `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`;
 
   return (
     <View
@@ -93,11 +98,9 @@ export const MapComponent = () => {
         />
         <MapLibreGL.RasterSource
           id="OSMSource"
-          tileSize={256}
+          tileSize={512}
           maxZoomLevel={19}
-          tileUrlTemplates={[
-            `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`,
-          ]}
+          tileUrlTemplates={[MapTileURL]}
         >
           <MapLibreGL.RasterLayer
             id="OSMLayer"

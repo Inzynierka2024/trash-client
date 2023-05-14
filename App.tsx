@@ -10,7 +10,7 @@ import { useColorScheme } from "react-native";
 MapLibreGL.setAccessToken(null);
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState(
+  const [darkMode, _setDarkMode] = useState(
     useColorScheme() === "dark" ? true : false
   );
 

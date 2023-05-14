@@ -1,20 +1,27 @@
-import React, { useState } from "react";
-import { UIManager, useWindowDimensions } from "react-native";
+import React, { useContext, useState } from "react";
+import { UIManager, useColorScheme, useWindowDimensions } from "react-native";
 import { MapContainer } from "./Views/Map/MapContainer";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { ProfileContainer } from "./Views/Profile/ProfileContainer";
 import { RankingContainer } from "./Views/Ranking/RankingContainer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-
-UIManager;
+import { ThemeContext } from "../theme/theme";
 
 const Tab = createBottomTabNavigator();
 
 export const Main = () => {
+  const themeFromContext = useContext(ThemeContext);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
+    >
       <Tab.Navigator
         screenOptions={{
           headerShown: false,

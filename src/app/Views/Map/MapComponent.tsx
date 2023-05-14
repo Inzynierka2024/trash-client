@@ -1,8 +1,8 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MapButton } from "./MapButton";
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
@@ -30,6 +30,10 @@ export const MapComponent = () => {
     triggerUpdate("camera");
   }
 
+  function addNew() {
+    console.log("TODO: add new");
+  }
+
   const [cameraTrigger, triggerCamera] = useState(false);
 
   function triggerUpdate(key: "camera") {
@@ -39,6 +43,7 @@ export const MapComponent = () => {
   // References to call methods on map elements
   let MapRef: MapLibreGL.MapView = undefined;
   let CameraRef: MapLibreGL.Camera = undefined;
+  let UserLocationRef: MapLibreGL.UserLocation = undefined;
 
   return (
     <View
@@ -51,17 +56,8 @@ export const MapComponent = () => {
       }}
     >
       <View style={styles.operationContainer}>
-        <MaterialIcons.Button
-          onPress={() => {
-            flyToUser();
-          }}
-          name="center-focus-weak"
-          size={28}
-          borderRadius={8}
-          color={themeFromContext.colors.primaryText}
-          backgroundColor={themeFromContext.colors.primary}
-          iconStyle={styles.operationIcon}
-        ></MaterialIcons.Button>
+        <MapButton iconName="center-focus-weak" onPress={flyToUser} />
+        <MapButton iconName="add" onPress={flyToUser} />
       </View>
 
       <MapLibreGL.MapView
@@ -73,6 +69,7 @@ export const MapComponent = () => {
         logoEnabled={false}
       >
         <MapLibreGL.UserLocation
+          ref={(c) => (UserLocationRef = c)}
           visible={true}
           onUpdate={onUserLocationUpdate}
           showsUserHeadingIndicator={true}
@@ -122,9 +119,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     margin: 16,
-  },
-
-  operationIcon: {
-    marginRight: 0,
+    gap: 8,
   },
 });

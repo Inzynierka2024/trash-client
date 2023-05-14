@@ -1,7 +1,7 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
-import { ThemeContext } from "../../../theme/theme";
+import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
 
 export const MapComponent = () => {
@@ -62,7 +62,10 @@ export const MapComponent = () => {
 
       <MapLibreGL.MapView
         compassViewPosition={1}
-        compassViewMargins={{ x: 10, y: 30 }}
+        compassViewMargins={{
+          x: themeFromContext.spacing.m,
+          y: themeFromContext.spacing.xl,
+        }}
         ref={(c) => (MapRef = c)}
         attributionEnabled={true}
         style={styles.map}
@@ -118,7 +121,7 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     right: 0,
     bottom: 0,
-    margin: 16,
-    gap: 8,
+    margin: theme.spacing.m,
+    gap: theme.spacing.s,
   },
 });

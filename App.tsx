@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { Main } from "./src/app/Main";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
 import { useColorScheme } from "react-native";
 

@@ -1,8 +1,12 @@
 import { Camera, CameraType } from "expo-camera";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { CameraButton } from "./CameraButton";
+import { ThemeContext, theme } from "../../../theme/theme";
 
 export const CameraContainer = () => {
+  const themeFromContext = useContext(ThemeContext);
+
   const [type, setType] = useState(CameraType.back);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
@@ -41,14 +45,32 @@ export const CameraContainer = () => {
   }
 
   return (
-    <View>
-      <Camera type={type}>
-        <View>
-          <TouchableOpacity onPress={toggleCameraType}>
-            <Text>Flip Camera</Text>
-          </TouchableOpacity>
+    <View style={styles.container}>
+      <Camera type={type} style={styles.camera}>
+        <View style={styles.buttons}>
+          <CameraButton iconName="photo-camera" size={30} onPress={() => {}} />
         </View>
       </Camera>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+  },
+  camera: {
+    flex: 1,
+  },
+  buttons: {
+    position: "absolute",
+    bottom: 0,
+    backgroundColor: "#00f4",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingBottom: theme.spacing.l,
+    paddingTop: theme.spacing.m,
+  },
+});

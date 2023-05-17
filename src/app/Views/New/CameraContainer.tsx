@@ -6,6 +6,7 @@ import { ThemeContext, theme } from "../../../theme/theme";
 
 export const CameraContainer = (props: {
   setImageData: (data: string) => void;
+  enabled: boolean;
 }) => {
   const themeFromContext = useContext(ThemeContext);
 
@@ -17,6 +18,7 @@ export const CameraContainer = (props: {
       <View>
         <Text>You need to give permission to use camera</Text>
         <Button
+          disabled={!props.enabled}
           onPress={() => {
             requestPermission();
           }}
@@ -40,11 +42,29 @@ export const CameraContainer = (props: {
     );
   }
 
+  let CameraRef: Camera = undefined;
+
+  function takePicture() {
+    if (CameraRef) {
+      CameraRef.takePictureAsync({
+        base64: true,
+        // TODO: maybe look at how low we can go for bandwidth
+        quality: 0.8,
+      }).then((result) => {
+        if (result.base64) props.setImageData(result.base64);
+      });
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <Camera type={type} style={styles.camera}>
+      <Camera type={type} style={styles.camera} ref={(c) => (CameraRef = c)}>
         <View style={styles.buttons}>
-          <CameraButton iconName="photo-camera" size={30} onPress={() => {}} />
+          <CameraButton
+            iconName="photo-camera"
+            size={30}
+            onPress={takePicture}
+          />
         </View>
       </Camera>
     </View>

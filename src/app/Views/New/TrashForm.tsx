@@ -9,9 +9,6 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
 
   const [imageData, setImageData] = useState("");
 
-  // image data is in base64 string
-  function takePicture(imageData: string) {}
-
   return (
     <View
       style={{
@@ -21,7 +18,7 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
         justifyContent: "center",
       }}
     >
-      {imageData === "" && <CameraContainer />}
+      {imageData === "" && <CameraContainer setImageData={setImageData} />}
       {imageData !== "" && (
         <>
           <Text>{props.location.coords.latitude}</Text>

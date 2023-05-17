@@ -4,7 +4,9 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { CameraButton } from "./CameraButton";
 import { ThemeContext, theme } from "../../../theme/theme";
 
-export const CameraContainer = () => {
+export const CameraContainer = (props: {
+  setImageData: (data: string) => void;
+}) => {
   const themeFromContext = useContext(ThemeContext);
 
   const [type, setType] = useState(CameraType.back);
@@ -35,12 +37,6 @@ export const CameraContainer = () => {
           title="Give access"
         ></Button>
       </View>
-    );
-  }
-
-  function toggleCameraType() {
-    setType((current) =>
-      current === CameraType.back ? CameraType.front : CameraType.back
     );
   }
 

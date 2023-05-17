@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   buttons: {
     position: "absolute",
     bottom: 0,
-    backgroundColor: "#00f4",
+    backgroundColor: "#0004",
     width: "100%",
     alignItems: "center",
     justifyContent: "space-around",

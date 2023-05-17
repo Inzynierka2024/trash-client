@@ -1,8 +1,17 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Button, useColorScheme } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  useColorScheme,
+  Modal,
+} from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
+import { CameraContainer } from "../New/CameraContainer";
+import { TrashForm } from "../New/TrashForm";
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
@@ -30,8 +39,10 @@ export const MapComponent = () => {
     triggerUpdate("camera");
   }
 
+  const [cameraModalVisible, setCameraModalVisible] = useState(false);
+
   function addNew() {
-    console.log("TODO: add new");
+    setCameraModalVisible(true);
   }
 
   const [cameraTrigger, triggerCamera] = useState(false);
@@ -60,9 +71,19 @@ export const MapComponent = () => {
         justifyContent: "center",
       }}
     >
+      <Modal
+        animationType="slide"
+        visible={cameraModalVisible}
+        onRequestClose={() => {
+          setCameraModalVisible(false);
+        }}
+      >
+        <TrashForm location={userState} />
+      </Modal>
+
       <View style={styles.operationContainer}>
         <MapButton iconName="center-focus-weak" onPress={flyToUser} />
-        <MapButton iconName="add" onPress={flyToUser} />
+        <MapButton iconName="add" onPress={addNew} />
       </View>
 
       <MapLibreGL.MapView

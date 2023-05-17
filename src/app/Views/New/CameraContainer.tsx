@@ -10,6 +10,12 @@ export const CameraContainer = () => {
     return (
       <View>
         <Text>You need to give permission to use camera</Text>
+        <Button
+          onPress={() => {
+            requestPermission();
+          }}
+          title="Give access"
+        ></Button>
       </View>
     );
   }
@@ -18,6 +24,12 @@ export const CameraContainer = () => {
     return (
       <View>
         <Text>You need to give permission to use camera</Text>
+        <Button
+          onPress={() => {
+            requestPermission();
+          }}
+          title="Give access"
+        ></Button>
       </View>
     );
   }

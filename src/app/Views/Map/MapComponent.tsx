@@ -58,6 +58,19 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
+  useEffect(() => {
+    async function loadTrash() {
+      const response = await fetch("https://httpbin.org/get");
+      const json = await response.json();
+
+      return json;
+    }
+
+    loadTrash().then((data) => {
+      console.log("GET: ", data);
+    });
+  }, []);
+
   return (
     <View
       style={{

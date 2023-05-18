@@ -53,6 +53,11 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`;
 
+  const mapStyleURL =
+    useColorScheme() === "dark"
+      ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
+      : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
+
   return (
     <View
       style={{
@@ -84,6 +89,7 @@ export const MapComponent = () => {
           x: themeFromContext.spacing.m,
           y: themeFromContext.spacing.xl,
         }}
+        styleURL={mapStyleURL}
         ref={(c) => (MapRef = c)}
         attributionEnabled={true}
         style={styles.map}

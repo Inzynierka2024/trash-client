@@ -31,6 +31,8 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
     const json = await response.json();
 
     console.log("SEND: ", json);
+
+    setImageData("");
   }
 
   return (

@@ -1,16 +1,8 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  useColorScheme,
-  Modal,
-} from "react-native";
+import { StyleSheet, View, useColorScheme, Modal } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
-import { CameraContainer } from "../New/CameraContainer";
 import { TrashForm } from "../New/TrashForm";
 
 export const MapComponent = () => {

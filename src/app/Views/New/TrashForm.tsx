@@ -4,14 +4,19 @@ import { View, Text, Image, Modal, Button } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
+import get_api_url from "../../Utils/get_api_url";
 
 export const TrashForm = (props: { location: MapLibreGL.Location }) => {
   const themeFromContext = useContext(ThemeContext);
 
   const [imageData, setImageData] = useState("");
 
+  const API_URL = get_api_url();
+
   async function sendForm() {
-    const response = await fetch("https://httpbin.org/post", {
+    console.log(API_URL);
+
+    const response = await fetch(`${API_URL}/trash`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -30,8 +35,10 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
     });
     const json = await response.json();
 
-    console.log("SEND: ", json);
+    setImageData("");
+  }
 
+  function close() {
     setImageData("");
   }
 
@@ -93,7 +100,13 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
                 gap: 32,
               }}
             >
-              <CameraButton size={30} iconName="delete" onPress={() => {}} />
+              <CameraButton
+                size={30}
+                iconName="delete"
+                onPress={() => {
+                  close();
+                }}
+              />
               <CameraButton
                 size={30}
                 iconName="send"

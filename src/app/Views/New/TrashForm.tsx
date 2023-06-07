@@ -16,7 +16,7 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
   async function sendForm() {
     console.log(API_URL);
 
-    const response = await fetch(`${API_URL}/trash`, {
+    const response = await fetch(`${API_URL}/garbage`, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached

@@ -24,7 +24,7 @@ export const MapContainer = () => {
 
   useEffect(() => {
     // Set up permissions and stuff on first load
-    checkPermissions().finally(() => {
+    checkPermissions().then(() => {
       console.log(`Perms: location=${permissions.isLocationGranted}`);
     });
   }, []);

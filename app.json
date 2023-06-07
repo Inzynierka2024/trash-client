@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "plugins": ["@maplibre/maplibre-react-native"],
+    "plugins": ["@maplibre/maplibre-react-native", "expo-camera"],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

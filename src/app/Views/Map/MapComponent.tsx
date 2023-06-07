@@ -1,8 +1,9 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Button, useColorScheme } from "react-native";
+import { StyleSheet, View, useColorScheme, Modal } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
+import { TrashForm } from "../New/TrashForm";
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
@@ -30,8 +31,10 @@ export const MapComponent = () => {
     triggerUpdate("camera");
   }
 
+  const [cameraModalVisible, setCameraModalVisible] = useState(false);
+
   function addNew() {
-    console.log("TODO: add new");
+    setCameraModalVisible(true);
   }
 
   const [cameraTrigger, triggerCamera] = useState(false);
@@ -50,6 +53,24 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`;
 
+  const mapStyleURL =
+    useColorScheme() === "dark"
+      ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
+      : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
+
+  useEffect(() => {
+    async function loadTrash() {
+      const response = await fetch("https://httpbin.org/get");
+      const json = await response.json();
+
+      return json;
+    }
+
+    loadTrash().then((data) => {
+      console.log("GET: ", data);
+    });
+  }, []);
+
   return (
     <View
       style={{
@@ -60,9 +81,19 @@ export const MapComponent = () => {
         justifyContent: "center",
       }}
     >
+      <Modal
+        animationType="slide"
+        visible={cameraModalVisible}
+        onRequestClose={() => {
+          setCameraModalVisible(false);
+        }}
+      >
+        <TrashForm location={userState} />
+      </Modal>
+
       <View style={styles.operationContainer}>
         <MapButton iconName="center-focus-weak" onPress={flyToUser} />
-        <MapButton iconName="add" onPress={flyToUser} />
+        <MapButton iconName="add" onPress={addNew} />
       </View>
 
       <MapLibreGL.MapView
@@ -71,6 +102,7 @@ export const MapComponent = () => {
           x: themeFromContext.spacing.m,
           y: themeFromContext.spacing.xl,
         }}
+        styleURL={mapStyleURL}
         ref={(c) => (MapRef = c)}
         attributionEnabled={true}
         style={styles.map}

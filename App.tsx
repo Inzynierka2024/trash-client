@@ -19,7 +19,7 @@ export default function App() {
   const [debugVisible, setDebugVisible] = useState(false);
 
   // Options
-  const [API_URL, setApiUrl] = useState<string>("0.0.0.0:8080");
+  const [API_URL, setApiUrl] = useState<string>("192.168.43.40:5000");
 
   return (
     <OptionsContext.Provider value={{ API_URL }}>

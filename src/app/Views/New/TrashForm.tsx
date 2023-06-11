@@ -9,9 +9,17 @@ import get_api_url from "../../Utils/get_api_url";
 export const TrashForm = (props: { location: MapLibreGL.Location }) => {
   const themeFromContext = useContext(ThemeContext);
 
+  const [locationData, setLocationData] = useState<MapLibreGL.Location>({
+    coords: { latitude: 0, longitude: 0 },
+  });
   const [imageData, setImageData] = useState("");
 
   const API_URL = get_api_url();
+
+  function setData(imgData: string) {
+    setImageData(imgData);
+    setLocationData(props.location);
+  }
 
   async function sendForm() {
     console.log(API_URL);
@@ -28,8 +36,8 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
       redirect: "follow", // manual, *follow, error
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify({
-        lng: props.location.coords.longitude,
-        lat: props.location.coords.latitude,
+        lng: locationData.coords.longitude,
+        lat: locationData.coords.latitude,
         image: imageData,
       }), // body data type must match "Content-Type" header
     });
@@ -51,7 +59,7 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
         justifyContent: "center",
       }}
     >
-      <CameraContainer setImageData={setImageData} enabled={imageData !== ""} />
+      <CameraContainer setData={setData} enabled={imageData !== ""} />
       <Modal
         transparent={true}
         visible={imageData !== ""}
@@ -81,8 +89,8 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
               elevation: 5,
             }}
           >
-            <Text>{props.location.coords.latitude}</Text>
-            <Text>{props.location.coords.longitude}</Text>
+            <Text>{locationData.coords.latitude}</Text>
+            <Text>{locationData.coords.longitude}</Text>
             <Image
               source={{
                 uri: "data:image/jpg;base64," + imageData,

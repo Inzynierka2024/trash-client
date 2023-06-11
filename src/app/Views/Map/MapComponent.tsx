@@ -1,9 +1,22 @@
-import MapLibreGL from "@maplibre/maplibre-react-native";
+import MapLibreGL, { SymbolLayerStyle } from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, useColorScheme, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  useColorScheme,
+  Modal,
+  StyleProp,
+} from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
+import exampleIcon from "../../../../assets/marker.png";
+
+export interface MarkerData {
+  id: string;
+  lat: number;
+  lng: number;
+}
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
@@ -13,6 +26,10 @@ export const MapComponent = () => {
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
   });
+
+  const [markers, setMarkers] = useState<MarkerData[]>([
+    { id: "myid", lat: 52.298, lng: 17.87 },
+  ]);
 
   function onUserLocationUpdate(location: MapLibreGL.Location) {
     setUserState(location);
@@ -58,18 +75,53 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
-  useEffect(() => {
-    async function loadTrash() {
-      const response = await fetch("https://httpbin.org/get");
-      const json = await response.json();
+  // useEffect(() => {
+  //   async function loadTrash() {
+  //     const response = await fetch("https://httpbin.org/get");
+  //     const json = await response.json();
 
-      return json;
-    }
+  //     return json;
+  //   }
 
-    loadTrash().then((data) => {
-      console.log("GET: ", data);
-    });
-  }, []);
+  //   loadTrash().then((data) => {
+  //     console.log("GET: ", data);
+  //     // setMarkers([
+  //     //   {
+  //     //     id: "XD",
+  //     //     lat: userState.coords.latitude,
+  //     //     lng: userState.coords.longitude,
+  //     //   },
+  //     // ]);
+  //   });
+  // }, []);
+
+  function addPoint() {
+    setMarkers([
+      ...markers,
+      {
+        id: markers.length.toString(),
+        lat: userState.coords.latitude,
+        lng: userState.coords.longitude,
+      },
+    ]);
+    console.log(markers);
+  }
+
+  const mappedFeatures: any = markers.map((marker) => {
+    const { lat, lng, id } = marker;
+
+    return {
+      type: "Feature",
+      id,
+      properties: {},
+      geometry: { type: "Point", coordinates: [lng, lat] },
+    };
+  });
+
+  const featureCollection: GeoJSON.FeatureCollection = {
+    type: "FeatureCollection",
+    features: mappedFeatures,
+  };
 
   return (
     <View
@@ -94,6 +146,7 @@ export const MapComponent = () => {
       <View style={styles.operationContainer}>
         <MapButton iconName="center-focus-weak" onPress={flyToUser} />
         <MapButton iconName="add" onPress={addNew} />
+        <MapButton iconName="add" onPress={addPoint} />
       </View>
 
       <MapLibreGL.MapView
@@ -117,32 +170,29 @@ export const MapComponent = () => {
             console.log("On user location press");
           }}
         />
+
         <MapLibreGL.Camera
           ref={(c) => (CameraRef = c)}
           followUserMode="compass"
           followUserLocation={true}
           animationMode="flyTo"
           animationDuration={5000}
-          onUserTrackingModeChange={() => {
-            console.log("???");
-          }}
           triggerKey={cameraTrigger}
         />
-        <MapLibreGL.RasterSource
-          id="OSMSource"
-          tileSize={512}
-          maxZoomLevel={19}
-          tileUrlTemplates={[MapTileURL]}
-        >
-          <MapLibreGL.RasterLayer
-            id="OSMLayer"
-            sourceID="OSMSource"
-            style={{ rasterOpacity: 1 }}
-          ></MapLibreGL.RasterLayer>
-        </MapLibreGL.RasterSource>
+
+        <MapLibreGL.ShapeSource id="pinsSource" shape={featureCollection}>
+          <MapLibreGL.SymbolLayer id="pinsLayer" style={pinLayerStyle} />
+        </MapLibreGL.ShapeSource>
       </MapLibreGL.MapView>
     </View>
   );
+};
+
+const pinLayerStyle: StyleProp<SymbolLayerStyle> = {
+  iconAllowOverlap: true,
+  iconAnchor: "bottom",
+  iconSize: 1.0,
+  iconImage: exampleIcon,
 };
 
 const styles = StyleSheet.create({
@@ -158,5 +208,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     margin: theme.spacing.m,
     gap: theme.spacing.s,
+  },
+
+  annotationContainer: {
+    alignItems: "center",
+    backgroundColor: "white",
+    borderColor: "rgba(0, 0, 0, 0.45)",
+    borderRadius: 45 / 2,
+    borderWidth: StyleSheet.hairlineWidth,
+    height: 45,
+    justifyContent: "center",
+    overflow: "hidden",
+    width: 45,
   },
 });

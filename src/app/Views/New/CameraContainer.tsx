@@ -5,7 +5,7 @@ import { CameraButton } from "./CameraButton";
 import { ThemeContext, theme } from "../../../theme/theme";
 
 export const CameraContainer = (props: {
-  setImageData: (data: string) => void;
+  setData: (data: string) => void;
   enabled: boolean;
 }) => {
   const themeFromContext = useContext(ThemeContext);
@@ -51,7 +51,7 @@ export const CameraContainer = (props: {
         // TODO: maybe look at how low we can go for bandwidth
         quality: 0.8,
       }).then((result) => {
-        if (result.base64) props.setImageData(result.base64);
+        if (result.base64) props.setData(result.base64);
       });
     }
   }

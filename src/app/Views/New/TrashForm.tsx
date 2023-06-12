@@ -5,6 +5,7 @@ import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
 import get_api_url from "../../Utils/get_api_url";
+import create_new_trash from "../../Logic/API/create_new_trash";
 
 export const TrashForm = (props: { location: MapLibreGL.Location }) => {
   const themeFromContext = useContext(ThemeContext);
@@ -21,33 +22,18 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
     setLocationData(props.location);
   }
 
-  async function sendForm() {
-    console.log(API_URL);
-
-    const response = await fetch(`${API_URL}/garbage`, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify({
-        lng: locationData.coords.longitude,
-        lat: locationData.coords.latitude,
-        image: imageData,
-      }), // body data type must match "Content-Type" header
-    });
-    const json = await response.json();
-
+  function close() {
     setImageData("");
   }
 
-  function close() {
-    setImageData("");
+  function sendForm() {
+    create_new_trash(API_URL, locationData, imageData)
+      .then((data) => {
+        console.log("Trash added", data);
+      })
+      .catch((err) => {
+        console.error("Error when adding trash", err);
+      });
   }
 
   return (

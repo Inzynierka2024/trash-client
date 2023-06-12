@@ -12,6 +12,7 @@ import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
+import get_all_trash from "../../Logic/API/get_all_trash";
 
 export interface MarkerData {
   id: string;
@@ -76,61 +77,16 @@ export const MapComponent = () => {
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
   useEffect(() => {
-    async function loadTrash() {
-      const URL = `http://${API_URL}/garbage_points`;
-      console.log("Fetching:", URL);
-
-      const response = await fetch(URL, {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-          "Content-Type": "application/json",
-        },
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify({
-          lat1: 0,
-          lat2: 360,
-          lng1: 0,
-          lng2: 360,
-        }), // body data type must match "Content-Type" header
-      });
-      const json = await response.json();
-
-      return json;
-    }
-
-    loadTrash()
+    get_all_trash(API_URL)
       .then((data) => {
         console.log("GET: ", data);
         const points = data["map_points"];
         setMarkers(points);
-        // setMarkers([
-        //   {
-        //     id: "XD",
-        //     lat: userState.coords.latitude,
-        //     lng: userState.coords.longitude,
-        //   },
-        // ]);
       })
       .catch((err) => {
-        console.error("XD", err);
+        console.error("Fetch error", err);
       });
   }, []);
-
-  function addPoint() {
-    setMarkers([
-      ...markers,
-      {
-        id: markers.length.toString(),
-        lat: userState.coords.latitude,
-        lng: userState.coords.longitude,
-      },
-    ]);
-    console.log(markers);
-  }
 
   const mappedFeatures: any = markers.map((marker) => {
     const { lat, lng, id } = marker;
@@ -171,7 +127,6 @@ export const MapComponent = () => {
       <View style={styles.operationContainer}>
         <MapButton iconName="center-focus-weak" onPress={flyToUser} />
         <MapButton iconName="add" onPress={addNew} />
-        <MapButton iconName="add" onPress={addPoint} />
       </View>
 
       <MapLibreGL.MapView

@@ -7,7 +7,10 @@ import { CameraButton } from "./CameraButton";
 import get_api_url from "../../Utils/get_api_url";
 import create_new_trash from "../../Logic/API/create_new_trash";
 
-export const TrashForm = (props: { location: MapLibreGL.Location }) => {
+export const TrashForm = (props: {
+  location: MapLibreGL.Location;
+  setModal: Function;
+}) => {
   const themeFromContext = useContext(ThemeContext);
 
   const [locationData, setLocationData] = useState<MapLibreGL.Location>({
@@ -30,6 +33,8 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
     create_new_trash(API_URL, locationData, imageData)
       .then((data) => {
         console.log("Trash added", data);
+        close();
+        props.setModal(false);
       })
       .catch((err) => {
         console.error("Error when adding trash", err);

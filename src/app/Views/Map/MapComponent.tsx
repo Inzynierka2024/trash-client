@@ -121,7 +121,7 @@ export const MapComponent = () => {
           setCameraModalVisible(false);
         }}
       >
-        <TrashForm location={userState} />
+        <TrashForm location={userState} setModal={setCameraModalVisible} />
       </Modal>
 
       <View style={styles.operationContainer}>

@@ -3,7 +3,11 @@ import { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { ThemeContext } from "../../../../theme/theme";
 
-export const ActionButton = (props: { iconName: any; onPress: Function }) => {
+export const ActionButton = (props: {
+  iconName: any;
+  onPress: Function;
+  disabled: boolean;
+}) => {
   const themeFromContext = useContext(ThemeContext);
 
   return (
@@ -15,8 +19,16 @@ export const ActionButton = (props: { iconName: any; onPress: Function }) => {
       size={28}
       borderRadius={8}
       color={themeFromContext.colors.primaryText}
-      backgroundColor={themeFromContext.colors.primary}
+      style={{
+        opacity: props.disabled ? 0.5 : 1,
+      }}
+      backgroundColor={
+        props.disabled
+          ? themeFromContext.colors.disabled
+          : themeFromContext.colors.primary
+      }
       iconStyle={styles.operationIcon}
+      disabled={props.disabled}
     ></MaterialIcons.Button>
   );
 };

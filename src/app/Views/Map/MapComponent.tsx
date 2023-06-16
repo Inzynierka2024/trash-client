@@ -20,7 +20,7 @@ import remove_trash from "../../Logic/API/remove_trash";
 import { TrashModal } from "./TrashModal/TrashModal";
 
 export interface MarkerData {
-  id: string;
+  id: number;
   lat: number;
   lng: number;
 }
@@ -113,12 +113,15 @@ export const MapComponent = () => {
     features: mappedFeatures,
   };
 
-  const [currentTrashId, setCurrentTrashId] = useState(-1);
+  const [currentTrash, setCurrentTrash] = useState<MarkerData>(null);
   const [trashModalVisible, setTrashModalVisible] = useState(false);
   const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
 
   function showTrashData(id: number) {
-    setCurrentTrashId(id);
+    const marker = markers.find((e) => e["id"] == id);
+
+    setCurrentTrash(marker);
+
     setTrashModalVisible(true);
 
     console.log(`Fetching ${id} photo`);
@@ -138,7 +141,7 @@ export const MapComponent = () => {
   }
 
   function closeTrashModal() {
-    setCurrentTrashId(-1);
+    setCurrentTrash(null);
     setCurrentTrashPhoto("");
     setTrashModalVisible(false);
   }
@@ -169,10 +172,11 @@ export const MapComponent = () => {
 
       <TrashModal
         updateMapMarkers={updateMapMarkers}
-        currentTrashId={currentTrashId}
+        currentTrash={currentTrash}
         currentTrashPhoto={currentTrashPhoto}
         trashModalVisible={trashModalVisible}
         onClose={closeTrashModal}
+        userState={userState}
       />
 
       <View style={styles.operationContainer}>

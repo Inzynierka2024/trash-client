@@ -118,17 +118,23 @@ export const MapComponent = () => {
 
   function showTrashData(id: number) {
     setCurrentTrashId(id);
+    setTrashModalVisible(true);
 
     console.log(`Fetching ${id} photo`);
 
     get_trash_photo(API_URL, id)
       .then((data) => {
         setCurrentTrashPhoto(data["image"]);
-        setTrashModalVisible(true);
       })
       .catch((err) => {
         console.error("Fetch photo error", err);
       });
+  }
+
+  function closeTrashModal() {
+    setTrashModalVisible(false);
+    setCurrentTrashPhoto("");
+    setCurrentTrashId(-1);
   }
 
   function onPinPress(event: any) {
@@ -146,8 +152,7 @@ export const MapComponent = () => {
         console.log("Failed to remove trash");
       })
       .finally(() => {
-        setCurrentTrashId(-1);
-        setTrashModalVisible(false);
+        closeTrashModal();
       });
   }
 
@@ -179,7 +184,7 @@ export const MapComponent = () => {
         animationType="slide"
         visible={trashModalVisible}
         onRequestClose={() => {
-          setTrashModalVisible(false);
+          closeTrashModal();
         }}
       >
         <View

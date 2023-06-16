@@ -6,6 +6,8 @@ import {
   useColorScheme,
   Modal,
   StyleProp,
+  Image,
+  Button,
 } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
@@ -13,6 +15,8 @@ import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
 import get_all_trash from "../../Logic/API/get_all_trash";
+import get_trash_photo from "../../Logic/API/get_trash_photo";
+import remove_trash from "../../Logic/API/remove_trash";
 
 export interface MarkerData {
   id: string;
@@ -50,6 +54,7 @@ export const MapComponent = () => {
   }
 
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
+  const [trashModalVisible, setTrashModalVisible] = useState(false);
 
   function addNew() {
     setCameraModalVisible(true);
@@ -76,18 +81,20 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
-  useEffect(() => {
+  function updateMapMarkers() {
     get_all_trash(API_URL)
       .then((data) => {
+        console.log(data);
         const points = data["map_points"];
-        console.log(
-          points.map((pt) => `lat: ${pt.lat} lng: ${pt.lng} id: ${pt.id}`)
-        );
         setMarkers(points);
       })
       .catch((err) => {
         console.error("Fetch error", err);
       });
+  }
+
+  useEffect(() => {
+    updateMapMarkers();
   }, []);
 
   const mappedFeatures: any = markers.map((marker) => {
@@ -106,6 +113,44 @@ export const MapComponent = () => {
     features: mappedFeatures,
   };
 
+  const [currentTrashId, setCurrentTrashId] = useState(-1);
+  const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
+
+  function showTrashData(id: number) {
+    setCurrentTrashId(id);
+
+    console.log(`Fetching ${id} photo`);
+
+    get_trash_photo(API_URL, id)
+      .then((data) => {
+        setCurrentTrashPhoto(data["image"]);
+        setTrashModalVisible(true);
+      })
+      .catch((err) => {
+        console.error("Fetch photo error", err);
+      });
+  }
+
+  function onPinPress(event: any) {
+    const id = event["features"][0]["id"];
+    showTrashData(id);
+  }
+
+  function removeTrash() {
+    remove_trash(API_URL, currentTrashId)
+      .then((data) => {
+        console.log("Removed trash");
+        updateMapMarkers();
+      })
+      .catch((err) => {
+        console.log("Failed to remove trash");
+      })
+      .finally(() => {
+        setCurrentTrashId(-1);
+        setTrashModalVisible(false);
+      });
+  }
+
   return (
     <View
       style={{
@@ -123,7 +168,41 @@ export const MapComponent = () => {
           setCameraModalVisible(false);
         }}
       >
-        <TrashForm location={userState} setModal={setCameraModalVisible} />
+        <TrashForm
+          location={userState}
+          setModal={setCameraModalVisible}
+          updateMap={updateMapMarkers}
+        />
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        visible={trashModalVisible}
+        onRequestClose={() => {
+          setTrashModalVisible(false);
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: themeFromContext.colors.background,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Image
+            source={{
+              uri: "data:image/jpg;base64," + currentTrashPhoto,
+            }}
+            style={{
+              aspectRatio: "9 / 16",
+              height: 300,
+              resizeMode: "contain",
+            }}
+          />
+
+          <Button title="Usuń" onPress={removeTrash}></Button>
+        </View>
       </Modal>
 
       <View style={styles.operationContainer}>
@@ -162,7 +241,11 @@ export const MapComponent = () => {
           triggerKey={cameraTrigger}
         />
 
-        <MapLibreGL.ShapeSource id="pinsSource" shape={featureCollection}>
+        <MapLibreGL.ShapeSource
+          id="pinsSource"
+          shape={featureCollection}
+          onPress={onPinPress}
+        >
           <MapLibreGL.SymbolLayer id="pinsLayer" style={pinLayerStyle} />
         </MapLibreGL.ShapeSource>
       </MapLibreGL.MapView>

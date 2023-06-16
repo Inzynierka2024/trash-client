@@ -10,6 +10,7 @@ import create_new_trash from "../../Logic/API/create_new_trash";
 export const TrashForm = (props: {
   location: MapLibreGL.Location;
   setModal: Function;
+  updateMap: Function;
 }) => {
   const themeFromContext = useContext(ThemeContext);
 
@@ -34,6 +35,7 @@ export const TrashForm = (props: {
       .then((data) => {
         console.log("Trash added", data);
         close();
+        props.updateMap();
         props.setModal(false);
       })
       .catch((err) => {

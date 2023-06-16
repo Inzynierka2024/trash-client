@@ -18,7 +18,6 @@ export interface MarkerData {
   id: string;
   lat: number;
   lng: number;
-  img: string;
 }
 
 export const MapComponent = () => {

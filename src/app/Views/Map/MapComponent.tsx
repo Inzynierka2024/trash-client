@@ -18,6 +18,7 @@ export interface MarkerData {
   id: string;
   lat: number;
   lng: number;
+  img: string;
 }
 
 export const MapComponent = () => {
@@ -79,8 +80,10 @@ export const MapComponent = () => {
   useEffect(() => {
     get_all_trash(API_URL)
       .then((data) => {
-        console.log("GET: ", data);
         const points = data["map_points"];
+        console.log(
+          points.map((pt) => `lat: ${pt.lat} lng: ${pt.lng} id: ${pt.id}`)
+        );
         setMarkers(points);
       })
       .catch((err) => {

@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import MapLibreGL from "@maplibre/maplibre-react-native";
+import MapLibreGL, { Logger } from "@maplibre/maplibre-react-native";
 import { Main } from "./src/app/Main";
 import React, { useState } from "react";
 import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
@@ -10,6 +10,7 @@ import { OptionsContext } from "./src/app/Logic/StateProvider";
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
 MapLibreGL.setAccessToken(null);
+Logger.setLogLevel("error");
 
 export default function App() {
   const [darkMode, _setDarkMode] = useState(

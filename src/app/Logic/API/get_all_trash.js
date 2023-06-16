@@ -20,7 +20,7 @@ export default async function (API_URL) {
     }), // body data type must match "Content-Type" header
   });
 
-  console.log(response);
+  // console.log(response);
   const json = await response.json();
 
   return json;

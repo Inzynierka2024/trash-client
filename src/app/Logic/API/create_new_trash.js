@@ -1,5 +1,5 @@
 export default async function (API_URL, locationData, imageData) {
-  const URL = `http://${API_URL}/garbage`;
+  const URL = `http://${API_URL}/add_garbage`;
 
   console.log("Sending new trash to:", URL, locationData.coords);
 

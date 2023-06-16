@@ -17,6 +17,7 @@ import get_api_url from "../../Utils/get_api_url";
 import get_all_trash from "../../Logic/API/get_all_trash";
 import get_trash_photo from "../../Logic/API/get_trash_photo";
 import remove_trash from "../../Logic/API/remove_trash";
+import { TrashModal } from "./TrashModal/TrashModal";
 
 export interface MarkerData {
   id: string;
@@ -54,7 +55,6 @@ export const MapComponent = () => {
   }
 
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
-  const [trashModalVisible, setTrashModalVisible] = useState(false);
 
   function addNew() {
     setCameraModalVisible(true);
@@ -114,6 +114,7 @@ export const MapComponent = () => {
   };
 
   const [currentTrashId, setCurrentTrashId] = useState(-1);
+  const [trashModalVisible, setTrashModalVisible] = useState(false);
   const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
 
   function showTrashData(id: number) {
@@ -131,29 +132,15 @@ export const MapComponent = () => {
       });
   }
 
-  function closeTrashModal() {
-    setTrashModalVisible(false);
-    setCurrentTrashPhoto("");
-    setCurrentTrashId(-1);
-  }
-
   function onPinPress(event: any) {
     const id = event["features"][0]["id"];
     showTrashData(id);
   }
 
-  function removeTrash() {
-    remove_trash(API_URL, currentTrashId)
-      .then((data) => {
-        console.log("Removed trash");
-        updateMapMarkers();
-      })
-      .catch((err) => {
-        console.log("Failed to remove trash");
-      })
-      .finally(() => {
-        closeTrashModal();
-      });
+  function closeTrashModal() {
+    setCurrentTrashId(-1);
+    setCurrentTrashPhoto("");
+    setTrashModalVisible(false);
   }
 
   return (
@@ -180,35 +167,13 @@ export const MapComponent = () => {
         />
       </Modal>
 
-      <Modal
-        animationType="slide"
-        visible={trashModalVisible}
-        onRequestClose={() => {
-          closeTrashModal();
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: themeFromContext.colors.background,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Image
-            source={{
-              uri: "data:image/jpg;base64," + currentTrashPhoto,
-            }}
-            style={{
-              aspectRatio: "9 / 16",
-              height: 300,
-              resizeMode: "contain",
-            }}
-          />
-
-          <Button title="Usuń" onPress={removeTrash}></Button>
-        </View>
-      </Modal>
+      <TrashModal
+        updateMapMarkers={updateMapMarkers}
+        currentTrashId={currentTrashId}
+        currentTrashPhoto={currentTrashPhoto}
+        trashModalVisible={trashModalVisible}
+        onClose={closeTrashModal}
+      />
 
       <View style={styles.operationContainer}>
         <MapButton iconName="center-focus-weak" onPress={flyToUser} />

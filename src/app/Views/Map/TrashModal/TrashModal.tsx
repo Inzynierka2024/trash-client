@@ -52,7 +52,9 @@ export const TrashModal = (props: {
       >
         <View
           style={{
-            backgroundColor: "#cdcdcd",
+            backgroundColor: themeFromContext.colors.background,
+            borderColor: themeFromContext.colors.primary,
+            borderWidth: 4,
             borderRadius: 20,
             alignSelf: "center",
             alignItems: "center",

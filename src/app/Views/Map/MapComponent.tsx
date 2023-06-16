@@ -226,7 +226,7 @@ export const MapComponent = () => {
 const pinLayerStyle: StyleProp<SymbolLayerStyle> = {
   iconAllowOverlap: true,
   iconAnchor: "bottom",
-  iconSize: 1.0,
+  iconSize: 0.06,
   iconImage: exampleIcon,
 };
 

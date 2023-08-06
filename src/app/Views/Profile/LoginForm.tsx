@@ -1,143 +1,67 @@
-import React, { useContext } from "react";
-import {
-    SafeAreaView,
-    StyleSheet,
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Image
-  } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { ThemeContext } from "../../../theme/theme";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Button, SocialIcon } from "react-native-elements";
-import GoogleSVG from '../../../../assets/google.png';
-import FacebookSVG from '../../../../assets/facebook.png';
-import TwitterSVG from '../../../../assets/twitter.png';
-import InputField from '../../Utils/InputField';
+import { Button, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useAuth } from '../../Logic/AuthContext';
+import { TextInput } from 'react-native-gesture-handler';
+import axios from 'axios';
 
-export const LoginForm = () => {
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [onLogin, onRegister] = useAuth();
 
-  const themeFromContext = useContext(ThemeContext);
-  
+  //TEST
+  useEffect(()=>{
+    const testCall = async() => {
+      const result = await axios.get(`${API_URL}/users`);
 
-    return (
-        <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
-          <View style={{paddingHorizontal: 25}}>
-        
-            <Text
-              style={{
-                fontFamily: 'Roboto-Medium',
-                fontSize: 28,
-                fontWeight: '500',
-                color: '#333',
-                marginBottom: 30,
-              }}>
-              
-            </Text>
-    
-             <InputField
-                    label={'Email ID'}
-                    icon={<MaterialIcons
-                        name="alternate-email"
-                        size={20}
-                        color="#666"
-                        style={{ marginRight: 5 }} />} inputType="text" fieldButtonLabel={""} fieldButtonFunction={() =>{}}/>
-    
-    <InputField
-              label={'Password'}
-              icon={
-                <Ionicons
-                name="ios-lock-closed-outline"
-                size={20}
-                color="#666"
-                style={{marginRight: 5}}
-              />
-              }
-              inputType="password"
-              fieldButtonLabel={"Forgot?"}
-              fieldButtonFunction={() => {}}
-            />
-            
-            <Button title="Login"/>
-    
-            <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
-              Or, login with ...
-            </Text>
-    
-             <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                 marginBottom: 30,
-              }}
-                >
-              <TouchableOpacity
-                
-                style={{
-                  borderColor: '#ddd',
-                  borderWidth: 2,
-                  borderRadius: 10,
-                  paddingHorizontal: 30,
-                  paddingVertical: 10,
-                }}>
+      console.log("result: ", result);
+    }
+    testCall();
+  }, []);
 
-                <Image source={require('../../../../assets/google.png')} style ={styles.FacebookStyle}/>
-              </TouchableOpacity>
-               <TouchableOpacity
-                
-                style={{
-                    borderColor: '#ddd',
-                    borderWidth: 2,
-                    borderRadius: 10,
-                    paddingHorizontal: 30,
-                    paddingVertical: 10,
-                  }}>
-                <Image source={require('../../../../assets/facebook.png')} style ={styles.FacebookStyle}/>
-              </TouchableOpacity>
-              <TouchableOpacity
-                
-                style={{
-                  borderColor: '#ddd',
-                  borderWidth: 2,
-                  borderRadius: 10,
-                  paddingHorizontal: 30,
-                  paddingVertical: 10,
-                }}>
-                <Image source={require('../../../../assets/twitter.png')} style ={styles.FacebookStyle}/>
-                
-              </TouchableOpacity>
-        </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                 marginBottom: 30,
-              }}>
-              <Text>New to the app?</Text>
-              <TouchableOpacity>
-                <Text style={{color: '#0599FD', fontWeight: '700'}}> Register</Text>
-              </TouchableOpacity>
-            </View> 
-          </View>
-        </SafeAreaView>
-      );
-};
+  const login = async () => {
+    const result = await onLogin!(email, password);
+    if(result && result.error) alert(result.msg);
+  };
 
-export default LoginForm;
+  const register = async () => {
+    const result = await onRegister!(email, password);
+    if(result && result.error) alert(result.msg);
+    else login();
+  };
+
+  return (
+    <View> 
+      <View>
+        <TextInput placeholder='Email' onChangeText={(text: string)=> setEmail(text)} value = {email}/>
+        <TextInput placeholder='Password' secureTextEntry={true} onChangeText={(text: string) => setPassword(text)} value = {password}/>
+        <Button onPress={login} title='Sign in'/>
+        <Button onPress={register} title='Create Account'/>
+      </View>
+    </View>
+  )
+}
+
+export default LoginForm
 
 const styles = StyleSheet.create({
-    FacebookStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    
-    height: 24,
-    width:24,
-    
-    margin: 5
-  }
-});
-
-
+  image: {
+  width: '50%',
+  height: '50%',
+  resizeMode: 'contain'
+  },
+  form: {
+  gap: 10,
+  width: '60%'
+  },
+  input: {
+  height: 44,
+  borderWidth: 1,
+  borderRadius: 4,
+  padding: 10,
+  backgroundColor: '#fff'
+  },
+  container: {
+  alignItems: 'center’',
+  width: '100%'
+  }})

@@ -6,6 +6,7 @@ import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
 import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
 import { DebugOptions } from "./src/app/Views/Debug/DebugOptions";
 import { OptionsContext } from "./src/app/Logic/StateProvider";
+import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
 
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
@@ -34,6 +35,10 @@ export default function App() {
             }}
             title="Debug"
           ></Button>
+        </View>
+
+        <View>
+            <AppNavigator />
         </View>
         <Modal
           visible={debugVisible}

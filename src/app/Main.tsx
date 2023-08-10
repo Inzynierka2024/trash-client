@@ -6,7 +6,7 @@ import {
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
-import { ProfileContainer } from "./Views/Profile/ProfileContainer";
+import  ProfileContainer  from "./Views/Profile/ProfileContainer";
 import { RankingContainer } from "./Views/Ranking/RankingContainer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";

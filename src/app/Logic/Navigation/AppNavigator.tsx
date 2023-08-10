@@ -26,7 +26,7 @@ const AppNavigator = () => (
     <Tab.Navigator>
       <Tab.Screen name="Ranking" component={RankingContainer} />
       <Tab.Screen name="Map" component={MapContainer} />
-      <Tab.Screen name="Profile" component={ProfileStackNavigator} />
+      <Tab.Screen name="Profil" component={ProfileStackNavigator} />
     </Tab.Navigator>
   </NavigationContainer>
 );

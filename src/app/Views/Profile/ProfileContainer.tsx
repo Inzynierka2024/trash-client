@@ -1,26 +1,12 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
-import { createStackNavigator } from '@react-navigation/stack';
-import { AuthProvider, useAuth } from '../../Logic/AuthContext';
-import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import LoginForm from './LoginForm';
+import ProfileForm from './ProfileForm';
+import { useAuth } from '../../Logic/AuthContext';
 
-const Stack = createStackNavigator();
+const ProfileContainer: React.FC = () => {
+  const { state } = useAuth();
 
-export default class ProfileContainer extends Component {
-  render() {
-    const { authState, onLogout } = useAuth();
-    return (
-    <NavigationContainer> I
-    <Stack.Navigator>
-      {
-        authState?.authenticated ? (
-          <Stack.Screen name="Profile" component={ProfileForm}></Stack.Screen>
-        ) : (
-          <Stack.Screen name="Login" component={LoginForm}></Stack.Screen>
-        )
-      }
-    </Stack.Navigator>
-    </NavigationContainer>
-    )
-  }
-}
+  return state.isLoggedIn ? <ProfileForm /> : <LoginForm />;
+};
+
+export default ProfileContainer;

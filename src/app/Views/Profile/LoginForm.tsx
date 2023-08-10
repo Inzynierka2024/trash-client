@@ -1,67 +1,86 @@
-import { Button, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react';
+import { Button, TextInput, View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useAuth } from '../../Logic/AuthContext';
-import { TextInput } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import get_api_url from '../../Utils/get_api_url';
 
-const LoginForm = () => {
-  const [email, setEmail] = useState('');
+const LoginForm: React.FC = () => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [onLogin, onRegister] = useAuth();
+  const { login } = useAuth();
+  
+  const URL = `http://${get_api_url()}/login`;
 
-  //TEST
-  useEffect(()=>{
-    const testCall = async() => {
-      const result = await axios.get(`${API_URL}/users`);
+  const navigation = useNavigation();
 
-      console.log("result: ", result);
+  const handleLogin = async () => {
+    try {
+      // Modify this URL to match your API endpoint
+      const response = await axios.post(URL, {
+        username,
+        password
+      });
+      
+      // Assuming the response contains a token field
+      if (response.data && response.data.token) {
+        login(response.data.token);
+      } else {
+        Alert.alert("Email/Password Error", "Failed to authenticate");
+      }
+    } catch (error) {
+      // Handle any errors from the API call, such as wrong credentials
+      Alert.alert("Error", error.message || "There was an error logging in.");
     }
-    testCall();
-  }, []);
-
-  const login = async () => {
-    const result = await onLogin!(email, password);
-    if(result && result.error) alert(result.msg);
-  };
-
-  const register = async () => {
-    const result = await onRegister!(email, password);
-    if(result && result.error) alert(result.msg);
-    else login();
   };
 
   return (
-    <View> 
-      <View>
-        <TextInput placeholder='Email' onChangeText={(text: string)=> setEmail(text)} value = {email}/>
-        <TextInput placeholder='Password' secureTextEntry={true} onChangeText={(text: string) => setPassword(text)} value = {password}/>
-        <Button onPress={login} title='Sign in'/>
-        <Button onPress={register} title='Create Account'/>
-      </View>
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        onChangeText={setUsername}
+        value={username}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        onChangeText={setPassword}
+        value={password}
+        secureTextEntry
+      />
+      <Button title="Login" onPress={handleLogin} />
+      <Text style={styles.text}>Don't have an account? </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={[styles.text, styles.link]}>Register here</Text>
+      </TouchableOpacity>
     </View>
-  )
-}
-
-export default LoginForm
+  );
+};
 
 const styles = StyleSheet.create({
-  image: {
-  width: '50%',
-  height: '50%',
-  resizeMode: 'contain'
-  },
-  form: {
-  gap: 10,
-  width: '60%'
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
   input: {
-  height: 44,
-  borderWidth: 1,
-  borderRadius: 4,
-  padding: 10,
-  backgroundColor: '#fff'
+    width: '100%',
+    height: 40,
+    marginBottom: 16,
+    paddingHorizontal: 12,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 4,
   },
-  container: {
-  alignItems: 'center’',
-  width: '100%'
-  }})
+  text: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  link: {
+    color: 'blue',
+  },
+});
+
+export default LoginForm;

@@ -7,6 +7,7 @@ import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
 import { DebugOptions } from "./src/app/Views/Debug/DebugOptions";
 import { OptionsContext } from "./src/app/Logic/StateProvider";
 import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
+import {AuthProvider} from "./src/app/Logic/AuthContext";
 
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
@@ -24,8 +25,10 @@ export default function App() {
   const [API_URL, setApiUrl] = useState<string>("192.168.43.40:5000");
 
   return (
+    <AuthProvider>
     <OptionsContext.Provider value={{ API_URL }}>
       <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
+        <AppNavigator>
         <StatusBar style="auto" />
         <Main></Main>
         <View style={styles.debugButton}>
@@ -37,9 +40,6 @@ export default function App() {
           ></Button>
         </View>
 
-        <View>
-            <AppNavigator />
-        </View>
         <Modal
           visible={debugVisible}
           onRequestClose={() => {
@@ -48,8 +48,11 @@ export default function App() {
         >
           <DebugOptions setApi={setApiUrl} />
         </Modal>
+        </AppNavigator>
       </ThemeContext.Provider>
     </OptionsContext.Provider>
+    
+    </AuthProvider>
   );
 }
 

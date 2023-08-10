@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const register = (token: string) => {
-    login(token);  // since it's async, you might want to handle errors or await its result
+    login(token);  
   };
 
   return (

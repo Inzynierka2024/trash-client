@@ -29,18 +29,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchToken();
   }, []);
 
-  const login = async (token: string) => {
+  const login = async (token: string, userData) => {
     await AsyncStorage.setItem('jwtToken', token);
     setState({ token, isLoggedIn: true });
+    //storeUserData(userData);
+    storeToken(token);
   };
 
   const logout = async () => {
     await AsyncStorage.removeItem('jwtToken');
     setState({ token: null, isLoggedIn: false });
+    
   };
 
-  const register = (token: string) => {
-    login(token);  
+  const register = (token: string, userData) => {
+    login(token, userData);  
   };
 
   return (

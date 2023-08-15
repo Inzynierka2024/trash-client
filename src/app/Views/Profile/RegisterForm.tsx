@@ -9,15 +9,16 @@ const RegisterForm: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { register } = useAuth();
+  const { login } = useAuth();
   const navigation = useNavigation();
 
-  const URL = `http://${get_api_url()}/signup`;
+  const SIGNUP_URL = `http://${get_api_url()}/signup`;
+  const LOGIN_URL = `http://${get_api_url()}/login`;
 
   const handleRegister = async () => {
     try {
       // Modify this URL to match your API endpoint
-      const response = await axios.post(URL, {
+      const response = await axios.post(SIGNUP_URL, {
         username,
         email,
         password,
@@ -25,28 +26,44 @@ const RegisterForm: React.FC = () => {
 
       switch (response.status) {
         case 201:
+          console.log("successfull registration");
           // Success
-          // TODO: make a login request here and get the token for later
-          const token = "";
-          register(token);
-          navigation.navigate("Profile"); // Navigate to profile after registering
+          const loginResponse = await axios.post(LOGIN_URL, {
+            email,
+            password,
+          });
+          console.log("login attempt");
+          if (loginResponse.status === 200) {
+            const token = loginResponse.data.token;
+            console.log("token: " + token);
+            
+            if (!token) {
+              throw new Error("Token: Token not found in response.");
+            } else {
+              login(token, loginResponse.data);
 
+              navigation.navigate("Profile");
+            }
+          }
           break;
 
         case 202:
           // User already exists
+          console.log("202: " + response.data.message);
           Alert.alert(response.data.message);
           break;
 
         case 500:
           // Incorrect data
-          Alert.alert(response.data.message);
+          console.log("500: " + response.data.message);
+          Alert.alert("Data is incorrect");
           break;
 
         default:
           break;
       }
     } catch (error) {
+      console.log("catch: " + error.message);
       Alert.alert("Error", error.message || "There was an error registering.");
     }
   };
@@ -96,3 +113,11 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterForm;
+function storeToken(token: any) {
+  throw new Error("Function not implemented.");
+}
+
+function storeUserData(userData: any) {
+  throw new Error("Function not implemented.");
+}
+

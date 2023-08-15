@@ -9,7 +9,7 @@ const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
-  
+
   const URL = `http://${get_api_url()}/login`;
 
   const navigation = useNavigation();
@@ -21,17 +21,30 @@ const LoginForm: React.FC = () => {
         username,
         password
       });
-      
-      // Assuming the response contains a token field
-      if (response.data && response.data.token) {
-        login(response.data.token);
-      } else {
-        Alert.alert("Email/Password Error", "Failed to authenticate");
+
+      switch (response.status) {
+        case 201:
+          if (response.data.token) {
+            login(response.data.token, response.data);
+            navigation.navigate("Profile");
+          }
+          else
+            throw new Error("Token: Token not found in response.");
+
+          break;
+
+        case 500:
+          // Incorrect data
+          console.log("500: " + response.data.message);
+          Alert.alert(response.data.message);
+          break;
       }
     } catch (error) {
       // Handle any errors from the API call, such as wrong credentials
       Alert.alert("Error", error.message || "There was an error logging in.");
     }
+
+
   };
 
   return (
@@ -84,3 +97,11 @@ const styles = StyleSheet.create({
 });
 
 export default LoginForm;
+function storeUserData(userData: any) {
+  throw new Error('Function not implemented.');
+}
+
+function storeToken(token: any) {
+  throw new Error('Function not implemented.');
+}
+

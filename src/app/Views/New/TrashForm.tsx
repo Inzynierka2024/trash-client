@@ -4,35 +4,43 @@ import { View, Text, Image, Modal, Button } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
+import get_api_url from "../../Utils/get_api_url";
+import create_new_trash from "../../Logic/API/create_new_trash";
 
-export const TrashForm = (props: { location: MapLibreGL.Location }) => {
+export const TrashForm = (props: {
+  location: MapLibreGL.Location;
+  setModal: Function;
+  updateMap: Function;
+}) => {
   const themeFromContext = useContext(ThemeContext);
 
+  const [locationData, setLocationData] = useState<MapLibreGL.Location>({
+    coords: { latitude: 0, longitude: 0 },
+  });
   const [imageData, setImageData] = useState("");
 
-  async function sendForm() {
-    const response = await fetch("https://httpbin.org/post", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify({
-        lng: props.location.coords.longitude,
-        lat: props.location.coords.latitude,
-        image: imageData,
-      }), // body data type must match "Content-Type" header
-    });
-    const json = await response.json();
+  const API_URL = get_api_url();
 
-    console.log("SEND: ", json);
+  function setData(imgData: string) {
+    setImageData(imgData);
+    setLocationData(props.location);
+  }
 
+  function close() {
     setImageData("");
+  }
+
+  function sendForm() {
+    create_new_trash(API_URL, locationData, imageData)
+      .then((data) => {
+        console.log("Trash added", data);
+        close();
+        props.updateMap();
+        props.setModal(false);
+      })
+      .catch((err) => {
+        console.error("Error when adding trash", err);
+      });
   }
 
   return (
@@ -44,7 +52,7 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
         justifyContent: "center",
       }}
     >
-      <CameraContainer setImageData={setImageData} enabled={imageData !== ""} />
+      <CameraContainer setData={setData} enabled={imageData !== ""} />
       <Modal
         transparent={true}
         visible={imageData !== ""}
@@ -74,8 +82,8 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
               elevation: 5,
             }}
           >
-            <Text>{props.location.coords.latitude}</Text>
-            <Text>{props.location.coords.longitude}</Text>
+            <Text>{locationData.coords.latitude}</Text>
+            <Text>{locationData.coords.longitude}</Text>
             <Image
               source={{
                 uri: "data:image/jpg;base64," + imageData,
@@ -93,7 +101,13 @@ export const TrashForm = (props: { location: MapLibreGL.Location }) => {
                 gap: 32,
               }}
             >
-              <CameraButton size={30} iconName="delete" onPress={() => {}} />
+              <CameraButton
+                size={30}
+                iconName="delete"
+                onPress={() => {
+                  close();
+                }}
+              />
               <CameraButton
                 size={30}
                 iconName="send"

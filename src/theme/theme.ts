@@ -33,6 +33,8 @@ export const theme = {
 
     primaryText: palette.black,
     secondaryText: palette.blacklighter,
+
+    disabled: palette.lightgray,
   },
   spacing: {
     s: 8,
@@ -69,6 +71,8 @@ export const darkTheme = {
 
     primaryText: palette.white,
     secondaryText: palette.whitelighter,
+
+    disabled: palette.darkgray,
   },
 };
 

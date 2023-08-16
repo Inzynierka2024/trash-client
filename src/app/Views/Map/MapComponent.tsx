@@ -1,18 +1,41 @@
-import MapLibreGL from "@maplibre/maplibre-react-native";
+import MapLibreGL, { SymbolLayerStyle } from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, useColorScheme, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  useColorScheme,
+  Modal,
+  StyleProp,
+  Image,
+  Button,
+} from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
+import exampleIcon from "../../../../assets/marker.png";
+import get_api_url from "../../Utils/get_api_url";
+import get_all_trash from "../../Logic/API/get_all_trash";
+import get_trash_photo from "../../Logic/API/get_trash_photo";
+import remove_trash from "../../Logic/API/remove_trash";
+import { TrashModal } from "./TrashModal/TrashModal";
+
+export interface MarkerData {
+  id: number;
+  lat: number;
+  lng: number;
+}
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
 
   const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
+  const API_URL = get_api_url();
 
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
   });
+
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   function onUserLocationUpdate(location: MapLibreGL.Location) {
     setUserState(location);
@@ -58,18 +81,70 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
+  function updateMapMarkers() {
+    get_all_trash(API_URL)
+      .then((data) => {
+        console.log(data);
+        const points = data["map_points"];
+        setMarkers(points);
+      })
+      .catch((err) => {
+        console.error("Fetch error", err);
+      });
+  }
+
   useEffect(() => {
-    async function loadTrash() {
-      const response = await fetch("https://httpbin.org/get");
-      const json = await response.json();
-
-      return json;
-    }
-
-    loadTrash().then((data) => {
-      console.log("GET: ", data);
-    });
+    updateMapMarkers();
   }, []);
+
+  const mappedFeatures: any = markers.map((marker) => {
+    const { lat, lng, id } = marker;
+
+    return {
+      type: "Feature",
+      id,
+      properties: {},
+      geometry: { type: "Point", coordinates: [lng, lat] },
+    };
+  });
+
+  const featureCollection: GeoJSON.FeatureCollection = {
+    type: "FeatureCollection",
+    features: mappedFeatures,
+  };
+
+  const [currentTrash, setCurrentTrash] = useState<MarkerData>(null);
+  const [trashModalVisible, setTrashModalVisible] = useState(false);
+  const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
+
+  function showTrashData(id: number) {
+    const marker = markers.find((e) => e["id"] == id);
+
+    setCurrentTrash(marker);
+
+    setTrashModalVisible(true);
+
+    console.log(`Fetching ${id} photo`);
+
+    get_trash_photo(API_URL, id)
+      .then((data) => {
+        setCurrentTrashPhoto(data["image"]);
+      })
+      .catch((err) => {
+        console.error("Fetch photo error", err);
+      });
+  }
+
+  function onPinPress(event: any) {
+    const id = event["features"][0]["id"];
+    showTrashData(id);
+  }
+
+  function closeTrashModal() {
+    setCurrentTrash(null);
+    setCurrentTrashPhoto("");
+    setTrashModalVisible(false);
+  }
 
   return (
     <View
@@ -88,8 +163,21 @@ export const MapComponent = () => {
           setCameraModalVisible(false);
         }}
       >
-        <TrashForm location={userState} />
+        <TrashForm
+          location={userState}
+          setModal={setCameraModalVisible}
+          updateMap={updateMapMarkers}
+        />
       </Modal>
+
+      <TrashModal
+        updateMapMarkers={updateMapMarkers}
+        currentTrash={currentTrash}
+        currentTrashPhoto={currentTrashPhoto}
+        trashModalVisible={trashModalVisible}
+        onClose={closeTrashModal}
+        userState={userState}
+      />
 
       <View style={styles.operationContainer}>
         <MapButton iconName="center-focus-weak" onPress={flyToUser} />
@@ -117,32 +205,33 @@ export const MapComponent = () => {
             console.log("On user location press");
           }}
         />
+
         <MapLibreGL.Camera
           ref={(c) => (CameraRef = c)}
           followUserMode="compass"
           followUserLocation={true}
           animationMode="flyTo"
           animationDuration={5000}
-          onUserTrackingModeChange={() => {
-            console.log("???");
-          }}
           triggerKey={cameraTrigger}
         />
-        <MapLibreGL.RasterSource
-          id="OSMSource"
-          tileSize={512}
-          maxZoomLevel={19}
-          tileUrlTemplates={[MapTileURL]}
+
+        <MapLibreGL.ShapeSource
+          id="pinsSource"
+          shape={featureCollection}
+          onPress={onPinPress}
         >
-          <MapLibreGL.RasterLayer
-            id="OSMLayer"
-            sourceID="OSMSource"
-            style={{ rasterOpacity: 1 }}
-          ></MapLibreGL.RasterLayer>
-        </MapLibreGL.RasterSource>
+          <MapLibreGL.SymbolLayer id="pinsLayer" style={pinLayerStyle} />
+        </MapLibreGL.ShapeSource>
       </MapLibreGL.MapView>
     </View>
   );
+};
+
+const pinLayerStyle: StyleProp<SymbolLayerStyle> = {
+  iconAllowOverlap: true,
+  iconAnchor: "bottom",
+  iconSize: 0.06,
+  iconImage: exampleIcon,
 };
 
 const styles = StyleSheet.create({
@@ -158,5 +247,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     margin: theme.spacing.m,
     gap: theme.spacing.s,
+  },
+
+  annotationContainer: {
+    alignItems: "center",
+    backgroundColor: "white",
+    borderColor: "rgba(0, 0, 0, 0.45)",
+    borderRadius: 45 / 2,
+    borderWidth: StyleSheet.hairlineWidth,
+    height: 45,
+    justifyContent: "center",
+    overflow: "hidden",
+    width: 45,
   },
 });

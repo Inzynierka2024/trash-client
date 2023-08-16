@@ -1,15 +1,18 @@
 import { StatusBar } from "expo-status-bar";
-import MapLibreGL from "@maplibre/maplibre-react-native";
+import MapLibreGL, { Logger } from "@maplibre/maplibre-react-native";
 import { Main } from "./src/app/Main";
 import React, { useState } from "react";
 import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
 import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
 import { DebugOptions } from "./src/app/Views/Debug/DebugOptions";
 import { OptionsContext } from "./src/app/Logic/StateProvider";
+import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
+import {AuthProvider} from "./src/app/Logic/AuthContext";
 
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
 MapLibreGL.setAccessToken(null);
+Logger.setLogLevel("error");
 
 export default function App() {
   const [darkMode, _setDarkMode] = useState(
@@ -19,11 +22,13 @@ export default function App() {
   const [debugVisible, setDebugVisible] = useState(false);
 
   // Options
-  const [API_URL, setApiUrl] = useState<string>("0.0.0.0:8080");
+  const [API_URL, setApiUrl] = useState<string>("192.168.43.40:5000");
 
   return (
+    <AuthProvider>
     <OptionsContext.Provider value={{ API_URL }}>
       <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
+        <AppNavigator>
         <StatusBar style="auto" />
         <Main></Main>
         <View style={styles.debugButton}>
@@ -34,6 +39,7 @@ export default function App() {
             title="Debug"
           ></Button>
         </View>
+
         <Modal
           visible={debugVisible}
           onRequestClose={() => {
@@ -42,8 +48,11 @@ export default function App() {
         >
           <DebugOptions setApi={setApiUrl} />
         </Modal>
+        </AppNavigator>
       </ThemeContext.Provider>
     </OptionsContext.Provider>
+    
+    </AuthProvider>
   );
 }
 

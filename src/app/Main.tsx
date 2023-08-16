@@ -1,17 +1,21 @@
 import React, { useContext, useState } from "react";
-import { UIManager, useColorScheme, useWindowDimensions } from "react-native";
+import { UIManager, useColorScheme, useWindowDimensions, Image } from "react-native";
 import { MapContainer } from "./Views/Map/MapContainer";
 import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
-import  ProfileContainer  from "./Views/Profile/ProfileContainer";
+import ProfileContainer from "./Views/Profile/ProfileContainer";
 import { RankingContainer } from "./Views/Ranking/RankingContainer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { ThemeContext } from "../theme/theme";
+
+import rankingIcon from '../../assets/ranking.png';
+import profileIcon from '../../assets/ranking.png';
+import mapIcon from '../../assets/ranking.png';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,20 +36,17 @@ export const Main = () => {
           component={RankingContainer}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <AntDesign name="Trophy" color={color} size={size} />
+              <Image source={rankingIcon} style={{ tintColor: color, width: size, height: size }} />
             ),
           }}
         />
+
         <Tab.Screen
           name="Mapa"
           component={MapContainer}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="compass"
-                color={color}
-                size={size}
-              />
+              <Image source={mapIcon} style={{ tintColor: color, width: size, height: size }} />
             ),
           }}
         />
@@ -54,7 +55,7 @@ export const Main = () => {
           component={ProfileContainer}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <AntDesign name="user" color={color} size={size} />
+              <Image source={profileIcon} style={{ tintColor: color, width: size, height: size }} />
             ),
           }}
         />

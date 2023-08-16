@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, TextInput, View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Animated, Alert, Button, TextInput, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useAuth } from '../../Logic/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -9,14 +9,13 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
-
-  const URL = `http://${get_api_url()}/login`;
-
   const navigation = useNavigation();
+
+  const animatePress = useRef(new Animated.Value(1)).current;
+  const URL = `http://${get_api_url()}/login`;
 
   const handleLogin = async () => {
     try {
-      // Modify this URL to match your API endpoint
       const response = await axios.post(URL, {
         email,
         password
@@ -27,35 +26,34 @@ const LoginForm: React.FC = () => {
           if (response.data.token) {
             login(response.data.token, response.data);
             navigation.navigate("Profile");
-          }
-          else
+          } else {
             throw new Error("Token: Token not found in response.");
-
+          }
           break;
-
-        case 500:
-          // Incorrect data
-          console.log("500: " + response.data.message);
+        default:
+          console.log(response.status + ": " + response.data.message);
           Alert.alert(response.data.message);
-          break;
-        case 401:
-          // Incorrect data
-          console.log("401: " + response.data.message);
-          Alert.alert(response.data.message);
-          break;
-        case 403:
-          // Incorrect data
-          console.log("403: " + response.data.message);
-          Alert.alert(response.data.message);
-          break;
       }
     } catch (error) {
-      // Handle any errors from the API call, such as wrong credentials
       Alert.alert("Error", error.message || "There was an error logging in.");
     }
-
-
   };
+
+  const animateIn = () => {
+    Animated.timing(animatePress, {
+      toValue: 0.95,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+  }
+
+  const animateOut = () => {
+    Animated.timing(animatePress, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true
+    }).start(handleLogin);  // handle the login action once animation is done
+  }
 
   return (
     <View style={styles.container}>
@@ -72,7 +70,14 @@ const LoginForm: React.FC = () => {
         value={password}
         secureTextEntry
       />
-      <Button title="Login" onPress={handleLogin} />
+      <Animated.View style={{ transform: [{ scale: animatePress }] }}>
+        <TouchableOpacity
+          onPressIn={animateIn}
+          onPressOut={animateOut}
+          style={styles.button}>
+          <Animated.Text style={styles.buttonText}>Login</Animated.Text>
+        </TouchableOpacity>
+      </Animated.View>
       <Text style={styles.text}>Don't have an account? </Text>
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={[styles.text, styles.link]}>Register here</Text>
@@ -97,6 +102,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
   },
+  button: {
+    backgroundColor: '#2BAC82',
+    padding: 10,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 150
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold'
+  },
   text: {
     fontSize: 16,
     marginBottom: 8,
@@ -107,5 +124,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginForm;
-
-

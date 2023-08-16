@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Button, TextInput, View, Alert, StyleSheet, Animated, TouchableOpacity, ToastAndroid } from "react-native";
+import { Button, TextInput, View, Alert, StyleSheet, Animated, TouchableOpacity, ToastAndroid, Text } from "react-native";
 import { useAuth } from "../../Logic/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -124,8 +124,8 @@ const RegisterForm: React.FC = () => {
         placeholder="Email"
         onChangeText={setEmail}
         value={email}
-        keyboardType="email-address"  // for better UX
-        onEndEditing={handleEmailEndEditing} // Call handleEmailEndEditing on end editing
+        keyboardType="email-address"
+        onEndEditing={handleEmailEndEditing}
       />
       <TextInput
         style={styles.input}
@@ -142,9 +142,14 @@ const RegisterForm: React.FC = () => {
           <Animated.Text style={styles.buttonText}>Register</Animated.Text>
         </TouchableOpacity>
       </Animated.View>
+      <Text style={styles.text}>Already have an account? </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={[styles.text, styles.link]}>Login here</Text>
+      </TouchableOpacity>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -172,7 +177,14 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#ffffff',
     fontWeight: 'bold'
-  }
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  link: {
+    color: 'blue',
+  },
 });
 
 export default RegisterForm;

@@ -6,7 +6,7 @@ import axios from 'axios';
 import get_api_url from '../../Utils/get_api_url';
 
 const LoginForm: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
 
@@ -18,12 +18,12 @@ const LoginForm: React.FC = () => {
     try {
       // Modify this URL to match your API endpoint
       const response = await axios.post(URL, {
-        username,
+        email,
         password
       });
 
       switch (response.status) {
-        case 201:
+        case 200:
           if (response.data.token) {
             login(response.data.token, response.data);
             navigation.navigate("Profile");
@@ -36,6 +36,16 @@ const LoginForm: React.FC = () => {
         case 500:
           // Incorrect data
           console.log("500: " + response.data.message);
+          Alert.alert(response.data.message);
+          break;
+        case 401:
+          // Incorrect data
+          console.log("401: " + response.data.message);
+          Alert.alert(response.data.message);
+          break;
+        case 403:
+          // Incorrect data
+          console.log("403: " + response.data.message);
           Alert.alert(response.data.message);
           break;
       }
@@ -51,9 +61,9 @@ const LoginForm: React.FC = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        onChangeText={setUsername}
-        value={username}
+        placeholder="Email"
+        onChangeText={setEmail}
+        value={email}
       />
       <TextInput
         style={styles.input}
@@ -97,11 +107,5 @@ const styles = StyleSheet.create({
 });
 
 export default LoginForm;
-function storeUserData(userData: any) {
-  throw new Error('Function not implemented.');
-}
 
-function storeToken(token: any) {
-  throw new Error('Function not implemented.');
-}
 

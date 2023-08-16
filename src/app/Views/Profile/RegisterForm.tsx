@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, TextInput, View, Alert, StyleSheet } from "react-native";
+import React, { useState, useRef } from "react";
+import { Button, TextInput, View, Alert, StyleSheet, Animated, TouchableOpacity, ToastAndroid } from "react-native";
 import { useAuth } from "../../Logic/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -12,11 +12,24 @@ const RegisterForm: React.FC = () => {
   const { login } = useAuth();
   const navigation = useNavigation();
 
+  // Animation state
+  const animatePress = useRef(new Animated.Value(1)).current;
+
   const SIGNUP_URL = `http://${get_api_url()}/signup`;
   const LOGIN_URL = `http://${get_api_url()}/login`;
 
+  const validateEmail = (email) => {
+    // Simple email regex
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return regex.test(email);
+  };
+
   const handleRegister = async () => {
     try {
+      if (!username || !password || !validateEmail(email)) {
+        Alert.alert("Empty fields", "Please, fill all the fields");
+        return;
+      }
       // Modify this URL to match your API endpoint
       const response = await axios.post(SIGNUP_URL, {
         username,
@@ -36,7 +49,7 @@ const RegisterForm: React.FC = () => {
           if (loginResponse.status === 200) {
             const token = loginResponse.data.token;
             console.log("token: " + token);
-            
+
             if (!token) {
               throw new Error("Token: Token not found in response.");
             } else {
@@ -68,6 +81,36 @@ const RegisterForm: React.FC = () => {
     }
   };
 
+
+  const animateIn = () => {
+    Animated.timing(animatePress, {
+      toValue: 0.95,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+  }
+
+  const animateOut = () => {
+    Animated.timing(animatePress, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => {
+      handleRegister();  // handle the register action once animation is done
+      ToastAndroid.show('Successfully registered!', ToastAndroid.SHORT);
+    });
+  }
+
+  const handleEmailEndEditing = () => {
+    if (email) {
+      if (!validateEmail(email)) {
+        Alert.alert("Invalid email", "Please enter a valid email.");
+        return;
+      }
+      ToastAndroid.show('Email verified!', ToastAndroid.SHORT);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -81,6 +124,8 @@ const RegisterForm: React.FC = () => {
         placeholder="Email"
         onChangeText={setEmail}
         value={email}
+        keyboardType="email-address"  // for better UX
+        onEndEditing={handleEmailEndEditing} // Call handleEmailEndEditing on end editing
       />
       <TextInput
         style={styles.input}
@@ -89,11 +134,17 @@ const RegisterForm: React.FC = () => {
         value={password}
         secureTextEntry
       />
-      <Button title="Register" onPress={handleRegister} />
+      <Animated.View style={{ transform: [{ scale: animatePress }] }}>
+        <TouchableOpacity
+          onPressIn={animateIn}
+          onPressOut={animateOut}
+          style={styles.button}>
+          <Animated.Text style={styles.buttonText}>Register</Animated.Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -110,14 +161,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
   },
+  button: {
+    backgroundColor: '#2BAC82', // Light Dark Green Color
+    padding: 10,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 150
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold'
+  }
 });
 
 export default RegisterForm;
-function storeToken(token: any) {
-  throw new Error("Function not implemented.");
-}
 
-function storeUserData(userData: any) {
-  throw new Error("Function not implemented.");
-}
 

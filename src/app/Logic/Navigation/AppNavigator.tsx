@@ -13,6 +13,8 @@ import SettingsForm from '../../Views/Profile/SettingsForm';
 import { RankingContainer } from '../../Views/Ranking/RankingContainer';
 import { MapContainer } from '../../Views/Map/MapContainer';
 import ProfileContainer from '../../Views/Profile/ProfileContainer';
+import GuildsForm from '../../Views/Guilds/GuildsForm';
+import GuildDetailsForm from '../../Views/Guilds/GuildDetailsForm';
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
@@ -26,8 +28,10 @@ const ProfileStackNavigator = () => (
     <ProfileStack.Screen name="Profile" component={ProfileForm} />
     <ProfileStack.Screen name="CollectedTrash" component={ProfileTrashForm} />
     <ProfileStack.Screen name="Settings" component={SettingsForm} />
-    <ProfileStack.Screen name="Stats" component={ProfileStatsForm} />
+    <ProfileStack.Screen name="ProfileStats" component={ProfileStatsForm} />
     <ProfileStack.Screen name="ProfileEdit" component={ProfileEditForm} />
+    <ProfileStack.Screen name="Guilds" component={GuildsForm} />
+    <ProfileStack.Screen name="Guild" component={GuildDetailsForm} />
   </ProfileStack.Navigator>
 );
 

@@ -1,7 +1,12 @@
-import { View, Text, Button, StyleSheet, Image, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, Image, Alert, TouchableOpacity, Dimensions } from 'react-native';
 import { useAuth } from '../../Logic/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
+import stats_icon from "../../../../assets/player-stats.png";
+import collected_trash_icon from "../../../../assets/collected-trash.png";
+import guilds_icon from "../../../../assets/guilds.png";
+import settings_icon from "../../../../assets/settings.png";
+import user_profile_icon from "../../../../assets/user-profile.png";
 
 interface ProfileFormProps {
   navigateTo: (screen: string) => void;
@@ -23,15 +28,11 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
     }
   };
 
-  const handleEdit = async () => {
-    try {
-      console.log("edit navigate");
-      navigation.navigate("ProfileEdit");
-    }
-    catch (e) {
-      throw new Error(e.message);
-    }
-  };
+  const { width, height } = Dimensions.get('window');
+  const isPortrait = height > width;
+
+  // Button width based on orientation: 2 in vertical and 3 in horizontal
+  const buttonWidth = isPortrait ? (width * 0.4) : (width / 3) - 20;  // -20 accounts for margins and padding
 
   const [userLogin, setUserLogin] = useState < string | null > (null);
 
@@ -52,40 +53,37 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: 'YOUR_USER_ICON_URI_HERE' }}
-        style={styles.userIcon}
-      />
+      <TouchableOpacity onPress={() => navigation.navigate('ProfileEdit')}>
+        <Image
+          source={user_profile_icon}
+          style={styles.userIcon}
+        />
+      </TouchableOpacity>
       <Text style={styles.loginText}>{userLogin}</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserStats')}>
-        <Text style={styles.buttonText}>User Stats</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CollectedTrash')}>
-        <Text style={styles.buttonText}>Collected trash</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleEdit}>
-        <Text style={styles.buttonText}>User Information</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Settings')}>
-        <Text style={styles.buttonText}>Settings</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Log out</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonGrid}>
+        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileStats')}>
+          <Image source={stats_icon} style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>User Stats</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
+          <Image source={collected_trash_icon} style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Collected trash</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
+          <Image source={guilds_icon} style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Guilds</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
+          <Image source={settings_icon} style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Settings</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
+          <Text style={styles.buttonText}>Log out</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
-
-const CustomButton = ({ title, onPress }) => (
-  <View style={styles.buttonContainer}>
-    <Button
-      title={title}
-      color="#2BAC82"
-      onPress={onPress}
-    />
-  </View>
-);
-
 
 const styles = StyleSheet.create({
   container: {
@@ -114,15 +112,25 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     overflow: 'hidden', // Keep the rounded corners for the buttons
   },
+  buttonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
   button: {
     backgroundColor: '#3d9970', // Light Dark Green Color
     padding: 10,
-    margin:2,
+    margin: 2,
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
     width: 150
   },
+  buttonIcon: {
+    width: 50,
+    height: 50,
+  },
+
   buttonText: {
     color: '#ffffff',
     fontWeight: 'bold'

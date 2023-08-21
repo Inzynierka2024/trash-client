@@ -1,9 +1,12 @@
 import React, { useState, useRef } from "react";
-import { Button, TextInput, View, Alert, StyleSheet, Animated, TouchableOpacity, ToastAndroid, Text } from "react-native";
+import { Button, TextInput, View, Alert, StyleSheet, Animated, TouchableOpacity, ToastAndroid, Text, Image, Dimensions } from "react-native";
 import { useAuth } from "../../Logic/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import get_api_url from "../../Utils/get_api_url";
+import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png"; 
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const RegisterForm: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -96,7 +99,7 @@ const RegisterForm: React.FC = () => {
       duration: 200,
       useNativeDriver: true
     }).start(() => {
-      handleRegister();  // handle the register action once animation is done
+      handleRegister();  
       ToastAndroid.show('Successfully registered!', ToastAndroid.SHORT);
     });
   }
@@ -113,6 +116,8 @@ const RegisterForm: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <Image source={logo} style={styles.logo} resizeMode="contain"/> 
+
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -151,6 +156,11 @@ const RegisterForm: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  logo: {
+    width: screenWidth - 32,  
+    height: (screenWidth - 32) * 0.5, 
+    marginBottom: 20, 
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -167,7 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   button: {
-    backgroundColor: '#2BAC82', // Light Dark Green Color
+    backgroundColor: '#3d9970', // Light Dark Green Color
     padding: 10,
     borderRadius: 4,
     alignItems: 'center',

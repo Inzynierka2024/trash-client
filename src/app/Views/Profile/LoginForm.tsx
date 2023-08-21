@@ -1,9 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Animated, Alert, Button, TextInput, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Animated, Alert, Button, TextInput, View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
 import { useAuth } from '../../Logic/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import get_api_url from '../../Utils/get_api_url';
+import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png";
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -52,11 +55,13 @@ const LoginForm: React.FC = () => {
       toValue: 1,
       duration: 200,
       useNativeDriver: true
-    }).start(handleLogin);  // handle the login action once animation is done
+    }).start(handleLogin);
   }
 
   return (
     <View style={styles.container}>
+      <Image source={logo} style={styles.logo} resizeMode="contain"/> 
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -87,6 +92,11 @@ const LoginForm: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  logo: {
+    width: screenWidth - 32,  
+    height: (screenWidth - 32) * 0.5, 
+    marginBottom: 20, 
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -103,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   button: {
-    backgroundColor: '#2BAC82',
+    backgroundColor: '#3d9970',
     padding: 10,
     borderRadius: 4,
     alignItems: 'center',
@@ -117,6 +127,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 8,
+    fontFamily: 'reem-kufi-regular',
   },
   link: {
     color: 'blue',

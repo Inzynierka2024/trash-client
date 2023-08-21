@@ -9,7 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 
-const ProfileStatsForm: React.FC = () => {
+const GuildsForm: React.FC = () => {
 return <View/>;
 }
-export default ProfileStatsForm;
+export default GuildsForm;

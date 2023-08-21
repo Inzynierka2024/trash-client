@@ -4,7 +4,7 @@
     "slug": "trash-client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/litter-looter-icon.png",
     "userInterfaceStyle": "automatic",
     "plugins": ["@maplibre/maplibre-react-native", "expo-camera"],
     "splash": {

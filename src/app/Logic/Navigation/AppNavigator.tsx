@@ -10,7 +10,7 @@ import ProfileEditForm from '../../Views/Profile/ProfileEditForm';
 import ProfileStatsForm from '../../Views/Profile/ProfileStatsForm';
 import ProfileTrashForm from '../../Views/Profile/ProfileTrashForm';
 import SettingsForm from '../../Views/Profile/SettingsForm';
-import { RankingContainer } from '../../Views/Ranking/RankingContainer';
+import RankingContainer from '../../Views/Ranking/RankingContainer';
 import { MapContainer } from '../../Views/Map/MapContainer';
 import ProfileContainer from '../../Views/Profile/ProfileContainer';
 import GuildsForm from '../../Views/Guilds/GuildsForm';
@@ -23,6 +23,7 @@ const ProfileStackNavigator = () => (
   <ProfileStack.Navigator screenOptions={{
     headerShown: false
   }}>
+    <ProfileStack.Screen name="Container" component={ProfileContainer} />
     <ProfileStack.Screen name="Login" component={LoginForm} />
     <ProfileStack.Screen name="Register" component={RegisterForm} />
     <ProfileStack.Screen name="Profile" component={ProfileForm} />

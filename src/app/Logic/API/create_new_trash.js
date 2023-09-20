@@ -1,5 +1,5 @@
 export default async function (API_URL, locationData, imageData) {
-  const URL = `http://${API_URL}/add_garbage`;
+  const URL = `http://${API_URL}/garbage/`;
 
   console.log("Sending new trash to:", URL, locationData.coords);
 
@@ -10,6 +10,7 @@ export default async function (API_URL, locationData, imageData) {
     credentials: "same-origin", // include, *same-origin, omit
     headers: {
       "Content-Type": "application/json",
+      "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWJsaWNfaWQiOiJkZWRmYjJiYy0wMDgxLTQxODctODJjZS1jNjFiZjc4MjgzNmIiLCJleHAiOjE2OTUyMzI1MTN9.Fuk8jryxS-gVVwhmyLfgRPbN1cXxF9DRo78TITXodVI"
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     redirect: "follow", // manual, *follow, error

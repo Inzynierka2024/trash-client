@@ -18,6 +18,7 @@ import get_all_trash from "../../Logic/API/get_all_trash";
 import get_trash_photo from "../../Logic/API/get_trash_photo";
 import remove_trash from "../../Logic/API/remove_trash";
 import { TrashModal } from "./TrashModal/TrashModal";
+import get_trask_in_area from "../../Logic/API/get_trask_in_area";
 
 export interface MarkerData {
   id: number;
@@ -81,8 +82,11 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
-  function updateMapMarkers() {
-    get_all_trash(API_URL)
+  async function updateMapMarkers() {
+    const bounds = await MapRef.getVisibleBounds();
+
+    // get_all_trash(API_URL)
+    get_trask_in_area(API_URL, bounds)
       .then((data) => {
         console.log(data);
         const points = data["map_points"];
@@ -95,6 +99,12 @@ export const MapComponent = () => {
 
   useEffect(() => {
     updateMapMarkers();
+
+    // Update markers every minute
+    const refreshMarkersInterval = setInterval(updateMapMarkers, 60000);
+
+    // Clean up
+    return () => clearInterval(refreshMarkersInterval);
   }, []);
 
   const mappedFeatures: any = markers.map((marker) => {

@@ -35,8 +35,6 @@ const LoginForm: React.FC = () => {
         password,
       });
 
-      console.log("????", response);
-
       switch (response.status) {
         case 200:
           if (response.data.token) {
@@ -51,7 +49,12 @@ const LoginForm: React.FC = () => {
           Alert.alert(response.data.message);
       }
     } catch (error) {
-      Alert.alert("Error", error.message || "There was an error logging in.");
+      console.log(error);
+
+      Alert.alert(
+        "Error",
+        error.message + error || "There was an error logging in."
+      );
     }
   };
 

@@ -108,7 +108,7 @@ export const MapComponent = () => {
 
       inv = setInterval(async () => {
         await updateMarkers();
-      }, 30000);
+      }, 60000);
     })();
 
     // Clean up interval
@@ -154,9 +154,8 @@ export const MapComponent = () => {
     console.log(`Fetching ${id} photo`);
 
     const result = await get_trash_photo(API_URL, id);
-    console.log(result);
 
-    // setCurrentTrashPhoto(data["image"]);
+    setCurrentTrashPhoto(result["image"]);
   }
 
   function onPinPress(event: any) {

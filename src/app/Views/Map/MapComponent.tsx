@@ -79,15 +79,10 @@ export const MapComponent = () => {
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
   async function fetchNewMapMarkers() {
-    console.log("CHUJ 2,5");
-
     if (MapRef === null) return;
     const bounds = await MapRef.getVisibleBounds();
-    console.log("CHUJ 3");
 
     const result = await get_trash_in_area(API_URL, bounds);
-    console.log("CHUJ 4");
-    console.log(result);
 
     if (result.isOk) {
       const points = result.data["map_points"];
@@ -99,35 +94,31 @@ export const MapComponent = () => {
   }
 
   async function updateMarkers() {
-    console.log("CHUJ 2");
-
     const markers = await fetchNewMapMarkers();
     setMarkers(markers);
     updateMapPoints(markers);
   }
 
   useEffect(() => {
+    let inv;
     (async () => {
       setTimeout(async () => {
         await updateMarkers();
       }, 1000);
-      console.log("Chuj");
 
-      setInterval(async () => {
-        console.log("CHUJ");
-
+      inv = setInterval(async () => {
         await updateMarkers();
       }, 30000);
-
-      // Update markers every minute
-      // Clean up
     })();
+
+    // Clean up interval
+    return () => {
+      clearInterval(inv);
+    };
   }, []);
 
   // This updates points on a map
   async function updateMapPoints(markers: any[]) {
-    console.log("updating points?", markers);
-
     setFeatureCollection({
       type: "FeatureCollection",
       features: markers.map((marker) => {
@@ -153,7 +144,7 @@ export const MapComponent = () => {
   const [trashModalVisible, setTrashModalVisible] = useState(false);
   const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
 
-  function showTrashData(id: number) {
+  async function showTrashData(id: number) {
     const marker = markers.find((e) => e["id"] == id);
 
     setCurrentTrash(marker);
@@ -162,13 +153,10 @@ export const MapComponent = () => {
 
     console.log(`Fetching ${id} photo`);
 
-    get_trash_photo(API_URL, id)
-      .then((data) => {
-        setCurrentTrashPhoto(data["image"]);
-      })
-      .catch((err) => {
-        console.error("Fetch photo error", err);
-      });
+    const result = await get_trash_photo(API_URL, id);
+    console.log(result);
+
+    // setCurrentTrashPhoto(data["image"]);
   }
 
   function onPinPress(event: any) {

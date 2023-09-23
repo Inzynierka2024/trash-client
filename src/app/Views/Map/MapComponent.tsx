@@ -79,57 +79,69 @@ export const MapComponent = () => {
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
   async function fetchNewMapMarkers() {
+    console.log("CHUJ 2,5");
+
     if (MapRef === null) return;
     const bounds = await MapRef.getVisibleBounds();
+    console.log("CHUJ 3");
 
-    // get_all_trash(API_URL)
     const result = await get_trash_in_area(API_URL, bounds);
+    console.log("CHUJ 4");
+    console.log(result);
+
     if (result.isOk) {
       const points = result.data["map_points"];
-      setMarkers(points);
+      return points;
     } else {
       console.error("XD");
+      return [];
     }
   }
 
   async function updateMarkers() {
-    await fetchNewMapMarkers();
-    await updateMapPoints();
+    console.log("CHUJ 2");
+
+    const markers = await fetchNewMapMarkers();
+    setMarkers(markers);
+    updateMapPoints(markers);
   }
 
   useEffect(() => {
-    updateMarkers();
+    (async () => {
+      setTimeout(async () => {
+        await updateMarkers();
+      }, 1000);
+      console.log("Chuj");
 
-    // Update markers every minute
-    const refreshMarkersInterval = setInterval(updateMarkers, 60000);
+      setInterval(async () => {
+        console.log("CHUJ");
 
-    // Clean up
-    return () => clearInterval(refreshMarkersInterval);
+        await updateMarkers();
+      }, 30000);
+
+      // Update markers every minute
+      // Clean up
+    })();
   }, []);
 
   // This updates points on a map
-  async function updateMapPoints() {
-    if (markers && markers.length > 0) {
-      setFeatureCollection({
-        type: "FeatureCollection",
-        features: markers.map((marker) => {
-          const { latitude, longitude, id } = marker;
+  async function updateMapPoints(markers: any[]) {
+    console.log("updating points?", markers);
 
-          return {
-            type: "Feature",
-            id,
-            properties: {},
-            geometry: { type: "Point", coordinates: [longitude, latitude] },
-          };
-        }),
-      });
-    }
+    setFeatureCollection({
+      type: "FeatureCollection",
+      features: markers.map((marker) => {
+        const { latitude, longitude, id } = marker;
+
+        return {
+          type: "Feature",
+          id,
+          properties: {},
+          geometry: { type: "Point", coordinates: [longitude, latitude] },
+        };
+      }),
+    });
   }
-
-  // const featureCollection: GeoJSON.FeatureCollection = {
-  //   type: "FeatureCollection",
-  //   features: mappedFeatures ?? [],
-  // };
 
   const [featureCollection, setFeatureCollection] =
     useState<GeoJSON.FeatureCollection>({
@@ -215,7 +227,9 @@ export const MapComponent = () => {
           y: themeFromContext.spacing.xl,
         }}
         styleURL={mapStyleURL}
-        ref={(c) => (MapRef = c)}
+        ref={(c) => {
+          if (c !== null) MapRef = c;
+        }}
         attributionEnabled={true}
         style={styles.map}
         logoEnabled={false}

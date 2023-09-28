@@ -7,10 +7,10 @@ export default async function (API_URL, id): Promise<TrashMetadata> {
   const result = await _fetch(URL, "GET", {});
 
   return {
-    Id: result.data["garbage_id"],
+    Id: parseInt(result.data["garbage_id"]),
     CreationTimestamp: new Date(result.data["creation_timestamp"]),
-    Latitude: result.data["latitude"],
-    Longitude: result.data["longitude"],
+    Latitude: parseFloat(result.data["latitude"]),
+    Longitude: parseFloat(result.data["longitude"]),
     Picture: result.data["picture"],
   };
 }

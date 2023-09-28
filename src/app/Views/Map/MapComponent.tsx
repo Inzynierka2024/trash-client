@@ -179,12 +179,12 @@ export const MapComponent = () => {
         <TrashForm
           location={userState}
           setModal={setCameraModalVisible}
-          updateMap={fetchNewMapMarkers}
+          updateMap={updateMarkers}
         />
       </Modal>
 
       <TrashModal
-        updateMapMarkers={fetchNewMapMarkers}
+        updateMapMarkers={updateMarkers}
         currentTrash={currentMarker}
         trashModalVisible={trashModalVisible}
         onClose={closeTrashModal}

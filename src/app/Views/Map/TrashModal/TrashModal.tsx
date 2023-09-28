@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Modal, View, Image } from "react-native";
+import { Button, Modal, View, Image, Text } from "react-native";
 import remove_trash from "../../../Logic/API/remove_trash";
 import get_api_url from "../../../Utils/get_api_url";
 import { ThemeContext } from "../../../../theme/theme";
@@ -9,6 +9,8 @@ import { MarkerData } from "../MapComponent";
 import { TrashMetadata } from "../../../Models/TrashMetadata";
 import get_trash_metadata from "../../../Logic/API/get_trash_metadata";
 import { Alert } from "react-native";
+import calculate_distance from "../../../Utils/calculate_distance";
+import round from "../../../Utils/round";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -79,15 +81,23 @@ export const TrashModal = (props: {
     if (!props.userState || !currentTrashData) {
       return true;
     }
-    const result =
-      Math.abs(props.userState.coords.longitude - currentTrashData.Longitude) <
-        0.01 &&
-      Math.abs(props.userState.coords.latitude - currentTrashData.Latitude) <
-        0.01;
+
+    const distance = calculate_distance(
+      props.userState.coords.latitude,
+      props.userState.coords.longitude,
+      currentTrashData.Latitude,
+      currentTrashData.Longitude
+    );
+
+    setDistance(distance);
+
+    const result = distance < 0.2;
+
     return result;
   }
 
   const [canRemove, setCanRemove] = useState(false);
+  const [distance, setDistance] = useState<number | null>(null);
 
   function onModalShow() {
     if (isTrashInRange()) setCanRemove(true);
@@ -134,6 +144,14 @@ export const TrashModal = (props: {
               resizeMode: "contain",
             }}
           />
+
+          <Text
+            style={{
+              color: themeFromContext.colors.secondaryText,
+            }}
+          >
+            Odległość: {distance !== null ? round(distance, 2) : "-"}km
+          </Text>
 
           <ActionButton
             disabled={!canRemove}

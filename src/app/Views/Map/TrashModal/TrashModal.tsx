@@ -6,18 +6,32 @@ import { ThemeContext } from "../../../../theme/theme";
 import { ActionButton } from "./ActionButton";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { MarkerData } from "../MapComponent";
+import { TrashMetadata } from "../../../Models/TrashMetadata";
+import get_trash_metadata from "../../../Logic/API/get_trash_metadata";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
-  currentTrashPhoto: string;
   trashModalVisible: boolean;
   updateMapMarkers: Function;
   onClose: Function;
   userState: MapLibreGL.Location;
 }) => {
   const themeFromContext = useContext(ThemeContext);
-
   const API_URL = get_api_url();
+
+  const [currentTrashData, setCurrentTrashData] = useState<TrashMetadata>(null);
+
+  useEffect(() => {
+    if (props.trashModalVisible === true) {
+      console.log(`Loading trash info: ${props.currentTrash.id}`);
+      loadTrashMetadata();
+    }
+  }, [props.trashModalVisible]);
+
+  async function loadTrashMetadata() {
+    const result = await get_trash_metadata(API_URL, props.currentTrash.id);
+    setCurrentTrashData(result);
+  }
 
   function removeTrash() {
     remove_trash(API_URL, props.currentTrash.id)
@@ -88,7 +102,7 @@ export const TrashModal = (props: {
         >
           <Image
             source={{
-              uri: "data:image/jpg;base64," + props.currentTrashPhoto,
+              uri: "data:image/jpg;base64," + currentTrashData.Picture,
             }}
             style={{
               aspectRatio: "9 / 16",

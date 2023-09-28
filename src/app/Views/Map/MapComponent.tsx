@@ -12,7 +12,6 @@ import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
-import get_trash_photo from "../../Logic/API/get_trash_photo";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 
@@ -140,22 +139,14 @@ export const MapComponent = () => {
       features: [],
     });
 
-  const [currentTrash, setCurrentTrash] = useState<MarkerData>(null);
+  const [currentMarker, setCurrentMarker] = useState<MarkerData>(null);
   const [trashModalVisible, setTrashModalVisible] = useState(false);
-  const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
 
   async function showTrashData(id: number) {
     const marker = markers.find((e) => e["id"] == id);
 
-    setCurrentTrash(marker);
-
+    setCurrentMarker(marker);
     setTrashModalVisible(true);
-
-    console.log(`Fetching ${id} photo`);
-
-    const result = await get_trash_photo(API_URL, id);
-
-    setCurrentTrashPhoto(result["image"]);
   }
 
   function onPinPress(event: any) {
@@ -164,8 +155,7 @@ export const MapComponent = () => {
   }
 
   function closeTrashModal() {
-    setCurrentTrash(null);
-    setCurrentTrashPhoto("");
+    setCurrentMarker(null);
     setTrashModalVisible(false);
   }
 
@@ -195,8 +185,7 @@ export const MapComponent = () => {
 
       <TrashModal
         updateMapMarkers={fetchNewMapMarkers}
-        currentTrash={currentTrash}
-        currentTrashPhoto={currentTrashPhoto}
+        currentTrash={currentMarker}
         trashModalVisible={trashModalVisible}
         onClose={closeTrashModal}
         userState={userState}

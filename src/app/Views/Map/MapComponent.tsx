@@ -6,18 +6,14 @@ import {
   useColorScheme,
   Modal,
   StyleProp,
-  Image,
-  Button,
 } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
-import get_all_trash from "../../Logic/API/get_all_trash";
-import get_trash_photo from "../../Logic/API/get_trash_photo";
-import remove_trash from "../../Logic/API/remove_trash";
 import { TrashModal } from "./TrashModal/TrashModal";
+import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 
 export interface MarkerData {
   id: number;
@@ -81,58 +77,76 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
-  function updateMapMarkers() {
-    get_all_trash(API_URL)
-      .then((data) => {
-        console.log(data);
-        const points = data["map_points"];
-        setMarkers(points);
-      })
-      .catch((err) => {
-        console.error("Fetch error", err);
-      });
+  async function fetchNewMapMarkers() {
+    if (MapRef === null) return;
+    const bounds = await MapRef.getVisibleBounds();
+
+    const result = await get_trash_in_area(API_URL, bounds);
+
+    if (result.isOk) {
+      const points = result.data["map_points"];
+      return points;
+    } else {
+      console.error("XD");
+      return [];
+    }
+  }
+
+  async function updateMarkers() {
+    const markers = await fetchNewMapMarkers();
+    setMarkers(markers);
+    updateMapPoints(markers);
   }
 
   useEffect(() => {
-    updateMapMarkers();
+    let inv;
+    (async () => {
+      setTimeout(async () => {
+        await updateMarkers();
+      }, 1000);
+
+      inv = setInterval(async () => {
+        await updateMarkers();
+      }, 60000);
+    })();
+
+    // Clean up interval
+    return () => {
+      clearInterval(inv);
+    };
   }, []);
 
-  const mappedFeatures: any = markers.map((marker) => {
-    const { lat, lng, id } = marker;
+  // This updates points on a map
+  async function updateMapPoints(markers: any[]) {
+    setFeatureCollection({
+      type: "FeatureCollection",
+      features: markers.map((marker) => {
+        const { latitude, longitude, id } = marker;
 
-    return {
-      type: "Feature",
-      id,
-      properties: {},
-      geometry: { type: "Point", coordinates: [lng, lat] },
-    };
-  });
+        return {
+          type: "Feature",
+          id,
+          properties: {},
+          geometry: { type: "Point", coordinates: [longitude, latitude] },
+        };
+      }),
+    });
+  }
 
-  const featureCollection: GeoJSON.FeatureCollection = {
-    type: "FeatureCollection",
-    features: mappedFeatures,
-  };
+  const [featureCollection, setFeatureCollection] =
+    useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    });
 
-  const [currentTrash, setCurrentTrash] = useState<MarkerData>(null);
+  const [currentMarker, setCurrentMarker] = useState<MarkerData>(null);
   const [trashModalVisible, setTrashModalVisible] = useState(false);
-  const [currentTrashPhoto, setCurrentTrashPhoto] = useState("");
 
-  function showTrashData(id: number) {
+  async function showTrashData(id: number) {
     const marker = markers.find((e) => e["id"] == id);
 
-    setCurrentTrash(marker);
-
+    setCurrentMarker(marker);
     setTrashModalVisible(true);
-
-    console.log(`Fetching ${id} photo`);
-
-    get_trash_photo(API_URL, id)
-      .then((data) => {
-        setCurrentTrashPhoto(data["image"]);
-      })
-      .catch((err) => {
-        console.error("Fetch photo error", err);
-      });
   }
 
   function onPinPress(event: any) {
@@ -141,8 +155,7 @@ export const MapComponent = () => {
   }
 
   function closeTrashModal() {
-    setCurrentTrash(null);
-    setCurrentTrashPhoto("");
+    setCurrentMarker(null);
     setTrashModalVisible(false);
   }
 
@@ -166,14 +179,13 @@ export const MapComponent = () => {
         <TrashForm
           location={userState}
           setModal={setCameraModalVisible}
-          updateMap={updateMapMarkers}
+          updateMap={updateMarkers}
         />
       </Modal>
 
       <TrashModal
-        updateMapMarkers={updateMapMarkers}
-        currentTrash={currentTrash}
-        currentTrashPhoto={currentTrashPhoto}
+        updateMapMarkers={updateMarkers}
+        currentTrash={currentMarker}
         trashModalVisible={trashModalVisible}
         onClose={closeTrashModal}
         userState={userState}
@@ -191,7 +203,9 @@ export const MapComponent = () => {
           y: themeFromContext.spacing.xl,
         }}
         styleURL={mapStyleURL}
-        ref={(c) => (MapRef = c)}
+        ref={(c) => {
+          if (c !== null) MapRef = c;
+        }}
         attributionEnabled={true}
         style={styles.map}
         logoEnabled={false}

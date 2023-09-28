@@ -7,7 +7,7 @@ import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
 import { DebugOptions } from "./src/app/Views/Debug/DebugOptions";
 import { OptionsContext } from "./src/app/Logic/StateProvider";
 import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
-import {AuthProvider} from "./src/app/Logic/AuthContext";
+import { AuthProvider } from "./src/app/Logic/AuthContext";
 
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
@@ -26,32 +26,31 @@ export default function App() {
 
   return (
     <AuthProvider>
-    <OptionsContext.Provider value={{ API_URL }}>
-      <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-        <AppNavigator>
-        <StatusBar style="auto" />
-        <Main></Main>
-        <View style={styles.debugButton}>
-          <Button
-            onPress={() => {
-              setDebugVisible(true);
-            }}
-            title="Debug"
-          ></Button>
-        </View>
+      <OptionsContext.Provider value={{ API_URL }}>
+        <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
+          <AppNavigator>
+            <StatusBar style="auto" />
+            <Main></Main>
+            <View style={styles.debugButton}>
+              <Button
+                onPress={() => {
+                  setDebugVisible(true);
+                }}
+                title="Debug"
+              ></Button>
+            </View>
 
-        <Modal
-          visible={debugVisible}
-          onRequestClose={() => {
-            setDebugVisible(false);
-          }}
-        >
-          <DebugOptions setApi={setApiUrl} />
-        </Modal>
-        </AppNavigator>
-      </ThemeContext.Provider>
-    </OptionsContext.Provider>
-    
+            <Modal
+              visible={debugVisible}
+              onRequestClose={() => {
+                setDebugVisible(false);
+              }}
+            >
+              <DebugOptions setApi={setApiUrl} />
+            </Modal>
+          </AppNavigator>
+        </ThemeContext.Provider>
+      </OptionsContext.Provider>
     </AuthProvider>
   );
 }
@@ -59,6 +58,9 @@ export default function App() {
 const styles = StyleSheet.create({
   debugButton: {
     position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 9999,
     marginLeft: 8,
     marginTop: 24,
   },

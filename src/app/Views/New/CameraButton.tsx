@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 
 export const CameraButton = (props: {

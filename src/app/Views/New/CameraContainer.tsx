@@ -1,8 +1,8 @@
 import { Camera, CameraType } from "expo-camera";
 import { useContext, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { CameraButton } from "./CameraButton";
 import { ThemeContext, theme } from "../../../theme/theme";
+import { ShutterButton } from "./ShutterButton";
 
 export const CameraContainer = (props: {
   setData: (data: string) => void;
@@ -60,11 +60,7 @@ export const CameraContainer = (props: {
     <View style={styles.container}>
       <Camera type={type} style={styles.camera} ref={(c) => (CameraRef = c)}>
         <View style={styles.buttons}>
-          <CameraButton
-            iconName="photo-camera"
-            size={30}
-            onPress={takePicture}
-          />
+          <ShutterButton onPress={takePicture} />
         </View>
       </Camera>
     </View>

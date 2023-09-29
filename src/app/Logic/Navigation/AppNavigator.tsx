@@ -56,30 +56,43 @@ const AppNavigator = () => {
       theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
     >
       <Tab.Navigator
+        initialRouteName="Map"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let provider: "Ionicons" | "FontAwesome" = "Ionicons";
+            let iconColor = themeFromContext.colors.green;
             let iconName = "trash";
 
             if (route.name === "Ranking") {
               provider = "Ionicons";
+              iconColor = themeFromContext.colors.yellow;
               iconName = "medal";
             }
             if (route.name === "Map") {
               provider = "Ionicons";
+              iconColor = themeFromContext.colors.green;
               iconName = "map";
             }
             if (route.name === "Profil") {
               provider = "FontAwesome";
+              iconColor = themeFromContext.colors.blue;
               iconName = "user";
             }
 
             if (provider === "FontAwesome") {
-              if (!focused) iconName += "-o";
-              return <FontAwesome name={iconName} size={size} color={color} />;
+              if (!focused) {
+                iconName += "-o";
+                iconColor = themeFromContext.colors.disabled;
+              }
+              return (
+                <FontAwesome name={iconName} size={size} color={iconColor} />
+              );
             } else {
-              if (!focused) iconName += "-outline";
-              return <Ionicons name={iconName} size={size} color={color} />;
+              if (!focused) {
+                iconColor = themeFromContext.colors.disabled;
+                iconName += "-outline";
+              }
+              return <Ionicons name={iconName} size={size} color={iconColor} />;
             }
           },
           headerShown: false,

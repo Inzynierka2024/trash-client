@@ -1,6 +1,6 @@
 import React from "react";
 
-const palette = {
+export const palette = {
   lightgray: "#F5F5F5",
   lightblue: "#0ECD9D",
   lightgreen: "#5EBD9E",

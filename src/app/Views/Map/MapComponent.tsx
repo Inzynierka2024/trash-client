@@ -8,13 +8,13 @@ import {
   StyleProp,
 } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
-import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 import is_map_centered from "../../Utils/is_map_centered";
+import { AddNewButton } from "./Buttons/AddNew";
 
 export interface MarkerData {
   id: number;
@@ -207,10 +207,7 @@ export const MapComponent = () => {
       />
 
       <View style={styles.operationContainer}>
-        {!isCentered && (
-          <MapButton iconName="center-focus-weak" onPress={flyToUser} />
-        )}
-        <MapButton iconName="add" onPress={addNew} />
+        <AddNewButton newTrash={addNew} newCan={undefined} />
       </View>
 
       <MapLibreGL.MapView
@@ -276,8 +273,8 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     right: 0,
     bottom: 0,
-    margin: theme.spacing.m,
-    gap: theme.spacing.s,
+    margin: theme.spacing.l,
+    marginRight: theme.spacing.m,
   },
 
   annotationContainer: {

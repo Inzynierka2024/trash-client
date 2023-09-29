@@ -24,7 +24,7 @@ export const AddNewButton = (props: {
     Animated.timing(radiusAnim, {
       toValue: openRadius,
       delay: 0,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     }).start();
 
@@ -32,7 +32,7 @@ export const AddNewButton = (props: {
       toValue: -132,
       delay: 0,
       easing: Easing.sin,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
 
@@ -40,7 +40,7 @@ export const AddNewButton = (props: {
       toValue: -66,
       delay: 0,
       easing: Easing.sin,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
   };
@@ -49,7 +49,7 @@ export const AddNewButton = (props: {
     Animated.timing(radiusAnim, {
       toValue: iconSize,
       delay: 0,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
     }).start();
 
@@ -57,7 +57,7 @@ export const AddNewButton = (props: {
       toValue: 0,
       delay: 0,
       easing: Easing.sin,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
 
@@ -65,7 +65,7 @@ export const AddNewButton = (props: {
       toValue: 0,
       delay: 0,
       easing: Easing.sin,
-      duration: 200,
+      duration: 150,
       useNativeDriver: true,
     }).start();
   };

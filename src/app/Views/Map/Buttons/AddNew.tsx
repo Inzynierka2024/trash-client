@@ -84,6 +84,7 @@ export const AddNewButton = (props: {
         onPress={() => {
           props.newTrash();
           setOpen(false);
+          menuClose();
         }}
       >
         <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
@@ -101,6 +102,7 @@ export const AddNewButton = (props: {
         onPress={() => {
           props.newTrash();
           setOpen(false);
+          menuClose();
         }}
       >
         <FontAwesome name="trash" size={iconSize} style={styles.icon} />

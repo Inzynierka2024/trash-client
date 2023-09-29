@@ -37,8 +37,6 @@ export const MapComponent = () => {
     setUserState(location);
   }
 
-  // FIXME: sometimes user marker doesnt appear?
-
   function flyToUser() {
     if (!userState.coords || !CameraRef) return;
 

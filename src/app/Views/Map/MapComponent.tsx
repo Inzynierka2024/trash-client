@@ -14,6 +14,7 @@ import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
+import is_map_centered from "../../Utils/is_map_centered";
 
 export interface MarkerData {
   id: number;
@@ -33,6 +34,14 @@ export const MapComponent = () => {
 
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
+  const [isCentered, setIsCentered] = useState(true);
+  async function updateCentered() {
+    const center = await MapRef.getCenter();
+
+    const result = await is_map_centered(center, userState);
+    setIsCentered(result);
+  }
+
   function onUserLocationUpdate(location: MapLibreGL.Location) {
     setUserState(location);
   }
@@ -46,6 +55,7 @@ export const MapComponent = () => {
     );
 
     triggerUpdate("camera");
+    setIsCentered(true);
   }
 
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
@@ -92,20 +102,32 @@ export const MapComponent = () => {
   }
 
   useEffect(() => {
-    let inv;
+    // Startup intervals
+
+    let markerInv;
+    let centerInv;
+
     (async () => {
+      // Load markers one second after map load
       setTimeout(async () => {
         await updateMarkers();
       }, 1000);
 
-      inv = setInterval(async () => {
+      // Fetch new markers every minute
+      markerInv = setInterval(async () => {
         await updateMarkers();
       }, 60000);
+
+      // Check if map is centered every two seconds
+      centerInv = setInterval(() => {
+        updateCentered();
+      }, 2000);
     })();
 
     // Clean up interval
     return () => {
-      clearInterval(inv);
+      clearInterval(markerInv);
+      clearInterval(centerInv);
     };
   }, []);
 
@@ -185,7 +207,9 @@ export const MapComponent = () => {
       />
 
       <View style={styles.operationContainer}>
-        <MapButton iconName="center-focus-weak" onPress={flyToUser} />
+        {!isCentered && (
+          <MapButton iconName="center-focus-weak" onPress={flyToUser} />
+        )}
         <MapButton iconName="add" onPress={addNew} />
       </View>
 

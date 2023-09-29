@@ -1,6 +1,5 @@
 import { StatusBar } from "expo-status-bar";
 import MapLibreGL, { Logger } from "@maplibre/maplibre-react-native";
-import { Main } from "./src/app/Main";
 import React, { useState } from "react";
 import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
 import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
@@ -29,8 +28,7 @@ export default function App() {
       <OptionsContext.Provider value={{ API_URL }}>
         <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
           <AppNavigator>
-            <StatusBar style="auto" />
-            <Main></Main>
+            <StatusBar style={darkMode ? "dark" : "light"} />
             <View style={styles.debugButton}>
               <Button
                 onPress={() => {

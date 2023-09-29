@@ -12,6 +12,8 @@ export const palette = {
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
 
+  disabled: "#555",
+
   black: "#000000",
   blacklighter: "#7F7F7F",
 
@@ -34,7 +36,7 @@ export const theme = {
     primaryText: palette.black,
     secondaryText: palette.blacklighter,
 
-    disabled: palette.lightgray,
+    disabled: palette.disabled,
   },
   spacing: {
     s: 8,
@@ -72,8 +74,44 @@ export const darkTheme = {
     primaryText: palette.white,
     secondaryText: palette.whitelighter,
 
-    disabled: palette.darkgray,
+    disabled: palette.disabled,
   },
 };
 
 export const ThemeContext = React.createContext(theme);
+export interface CTheme {
+  colors: {
+    background: string;
+    foreground: string;
+    primary: string;
+    secondary: string;
+    danger: string;
+
+    blue: string;
+    green: string;
+    yellow: string;
+
+    primaryText: string;
+    secondaryText: string;
+
+    disabled: string;
+  };
+  spacing: {
+    s: number;
+    m: number;
+    l: number;
+    xl: number;
+  };
+  textVariants: {
+    header: {
+      // TODO:
+      //   fontFamily: "Raleway",
+      fontSize: number;
+      fontWeight: string;
+    };
+    body: {
+      //   fontFamily: "Merriweather",
+      fontSize: number;
+    };
+  };
+}

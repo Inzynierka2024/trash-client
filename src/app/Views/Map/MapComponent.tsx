@@ -65,11 +65,6 @@ export const MapComponent = () => {
   let CameraRef: MapLibreGL.Camera = undefined;
   let UserLocationRef: MapLibreGL.UserLocation = undefined;
 
-  const MapTileURL =
-    useColorScheme() === "dark"
-      ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`
-      : `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`;
-
   const mapStyleURL =
     useColorScheme() === "dark"
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`

@@ -124,7 +124,16 @@ export const AddNewButton = (props: {
           else menuClose();
         }}
       >
-        <FontAwesome name="plus" size={iconSize} style={styles.icon} />
+        <FontAwesome
+          name={open ? "close" : "plus"}
+          size={iconSize}
+          style={[
+            styles.icon,
+            {
+              bottom: open ? 3 : 0,
+            },
+          ]}
+        />
       </AnimatedPressable>
     </View>
   );

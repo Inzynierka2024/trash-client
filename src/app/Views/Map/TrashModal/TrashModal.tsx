@@ -22,13 +22,8 @@ export const TrashModal = (props: {
   const themeFromContext = useContext(ThemeContext);
   const API_URL = get_api_url();
 
-  const [currentTrashData, setCurrentTrashData] = useState<TrashMetadata>({
-    Picture: "",
-    Latitude: 0,
-    Longitude: 0,
-    Id: -1,
-    CreationTimestamp: new Date(),
-  });
+  const [currentTrashData, setCurrentTrashData] =
+    useState<TrashMetadata | null>(null);
 
   useEffect(() => {
     if (props.trashModalVisible === true) {
@@ -49,13 +44,8 @@ export const TrashModal = (props: {
   }
 
   function clearData() {
-    setCurrentTrashData({
-      Picture: "",
-      Latitude: 0,
-      Longitude: 0,
-      Id: -1,
-      CreationTimestamp: new Date(),
-    });
+    setDistance(-1);
+    setCurrentTrashData(null);
   }
 
   function removeTrash() {
@@ -78,7 +68,7 @@ export const TrashModal = (props: {
   }
 
   function isTrashInRange() {
-    if (!props.userState || !currentTrashData) {
+    if (!props.userState || currentTrashData === null) {
       return true;
     }
 
@@ -97,7 +87,7 @@ export const TrashModal = (props: {
   }
 
   const [canRemove, setCanRemove] = useState(false);
-  const [distance, setDistance] = useState<number | null>(null);
+  const [distance, setDistance] = useState<number>(-1);
 
   function onModalShow() {
     if (isTrashInRange()) setCanRemove(true);
@@ -136,7 +126,7 @@ export const TrashModal = (props: {
         >
           <Image
             source={{
-              uri: "data:image/jpg;base64," + currentTrashData.Picture,
+              uri: "data:image/jpg;base64," + currentTrashData?.Picture,
             }}
             style={{
               aspectRatio: "9 / 16",
@@ -150,7 +140,8 @@ export const TrashModal = (props: {
               color: themeFromContext.colors.secondaryText,
             }}
           >
-            Odległość: {distance !== null ? round(distance, 2) : "-"}km
+            Odległość:
+            {distance !== -1 ? round(distance, 2) : "-"}km
           </Text>
 
           <ActionButton

@@ -3,12 +3,12 @@ import { createContext } from "react";
 export const palette = {
   lightgray: "#F5F5F5",
   lightblue: "#0ECD9D",
-  lightgreen: "#5EBD9E",
+  lightgreen: "#3c947f",
   lightyellow: "#F0C987",
   lightred: "#FF7F7F",
   darkgray: "#333333",
   darkblue: "#5048a8",
-  darkgreen: "#3C947F",
+  darkgreen: "#3c947f",
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
 

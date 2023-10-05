@@ -4,13 +4,13 @@
     "slug": "trash-client",
     "version": "0.0.1",
     "orientation": "portrait",
-    "icon": "./assets/litter-looter-icon.png",
+    "icon": "./assets/litter-looter/icon.png",
     "userInterfaceStyle": "automatic",
     "plugins": ["@maplibre/maplibre-react-native", "expo-camera"],
     "splash": {
-      "image": "./assets/litter-looter-high-resolution-color-logo.png",
+      "image": "./assets/litter-looter/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#528265"
+      "backgroundColor": "#3c947f"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/litter-looter-icon.png",
+        "foregroundImage": "./assets/litter-looter/adaptive.png",
         "backgroundColor": "#F5F5F5"
       },
       "package": "com.inzynierka2024squad.litterlooter"

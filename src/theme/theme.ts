@@ -1,4 +1,4 @@
-import React from "react";
+import { createContext } from "react";
 
 export const palette = {
   lightgray: "#F5F5F5",
@@ -78,7 +78,7 @@ export const darkTheme = {
   },
 };
 
-export const ThemeContext = React.createContext(theme);
+export const ThemeContext = createContext(theme);
 export interface CTheme {
   colors: {
     background: string;

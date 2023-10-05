@@ -12,8 +12,6 @@ export default async function (
     userState.coords.longitude
   );
 
-  console.log(distance);
-
   const result = distance < 0.1;
   return result;
 }

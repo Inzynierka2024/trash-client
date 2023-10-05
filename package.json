@@ -40,7 +40,8 @@
     "react-native-share": "^8.2.2",
     "react-native-svg": "^13.9.0",
     "react-native-tab-view": "^3.5.1",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "expo-navigation-bar": "~2.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

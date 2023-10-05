@@ -1,12 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import MapLibreGL, { Logger } from "@maplibre/maplibre-react-native";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
 import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
-import { DebugOptions } from "./src/app/Views/Debug/DebugOptions";
 import { OptionsContext } from "./src/app/Logic/StateProvider";
 import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
 import { AuthProvider } from "./src/app/Logic/AuthContext";
+import * as NavigationBar from "expo-navigation-bar";
 
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
@@ -18,6 +18,12 @@ export default function App() {
     useColorScheme() === "dark" ? true : false
   );
 
+  useEffect(() => {
+    (async () => {
+      await NavigationBar.setButtonStyleAsync(darkMode ? "dark" : "light");
+    })();
+  }, [darkMode]);
+
   const [debugVisible, setDebugVisible] = useState(false);
 
   // Options
@@ -27,26 +33,9 @@ export default function App() {
     <AuthProvider>
       <OptionsContext.Provider value={{ API_URL }}>
         <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-          <AppNavigator>
-            <StatusBar style={darkMode ? "dark" : "light"} />
-            <View style={styles.debugButton}>
-              <Button
-                onPress={() => {
-                  setDebugVisible(true);
-                }}
-                title="Debug"
-              ></Button>
-            </View>
+          <StatusBar style={!darkMode ? "dark" : "light"} />
 
-            <Modal
-              visible={debugVisible}
-              onRequestClose={() => {
-                setDebugVisible(false);
-              }}
-            >
-              <DebugOptions setApi={setApiUrl} />
-            </Modal>
-          </AppNavigator>
+          <AppNavigator></AppNavigator>
         </ThemeContext.Provider>
       </OptionsContext.Provider>
     </AuthProvider>

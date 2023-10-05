@@ -1,6 +1,6 @@
 {
-  "name": "trash-client",
-  "version": "1.0.0",
+  "name": "litter-looter",
+  "version": "0.0.1",
   "scripts": {
     "expo": "expo",
     "start": "expo start --dev-client",

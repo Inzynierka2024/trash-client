@@ -1,28 +1,28 @@
 {
   "expo": {
-    "name": "trash-client",
+    "name": "LitterLooter",
     "slug": "trash-client",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/litter-looter-icon.png",
     "userInterfaceStyle": "automatic",
     "plugins": ["@maplibre/maplibre-react-native", "expo-camera"],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/litter-looter-high-resolution-color-logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#528265"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.trashclient"
+      "bundleIdentifier": "com.inzynierka2024squad.litterlooter"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/litter-looter-icon.png",
+        "backgroundColor": "#F5F5F5"
       },
-      "package": "com.anonymous.trashclient"
+      "package": "com.inzynierka2024squad.litterlooter"
     },
     "web": {
       "favicon": "./assets/favicon.png"

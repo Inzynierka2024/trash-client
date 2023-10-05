@@ -15,6 +15,8 @@ import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 import is_map_centered from "../../Utils/is_map_centered";
 import { AddNewButton } from "./Buttons/AddNew";
+import { CenterButton } from "./Buttons/CenterButton";
+import { SearchNewButton } from "./Buttons/SearchNew";
 
 export interface MarkerData {
   id: number;
@@ -210,6 +212,13 @@ export const MapComponent = () => {
         <AddNewButton newTrash={addNew} newCan={undefined} />
       </View>
 
+      {!isCentered && (
+        <View style={styles.actionsContainer}>
+          <CenterButton callback={flyToUser} />
+          <SearchNewButton callback={updateMarkers} />
+        </View>
+      )}
+
       <MapLibreGL.MapView
         compassViewPosition={1}
         compassViewMargins={{
@@ -229,9 +238,6 @@ export const MapComponent = () => {
           visible={true}
           onUpdate={onUserLocationUpdate}
           showsUserHeadingIndicator={true}
-          onPress={() => {
-            console.log("On user location press");
-          }}
         />
 
         <MapLibreGL.Camera
@@ -275,6 +281,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     margin: theme.spacing.l,
     marginRight: theme.spacing.m,
+  },
+
+  actionsContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    zIndex: 9998,
+    justifyContent: "center",
+    gap: 24,
+    alignItems: "center",
+    top: "88%",
   },
 
   annotationContainer: {

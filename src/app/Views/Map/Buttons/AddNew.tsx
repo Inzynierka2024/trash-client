@@ -15,59 +15,68 @@ export const AddNewButton = (props: {
   const openRadius = 8;
   const iconSize = 40;
 
+  const flySpeed = 200;
+  const radiusSpeed = 200;
+
+  const distance = 66;
+
   // Menu button open animations
   const radiusAnim = useRef(new Animated.Value(iconSize)).current;
   const canAnim = useRef(new Animated.Value(0)).current;
   const garbageAnim = useRef(new Animated.Value(0)).current;
 
   const menuOpen = () => {
-    Animated.timing(radiusAnim, {
-      toValue: openRadius,
-      delay: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(radiusAnim, {
+        toValue: openRadius,
+        delay: 0,
+        duration: radiusSpeed,
+        useNativeDriver: true,
+      }),
 
-    Animated.timing(canAnim, {
-      toValue: -132,
-      delay: 0,
-      easing: Easing.sin,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
+      Animated.timing(canAnim, {
+        toValue: -(distance * 2),
+        delay: 0,
+        easing: Easing.quad,
+        duration: flySpeed,
+        useNativeDriver: true,
+      }),
 
-    Animated.timing(garbageAnim, {
-      toValue: -66,
-      delay: 0,
-      easing: Easing.sin,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
+      Animated.timing(garbageAnim, {
+        toValue: -distance,
+        delay: 0,
+        easing: Easing.quad,
+        duration: flySpeed,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   const menuClose = () => {
-    Animated.timing(radiusAnim, {
-      toValue: iconSize,
-      delay: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(radiusAnim, {
+        toValue: iconSize,
+        delay: 0,
+        duration: radiusSpeed,
+        useNativeDriver: true,
+      }),
 
-    Animated.timing(canAnim, {
-      toValue: 0,
-      delay: 0,
-      easing: Easing.sin,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
+      Animated.timing(canAnim, {
+        toValue: 0,
+        delay: 0,
+        easing: Easing.quad,
+        duration: flySpeed,
+        useNativeDriver: true,
+      }),
 
-    Animated.timing(garbageAnim, {
-      toValue: 0,
-      delay: 0,
-      easing: Easing.sin,
-      duration: 150,
-      useNativeDriver: true,
-    }).start();
+      Animated.timing(garbageAnim, {
+        toValue: 0,
+        delay: 0,
+        easing: Easing.quad,
+        duration: flySpeed,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
   return (

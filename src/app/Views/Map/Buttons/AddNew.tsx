@@ -13,7 +13,7 @@ export const AddNewButton = (props: {
   const [open, setOpen] = useState(false);
 
   const openRadius = 8;
-  const iconSize = 40;
+  const iconSize = 32;
 
   const flySpeed = 200;
   const radiusSpeed = 200;
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: 10,
-    width: 58,
+    width: 50,
     position: "absolute",
     right: 0,
     bottom: 0,

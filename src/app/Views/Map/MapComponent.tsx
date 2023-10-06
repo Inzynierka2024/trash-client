@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 24,
     alignItems: "center",
-    top: "88%",
+    bottom: theme.spacing.l,
   },
 
   annotationContainer: {

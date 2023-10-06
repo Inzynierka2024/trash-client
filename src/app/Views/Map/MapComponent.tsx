@@ -13,7 +13,6 @@ import exampleIcon from "../../../../assets/marker.png";
 import get_api_url from "../../Utils/get_api_url";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
-import is_map_centered from "../../Utils/is_map_centered";
 import { AddNewButton } from "./Buttons/AddNew";
 import { CenterButton } from "./Buttons/CenterButton";
 import { SearchNewButton } from "./Buttons/SearchNew";
@@ -37,12 +36,6 @@ export const MapComponent = () => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   const [isCentered, setIsCentered] = useState(true);
-  async function updateCentered() {
-    const center = await MapRef.getCenter();
-
-    const result = await is_map_centered(center, userState);
-    setIsCentered(result);
-  }
 
   function onUserLocationUpdate(location: MapLibreGL.Location) {
     setUserState(location);
@@ -105,9 +98,7 @@ export const MapComponent = () => {
 
   useEffect(() => {
     // Startup intervals
-
     let markerInv;
-    let centerInv;
 
     (async () => {
       // Load markers one second after map load
@@ -119,17 +110,11 @@ export const MapComponent = () => {
       markerInv = setInterval(async () => {
         await updateMarkers();
       }, 60000);
-
-      // Check if map is centered every two seconds
-      centerInv = setInterval(() => {
-        updateCentered();
-      }, 2000);
     })();
 
     // Clean up interval
     return () => {
       clearInterval(markerInv);
-      clearInterval(centerInv);
     };
   }, []);
 
@@ -230,6 +215,9 @@ export const MapComponent = () => {
           if (c !== null) MapRef = c;
         }}
         attributionEnabled={true}
+        onRegionDidChange={(e) => {
+          setIsCentered(false);
+        }}
         style={styles.map}
         logoEnabled={false}
       >

@@ -2,7 +2,7 @@ import { useContext, useState, useRef } from "react";
 import { Animated, Easing, Pressable, StyleSheet, View } from "react-native";
 import { ThemeContext, palette } from "../../../../theme/theme";
 import { FontAwesome } from "@expo/vector-icons";
-import AnimatedPressable from "../../../Animated/AnimatedPressable";
+import AnimatedTouchable from "../../../Animated/AnimatedTouchable";
 
 export const AddNewButton = (props: {
   newTrash: Function;
@@ -81,7 +81,7 @@ export const AddNewButton = (props: {
 
   return (
     <View style={styles.container}>
-      <AnimatedPressable
+      <AnimatedTouchable
         style={[
           styles.button,
           styles.garbagecan,
@@ -97,9 +97,9 @@ export const AddNewButton = (props: {
         }}
       >
         <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
-      </AnimatedPressable>
+      </AnimatedTouchable>
 
-      <AnimatedPressable
+      <AnimatedTouchable
         style={[
           styles.button,
           styles.trash,
@@ -115,9 +115,21 @@ export const AddNewButton = (props: {
         }}
       >
         <FontAwesome name="trash" size={iconSize} style={styles.icon} />
-      </AnimatedPressable>
+      </AnimatedTouchable>
 
-      <AnimatedPressable
+      <View
+        style={[
+          styles.button,
+          {
+            backgroundColor: "#000",
+            height: 50,
+            width: 50,
+            borderRadius: 32,
+          },
+        ]}
+      />
+
+      <AnimatedTouchable
         style={[
           styles.button,
           styles.menu,
@@ -125,6 +137,7 @@ export const AddNewButton = (props: {
             borderRadius: radiusAnim,
           },
         ]}
+        activeOpacity={0.8}
         onPress={() => {
           const toOpen = !open;
 
@@ -143,7 +156,7 @@ export const AddNewButton = (props: {
             },
           ]}
         />
-      </AnimatedPressable>
+      </AnimatedTouchable>
     </View>
   );
 };

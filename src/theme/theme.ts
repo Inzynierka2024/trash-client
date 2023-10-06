@@ -12,6 +12,9 @@ export const palette = {
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
 
+  navbar: "rgb(255, 255, 255)",
+  navbardark: "rgb(18, 18, 18)",
+
   disabled: "#555",
 
   black: "#000000",
@@ -37,6 +40,7 @@ export const theme = {
     secondaryText: palette.blacklighter,
 
     disabled: palette.disabled,
+    navbar: palette.navbar,
   },
   spacing: {
     s: 8,
@@ -75,6 +79,7 @@ export const darkTheme = {
     secondaryText: palette.whitelighter,
 
     disabled: palette.disabled,
+    navbar: palette.navbardark,
   },
 };
 

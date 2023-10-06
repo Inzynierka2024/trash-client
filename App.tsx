@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import MapLibreGL, { Logger } from "@maplibre/maplibre-react-native";
 import { useState, useEffect } from "react";
-import { ThemeContext, darkTheme, theme } from "./src/theme/theme";
+import { ThemeContext, darkTheme, palette, theme } from "./src/theme/theme";
 import { Button, useColorScheme, StyleSheet, View, Modal } from "react-native";
 import { OptionsContext } from "./src/app/Logic/StateProvider";
 import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
@@ -20,7 +20,9 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      await NavigationBar.setButtonStyleAsync(darkMode ? "dark" : "light");
+      if (darkMode)
+        await NavigationBar.setBackgroundColorAsync(palette.navbardark);
+      else await NavigationBar.setBackgroundColorAsync(palette.navbar);
     })();
   }, [darkMode]);
 

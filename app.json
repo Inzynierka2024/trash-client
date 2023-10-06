@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "LitterLooter",
+    "name": "LitterLooter (Dev)",
     "slug": "trash-client",
     "version": "0.0.1",
     "orientation": "portrait",
-    "icon": "./assets/litter-looter/icon.png",
+    "icon": "./assets/litter-looter/icon-dev.png",
     "userInterfaceStyle": "automatic",
     "plugins": ["@maplibre/maplibre-react-native", "expo-camera"],
     "splash": {
@@ -15,14 +15,14 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.inzynierka2024squad.litterlooter"
+      "bundleIdentifier": "com.inzynierka2024squad.litterlooterdev"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/litter-looter/adaptive.png",
+        "foregroundImage": "./assets/litter-looter/adaptive-dev.png",
         "backgroundColor": "#F5F5F5"
       },
-      "package": "com.inzynierka2024squad.litterlooter"
+      "package": "com.inzynierka2024squad.litterlooterdev"
     },
     "web": {
       "favicon": "./assets/favicon.png"

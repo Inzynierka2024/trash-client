@@ -1,13 +1,18 @@
 import { Alert } from "react-native";
 import get_jwt_token from "../../Utils/get_jwt_token";
+import get_api_url from "../../Utils/get_api_url";
+import { join } from "path";
 
 export default async function (
-  url: string,
+  api_path: string,
   method: "GET" | "POST" | "DELETE" | "PUT",
   headers: { [key: string]: string },
   body?: { [key: string]: string }
 ): Promise<{ isOk: boolean; data: any; error?: string }> {
+  const base = await get_api_url();
   const token = await get_jwt_token();
+
+  const url = join(base, api_path);
 
   console.log("Fetching: ", url);
 

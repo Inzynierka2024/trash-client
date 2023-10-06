@@ -10,7 +10,6 @@ import {
 import { ThemeContext, theme } from "../../../theme/theme";
 import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
-import get_api_url from "../../Utils/get_api_url";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 import { AddNewButton } from "./Buttons/AddNew";
@@ -27,7 +26,6 @@ export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
 
   const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
-  const API_URL = get_api_url();
 
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
@@ -79,7 +77,7 @@ export const MapComponent = () => {
     if (MapRef === null) return;
     const bounds = await MapRef.getVisibleBounds();
 
-    const result = await get_trash_in_area(API_URL, bounds);
+    const result = await get_trash_in_area(bounds);
 
     if (result.isOk) {
       const points = result.data["map_points"];

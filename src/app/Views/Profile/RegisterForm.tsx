@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import get_api_url from "../../Utils/get_api_url";
 import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png";
+import { join } from "path";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -30,9 +31,6 @@ const RegisterForm: React.FC = () => {
   // Animation state
   const animatePress = useRef(new Animated.Value(1)).current;
 
-  const SIGNUP_URL = `http://${get_api_url()}/user/signup`;
-  const LOGIN_URL = `http://${get_api_url()}/user/login`;
-
   const validateEmail = (email) => {
     // Simple email regex
     const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -40,6 +38,9 @@ const RegisterForm: React.FC = () => {
   };
 
   const handleRegister = async () => {
+    const base = await get_api_url();
+    const SIGNUP_URL = join(base, "user/signup");
+
     try {
       if (!username || !password || !validateEmail(email)) {
         Alert.alert("Empty fields", "Please, fill all the fields");
@@ -55,6 +56,7 @@ const RegisterForm: React.FC = () => {
       switch (response.status) {
         case 201:
           console.log("successfull registration");
+          const LOGIN_URL = join(base, "/user/login");
           // Success
           const loginResponse = await axios.post(LOGIN_URL, {
             email,

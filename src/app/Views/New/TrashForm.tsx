@@ -4,7 +4,6 @@ import { View, Text, Image, Modal, Button } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
-import get_api_url from "../../Utils/get_api_url";
 import create_new_trash from "../../Logic/API/create_new_trash";
 
 export const TrashForm = (props: {
@@ -19,8 +18,6 @@ export const TrashForm = (props: {
   });
   const [imageData, setImageData] = useState("");
 
-  const API_URL = get_api_url();
-
   function setData(imgData: string) {
     setImageData(imgData);
     setLocationData(props.location);
@@ -31,7 +28,7 @@ export const TrashForm = (props: {
   }
 
   function sendForm() {
-    create_new_trash(API_URL, locationData, imageData)
+    create_new_trash(locationData, imageData)
       .then((data) => {
         console.log("Trash added", data);
         close();

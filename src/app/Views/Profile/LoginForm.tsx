@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import get_api_url from "../../Utils/get_api_url";
 import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png";
+import { join } from "path";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -26,10 +27,11 @@ const LoginForm: React.FC = () => {
   const navigation = useNavigation();
 
   const animatePress = useRef(new Animated.Value(1)).current;
-  const URL = `http://${get_api_url()}/user/login`;
 
   const handleLogin = async () => {
     try {
+      const base = await get_api_url();
+      const URL = join(base, `user/login`);
       const response = await axios.post(URL, {
         email,
         password,

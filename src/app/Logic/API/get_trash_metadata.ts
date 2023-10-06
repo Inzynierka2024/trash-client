@@ -1,8 +1,8 @@
 import { TrashMetadata } from "../../Models/TrashMetadata";
 import _fetch from "./_fetch";
 
-export default async function (API_URL, id): Promise<TrashMetadata> {
-  const URL = `http://${API_URL}/garbage/${id}`;
+export default async function (id): Promise<TrashMetadata> {
+  const URL = `/garbage/${id}`;
 
   const result = await _fetch(URL, "GET", {});
 

@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Button, Modal, View, Image, Text } from "react-native";
 import remove_trash from "../../../Logic/API/remove_trash";
-import get_api_url from "../../../Utils/get_api_url";
 import { ThemeContext } from "../../../../theme/theme";
 import { ActionButton } from "./ActionButton";
 import MapLibreGL from "@maplibre/maplibre-react-native";
@@ -20,7 +19,6 @@ export const TrashModal = (props: {
   userState: MapLibreGL.Location;
 }) => {
   const themeFromContext = useContext(ThemeContext);
-  const API_URL = get_api_url();
 
   const [currentTrashData, setCurrentTrashData] =
     useState<TrashMetadata | null>(null);
@@ -39,7 +37,7 @@ export const TrashModal = (props: {
   }, [props.userState]);
 
   async function loadTrashMetadata() {
-    const result = await get_trash_metadata(API_URL, props.currentTrash.id);
+    const result = await get_trash_metadata(props.currentTrash.id);
     setCurrentTrashData(result);
   }
 
@@ -49,7 +47,7 @@ export const TrashModal = (props: {
   }
 
   function removeTrash() {
-    remove_trash(API_URL, props.currentTrash.id)
+    remove_trash(props.currentTrash.id)
       .then((result) => {
         if (result.isOk) {
           console.log("Removed trash");

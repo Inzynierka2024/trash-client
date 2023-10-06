@@ -1,6 +1,6 @@
 import _fetch from "./_fetch";
 
-export default async function (API_URL, bounds) {
+export default async function (bounds) {
   const c1 = bounds[0];
   const c2 = bounds[1];
 
@@ -10,7 +10,7 @@ export default async function (API_URL, bounds) {
   const endlng = c2[0];
   const endlat = c2[1];
   const URL =
-    `http://${API_URL}/garbage?` +
+    `/garbage?` +
     new URLSearchParams({
       beglat,
       beglng,

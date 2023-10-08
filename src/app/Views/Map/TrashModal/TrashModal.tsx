@@ -10,6 +10,7 @@ import get_trash_metadata from "../../../Logic/API/get_trash_metadata";
 import { Alert } from "react-native";
 import calculate_distance from "../../../Utils/calculate_distance";
 import round from "../../../Utils/round";
+import { Loading } from "../../../Utils/Loading";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -23,9 +24,12 @@ export const TrashModal = (props: {
   const [currentTrashData, setCurrentTrashData] =
     useState<TrashMetadata | null>(null);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (props.trashModalVisible === true) {
       console.log(`Loading trash info: ${props.currentTrash.id}`);
+      setLoading(true);
       loadTrashMetadata();
     } else {
       clearData();
@@ -39,6 +43,9 @@ export const TrashModal = (props: {
   async function loadTrashMetadata() {
     const result = await get_trash_metadata(props.currentTrash.id);
     setCurrentTrashData(result);
+    setCanRemove(isTrashInRange());
+
+    setLoading(false);
   }
 
   function clearData() {
@@ -65,7 +72,7 @@ export const TrashModal = (props: {
     props.onClose();
   }
 
-  function isTrashInRange() {
+  function isTrashInRange(): boolean {
     if (!props.userState || currentTrashData === null) {
       return true;
     }
@@ -87,11 +94,6 @@ export const TrashModal = (props: {
   const [canRemove, setCanRemove] = useState(false);
   const [distance, setDistance] = useState<number>(-1);
 
-  function onModalShow() {
-    if (isTrashInRange()) setCanRemove(true);
-    else setCanRemove(false);
-  }
-
   return (
     <Modal
       animationType="slide"
@@ -99,7 +101,6 @@ export const TrashModal = (props: {
       onRequestClose={() => {
         closeTrashModal();
       }}
-      onShow={onModalShow}
       transparent={true}
     >
       <View
@@ -109,6 +110,8 @@ export const TrashModal = (props: {
           justifyContent: "center",
         }}
       >
+        <Loading visible={loading} />
+
         <View
           style={{
             backgroundColor: themeFromContext.colors.background,

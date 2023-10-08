@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { ShutterButton } from "./ShutterButton";
+import { Loading } from "../../Utils/Loading";
 
 export const CameraContainer = (props: {
   setData: (data: string) => void;
@@ -10,7 +11,8 @@ export const CameraContainer = (props: {
 }) => {
   const themeFromContext = useContext(ThemeContext);
 
-  const [type, setType] = useState(CameraType.back);
+  const [loading, setLoading] = useState(false);
+
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
   if (!permission) {
@@ -46,19 +48,27 @@ export const CameraContainer = (props: {
 
   function takePicture() {
     if (CameraRef) {
+      setLoading(true);
+
       CameraRef.takePictureAsync({
         base64: true,
         // TODO: maybe look at how low we can go for bandwidth
         quality: 0.5,
       }).then((result) => {
         if (result.base64) props.setData(result.base64);
+        setLoading(false);
       });
     }
   }
 
   return (
     <View style={styles.container}>
-      <Camera type={type} style={styles.camera} ref={(c) => (CameraRef = c)}>
+      <Loading visible={loading} />
+      <Camera
+        type={CameraType.back}
+        style={styles.camera}
+        ref={(c) => (CameraRef = c)}
+      >
         <View style={styles.buttons}>
           <ShutterButton onPress={takePicture} />
         </View>

@@ -7,7 +7,7 @@ export const ShutterButton = (props: { onPress: Function }) => {
         style={styles.button}
         onPress={() => {
           props.onPress();
-        }} /*  */
+        }}
       ></Pressable>
     </View>
   );

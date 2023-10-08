@@ -8,18 +8,27 @@ export const SearchNewButton = (props: { callback: Function }) => {
   const themeFromContext = useContext(ThemeContext);
 
   const iconSize = 26;
+  const [disabled, setDisabled] = useState(false);
 
   return (
     <View style={styles.container}>
       <AnimatedTouchable
+        disabled={disabled}
         onPress={() => {
           props.callback();
+
+          // Throttle updating map
+          setDisabled(true);
+          setTimeout(() => {
+            setDisabled(false);
+          }, 5000);
         }}
         style={[
           styles.button,
           {
             backgroundColor: themeFromContext.colors.background,
             borderColor: themeFromContext.colors.secondaryText,
+            opacity: disabled ? 0.5 : 1,
           },
         ]}
       >

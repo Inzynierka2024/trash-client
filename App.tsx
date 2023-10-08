@@ -84,7 +84,6 @@ export default function App() {
                 }}
               />
             </View>
-            <Text>{API_URL}</Text>
           </View>
         </Modal>
 

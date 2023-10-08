@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   Button,
   TextInput,
@@ -11,6 +11,7 @@ import {
   Text,
   Image,
   Dimensions,
+  useColorScheme,
 } from "react-native";
 import { useAuth } from "../../Logic/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -18,16 +19,23 @@ import axios from "axios";
 import get_api_url from "../../Utils/get_api_url";
 import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png";
 import { join } from "path";
+import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const RegisterForm: React.FC = () => {
+
+  const [darkMode, _setDarkMode] = useState(
+    useColorScheme() === "dark" ? true : false
+  );
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const navigation = useNavigation();
-
+  const themeFromContext = useContext(ThemeContext);
+  
   // Animation state
   const animatePress = useRef(new Animated.Value(1)).current;
 
@@ -56,7 +64,7 @@ const RegisterForm: React.FC = () => {
       switch (response.status) {
         case 201:
           console.log("successfull registration");
-          const LOGIN_URL = join(base, "/user/login");
+          const LOGIN_URL = join(base, "/login");
           // Success
           const loginResponse = await axios.post(LOGIN_URL, {
             email,
@@ -128,26 +136,30 @@ const RegisterForm: React.FC = () => {
   };
 
   return (
+    <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} resizeMode="contain" />
 
       <TextInput
-        style={styles.input}
+        style={{...styles.input, color: themeFromContext.colors.primaryText}}
         placeholder="Username"
+        placeholderTextColor={themeFromContext.colors.secondaryText}
         onChangeText={setUsername}
         value={username}
       />
       <TextInput
-        style={styles.input}
+        style={{...styles.input, color: themeFromContext.colors.primaryText}}
         placeholder="Email"
+        placeholderTextColor={themeFromContext.colors.secondaryText}
         onChangeText={setEmail}
         value={email}
         keyboardType="email-address"
         onEndEditing={handleEmailEndEditing}
       />
       <TextInput
-        style={styles.input}
+        style={{...styles.input, color: themeFromContext.colors.primaryText}}
         placeholder="Password"
+        placeholderTextColor={themeFromContext.colors.secondaryText}
         onChangeText={setPassword}
         value={password}
         secureTextEntry
@@ -161,11 +173,12 @@ const RegisterForm: React.FC = () => {
           <Animated.Text style={styles.buttonText}>Register</Animated.Text>
         </TouchableOpacity>
       </Animated.View>
-      <Text style={styles.text}>Already have an account? </Text>
+      <Text style={{...styles.text, color: themeFromContext.colors.secondaryText}}>Already have an account? </Text>
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={[styles.text, styles.link]}>Login here</Text>
       </TouchableOpacity>
     </View>
+    </ThemeContext.Provider>
   );
 };
 

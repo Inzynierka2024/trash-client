@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const getToken = async () => {
     try {
-      return await AsyncStorage.getItem("userToken");
+      return await AsyncStorage.getItem("token");
     } catch (error) {
       console.error("Couldn't get the token from AsyncStorage", error);
       return null;
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await AsyncStorage.getItem("userToken");
+      const token = await AsyncStorage.getItem("token");
       if (token) {
         setState({ token, isLoggedIn: true });
       }
@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const login = async (token: string, userData) => {
     try {
-      await AsyncStorage.setItem("userToken", token);
+      await AsyncStorage.setItem("token", token);
       console.log("Token saved successfully.");
       setState({ token, isLoggedIn: true });
     } catch (err) {
@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem("userToken");
+    await AsyncStorage.removeItem("token");
     setState({ token: null, isLoggedIn: false });
   };
 

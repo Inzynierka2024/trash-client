@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef , useContext} from "react";
 import {
   Animated,
   Alert,
@@ -7,6 +7,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  useColorScheme,
   StyleSheet,
   Image,
   Dimensions,
@@ -17,21 +18,28 @@ import axios from "axios";
 import get_api_url from "../../Utils/get_api_url";
 import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png";
 import { join } from "path";
+import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 
 const { width: screenWidth } = Dimensions.get("window");
 
 const LoginForm: React.FC = () => {
+  
+  const [darkMode, _setDarkMode] = useState(
+    useColorScheme() === "dark" ? true : false
+  );
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const navigation = useNavigation();
+  const themeFromContext = useContext(ThemeContext);
 
   const animatePress = useRef(new Animated.Value(1)).current;
 
   const handleLogin = async () => {
     try {
       const base = await get_api_url();
-      const URL = join(base, `user/login`);
+      const URL = join(base, `/login`);
       const response = await axios.post(URL, {
         email,
         password,
@@ -77,18 +85,21 @@ const LoginForm: React.FC = () => {
   };
 
   return (
+    <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} resizeMode="contain" />
 
       <TextInput
-        style={styles.input}
+        style={{...styles.input, color: themeFromContext.colors.primaryText}}        
         placeholder="Email"
+        placeholderTextColor={themeFromContext.colors.secondaryText}
         onChangeText={setEmail}
         value={email}
       />
       <TextInput
-        style={styles.input}
+        style={{...styles.input, color: themeFromContext.colors.primaryText}}
         placeholder="Password"
+        placeholderTextColor={themeFromContext.colors.secondaryText}
         onChangeText={setPassword}
         value={password}
         secureTextEntry
@@ -102,11 +113,12 @@ const LoginForm: React.FC = () => {
           <Animated.Text style={styles.buttonText}>Login</Animated.Text>
         </TouchableOpacity>
       </Animated.View>
-      <Text style={styles.text}>Don't have an account? </Text>
+      <Text style={{...styles.text, color: themeFromContext.colors.secondaryText}}>Don't have an account? </Text>
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
         <Text style={[styles.text, styles.link]}>Register here</Text>
       </TouchableOpacity>
     </View>
+    </ThemeContext.Provider>
   );
 };
 

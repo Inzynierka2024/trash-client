@@ -33,6 +33,8 @@ export const AddNewButton = (props: {
   const canAnim = useRef(new Animated.Value(0)).current;
   const garbageAnim = useRef(new Animated.Value(0)).current;
 
+  const garbageRadiusAnim = useRef(new Animated.Value(iconSize)).current;
+
   const menuOpen = () => {
     Animated.parallel([
       Animated.timing(radiusAnim, {
@@ -87,6 +89,28 @@ export const AddNewButton = (props: {
     ]).start();
   };
 
+  const openSizeMenu = () => {
+    Animated.parallel([
+      Animated.timing(garbageRadiusAnim, {
+        toValue: openRadius,
+        delay: 0,
+        duration: radiusSpeed,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const closeSizeMenu = () => {
+    Animated.parallel([
+      Animated.timing(garbageRadiusAnim, {
+        toValue: iconSize,
+        delay: 0,
+        duration: radiusSpeed,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
   return (
     <View>
       {subMenu === "new-trash" && (
@@ -107,6 +131,7 @@ export const AddNewButton = (props: {
               setOpen(false);
               setSubMenu("");
               menuClose();
+              closeSizeMenu();
             }}
           >
             <Text style={styles.textIcon}>L</Text>
@@ -127,6 +152,7 @@ export const AddNewButton = (props: {
               setOpen(false);
               setSubMenu("");
               menuClose();
+              closeSizeMenu();
             }}
           >
             <Text style={styles.textIcon}>M</Text>
@@ -147,6 +173,7 @@ export const AddNewButton = (props: {
               setOpen(false);
               setSubMenu("");
               menuClose();
+              closeSizeMenu();
             }}
           >
             <Text style={styles.textIcon}>S</Text>
@@ -177,13 +204,18 @@ export const AddNewButton = (props: {
             styles.button,
             styles.trash,
             {
-              borderRadius: iconSize,
+              borderRadius: garbageRadiusAnim,
               transform: [{ translateY: garbageAnim }],
             },
           ]}
           onPress={() => {
-            if (subMenu !== "new-trash") setSubMenu("new-trash");
-            else setSubMenu("");
+            if (subMenu !== "new-trash") {
+              setSubMenu("new-trash");
+              openSizeMenu();
+            } else {
+              setSubMenu("");
+              closeSizeMenu();
+            }
           }}
         >
           <FontAwesome name="trash" size={iconSize} style={styles.icon} />
@@ -202,8 +234,13 @@ export const AddNewButton = (props: {
             setSubMenu("");
 
             setOpen(toOpen);
-            if (toOpen) menuOpen();
-            else menuClose();
+            if (toOpen) {
+              menuOpen();
+              closeSizeMenu();
+            } else {
+              menuClose();
+              closeSizeMenu();
+            }
           }}
         >
           <FontAwesome

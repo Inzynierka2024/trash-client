@@ -5,10 +5,12 @@ import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
 import create_new_trash from "../../Logic/API/create_new_trash";
+import { TrashSize } from "../../Models/TrashMetadata";
 
 export const TrashForm = (props: {
   location: MapLibreGL.Location;
   setModal: Function;
+  size: TrashSize;
   updateMap: Function;
 }) => {
   const themeFromContext = useContext(ThemeContext);
@@ -28,7 +30,7 @@ export const TrashForm = (props: {
   }
 
   function sendForm() {
-    create_new_trash(locationData, imageData)
+    create_new_trash(locationData, imageData, props.size)
       .then((data) => {
         console.log("Trash added", data);
         close();

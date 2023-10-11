@@ -15,6 +15,7 @@ import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 import { AddNewButton } from "./Buttons/AddNew";
 import { CenterButton } from "./Buttons/CenterButton";
 import { SearchNewButton } from "./Buttons/SearchNew";
+import { TrashSize } from "../../Models/TrashMetadata";
 
 export interface MarkerData {
   id: number;
@@ -52,9 +53,11 @@ export const MapComponent = () => {
   }
 
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
+  const [trashSize, setTrashSize] = useState<TrashSize | "">("");
 
-  function addNew() {
+  function addNew(type: TrashSize) {
     setCameraModalVisible(true);
+    setTrashSize(type);
   }
 
   const [cameraTrigger, triggerCamera] = useState(false);
@@ -179,6 +182,7 @@ export const MapComponent = () => {
         <TrashForm
           location={userState}
           setModal={setCameraModalVisible}
+          size={trashSize}
           updateMap={updateMarkers}
         />
       </Modal>

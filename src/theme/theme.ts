@@ -7,10 +7,11 @@ export const palette = {
   lightyellow: "#F0C987",
   lightred: "#FF7F7F",
   darkgray: "#333333",
-  darkblue: "#5048a8",
+  darkblue: "#3034d0",
   darkgreen: "#3c947f",
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
+  cyan: "#4e98c5",
 
   navbar: "rgb(255, 255, 255)",
   navbardark: "rgb(18, 18, 18)",

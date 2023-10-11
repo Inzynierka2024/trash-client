@@ -1,6 +1,7 @@
+import { TrashSize } from "../../Models/TrashMetadata";
 import _fetch from "./_fetch";
 
-export default async function (locationData, imageData) {
+export default async function (locationData, imageData, size: TrashSize) {
   const URL = `/garbage/`;
 
   console.log("Sending new trash to:", URL, locationData.coords);
@@ -13,6 +14,7 @@ export default async function (locationData, imageData) {
       lng: locationData.coords.longitude,
       lat: locationData.coords.latitude,
       image: imageData,
+      type: size,
     }
   );
 

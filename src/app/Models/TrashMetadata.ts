@@ -5,5 +5,7 @@ export interface TrashMetadata {
   Longitude: number;
   Picture: string;
   Size?: string;
-  Type?: string;
+  Type?: TrashSize;
 }
+
+export type TrashSize = "s" | "m" | "l";

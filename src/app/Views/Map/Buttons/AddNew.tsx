@@ -1,5 +1,12 @@
 import { useContext, useState, useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet, View } from "react-native";
+import {
+  Animated,
+  Easing,
+  Pressable,
+  StyleSheet,
+  View,
+  Text,
+} from "react-native";
 import { ThemeContext, palette } from "../../../../theme/theme";
 import { FontAwesome } from "@expo/vector-icons";
 import AnimatedPressable from "../../../Animated/AnimatedPressable";
@@ -11,6 +18,7 @@ export const AddNewButton = (props: {
   const themeFromContext = useContext(ThemeContext);
 
   const [open, setOpen] = useState(false);
+  const [subMenu, setSubMenu] = useState("");
 
   const openRadius = 8;
   const iconSize = 32;
@@ -80,70 +88,136 @@ export const AddNewButton = (props: {
   };
 
   return (
-    <View style={styles.container}>
-      <AnimatedPressable
-        style={[
-          styles.button,
-          styles.garbagecan,
-          {
-            borderRadius: iconSize,
-            transform: [{ translateY: canAnim }],
-          },
-        ]}
-        onPress={() => {
-          props.newTrash();
-          setOpen(false);
-          menuClose();
-        }}
-      >
-        <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
-      </AnimatedPressable>
-
-      <AnimatedPressable
-        style={[
-          styles.button,
-          styles.trash,
-          {
-            borderRadius: iconSize,
-            transform: [{ translateY: garbageAnim }],
-          },
-        ]}
-        onPress={() => {
-          props.newTrash();
-          setOpen(false);
-          menuClose();
-        }}
-      >
-        <FontAwesome name="trash" size={iconSize} style={styles.icon} />
-      </AnimatedPressable>
-
-      <AnimatedPressable
-        style={[
-          styles.button,
-          styles.menu,
-          {
-            borderRadius: radiusAnim,
-          },
-        ]}
-        onPress={() => {
-          const toOpen = !open;
-
-          setOpen(toOpen);
-          if (toOpen) menuOpen();
-          else menuClose();
-        }}
-      >
-        <FontAwesome
-          name={open ? "close" : "plus"}
-          size={iconSize}
+    <View>
+      {subMenu === "new-trash" && (
+        <View style={styles.container}>
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.menu,
+              {
+                backgroundColor: palette.cyan,
+                borderRadius: iconSize,
+                right: distance,
+                bottom: 3 * distance,
+              },
+            ]}
+            onPress={() => {
+              props.newTrash("l");
+              setOpen(false);
+              setSubMenu("");
+              menuClose();
+            }}
+          >
+            <Text style={styles.textIcon}>L</Text>
+          </AnimatedPressable>
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.menu,
+              {
+                backgroundColor: palette.cyan,
+                borderRadius: iconSize,
+                right: distance,
+                bottom: 2 * distance,
+              },
+            ]}
+            onPress={() => {
+              props.newTrash("m");
+              setOpen(false);
+              setSubMenu("");
+              menuClose();
+            }}
+          >
+            <Text style={styles.textIcon}>M</Text>
+          </AnimatedPressable>
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.menu,
+              {
+                backgroundColor: palette.cyan,
+                borderRadius: iconSize,
+                right: distance,
+                bottom: distance,
+              },
+            ]}
+            onPress={() => {
+              props.newTrash("s");
+              setOpen(false);
+              setSubMenu("");
+              menuClose();
+            }}
+          >
+            <Text style={styles.textIcon}>S</Text>
+          </AnimatedPressable>
+        </View>
+      )}
+      <View style={styles.container}>
+        <AnimatedPressable
           style={[
-            styles.icon,
+            styles.button,
+            styles.garbagecan,
             {
-              bottom: open ? 3 : 0,
+              borderRadius: iconSize,
+              transform: [{ translateY: canAnim }],
             },
           ]}
-        />
-      </AnimatedPressable>
+          onPress={() => {
+            props.newTrash();
+            setOpen(false);
+            menuClose();
+          }}
+        >
+          <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
+        </AnimatedPressable>
+
+        <AnimatedPressable
+          style={[
+            styles.button,
+            styles.trash,
+            {
+              borderRadius: iconSize,
+              transform: [{ translateY: garbageAnim }],
+            },
+          ]}
+          onPress={() => {
+            if (subMenu !== "new-trash") setSubMenu("new-trash");
+            else setSubMenu("");
+          }}
+        >
+          <FontAwesome name="trash" size={iconSize} style={styles.icon} />
+        </AnimatedPressable>
+
+        <AnimatedPressable
+          style={[
+            styles.button,
+            styles.menu,
+            {
+              borderRadius: radiusAnim,
+            },
+          ]}
+          onPress={() => {
+            const toOpen = !open;
+            setSubMenu("");
+
+            setOpen(toOpen);
+            if (toOpen) menuOpen();
+            else menuClose();
+          }}
+        >
+          <FontAwesome
+            name={open ? "close" : "plus"}
+            size={iconSize}
+            style={[
+              styles.icon,
+              {
+                bottom: open ? 3 : 0,
+              },
+            ]}
+          />
+        </AnimatedPressable>
+      </View>
     </View>
   );
 };
@@ -159,9 +233,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingTop: 10,
     width: 50,
+    height: 50,
     position: "absolute",
     right: 0,
     bottom: 0,
+  },
+  textIcon: {
+    color: palette.white,
+    fontSize: 35,
+    margin: 0,
+    padding: 0,
+    lineHeight: 38,
   },
   icon: {
     marginRight: 0,

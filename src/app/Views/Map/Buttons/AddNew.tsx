@@ -5,11 +5,14 @@ import {
   Pressable,
   StyleSheet,
   View,
+  Image,
   Text,
 } from "react-native";
 import { ThemeContext, palette } from "../../../../theme/theme";
 import { FontAwesome } from "@expo/vector-icons";
 import AnimatedPressable from "../../../Animated/AnimatedPressable";
+import bagIcon from "../../../../../assets/icons/bags.png";
+import canIcon from "../../../../../assets/icons/can.png";
 
 export const AddNewButton = (props: {
   newTrash: Function;
@@ -196,7 +199,7 @@ export const AddNewButton = (props: {
             menuClose();
           }}
         >
-          <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
+          <Image source={canIcon} style={styles.imageIcon} />
         </AnimatedPressable>
 
         <AnimatedPressable
@@ -218,7 +221,7 @@ export const AddNewButton = (props: {
             }
           }}
         >
-          <FontAwesome name="trash" size={iconSize} style={styles.icon} />
+          <Image source={bagIcon} style={styles.imageIcon} />
         </AnimatedPressable>
 
         <AnimatedPressable
@@ -285,6 +288,10 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 0,
     color: palette.white,
+  },
+  imageIcon: {
+    height: 32,
+    width: 32,
   },
   garbagecan: {
     backgroundColor: palette.darkyellow,

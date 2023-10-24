@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default async function () {
-  return await AsyncStorage.getItem("userToken");
+  return await AsyncStorage.getItem("token");
 }

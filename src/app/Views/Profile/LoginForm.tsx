@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
   const handleLogin = async () => {
     try {
       const base = await get_api_url();
-      const URL = join(base, `/login`);
+      const URL = join(base, `user/login`);
       const response = await axios.post(URL, {
         email,
         password,

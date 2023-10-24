@@ -47,29 +47,42 @@ const RegisterForm: React.FC = () => {
 
   const handleRegister = async () => {
     const base = await get_api_url();
-    const SIGNUP_URL = join(base, "user/signup");
+    const SIGNUP_URL = `${base}/user/signup`;
+
 
     try {
       if (!username || !password || !validateEmail(email)) {
         Alert.alert("Empty fields", "Please, fill all the fields");
         return;
       }
+      console.log("$$$$ "+base);
+      console.log("$$$$ "+SIGNUP_URL);
+      console.log("$$$$ "+username+" "+password+" "+email);
       // Modify this URL to match your API endpoint
       const response = await axios.post(SIGNUP_URL, {
         username,
-        email,
         password,
+        email
       });
+      console.log("####"+response.data);
 
       switch (response.status) {
-        case 201:
+        case 200:
           console.log("successfull registration");
-          const LOGIN_URL = join(base, "/login");
+          const LOGIN_URL = `${base}/user/login`;
+          console.log("$$$$ "+LOGIN_URL);
+          console.log("$$$$ "+username+" "+password+" "+email);
           // Success
-          const loginResponse = await axios.post(LOGIN_URL, {
-            email,
-            password,
-          });
+          try {
+            const loginResponse = await axios.post(LOGIN_URL, {
+              password,
+              email
+            });
+          } catch (error) {
+            console.error("Login error:", error.response ? error.response.data : error.message);
+          }
+          
+          console.log("####"+loginResponse.data);
           console.log("login attempt");
           if (loginResponse.status === 200) {
             const token = loginResponse.data.token;
@@ -93,6 +106,7 @@ const RegisterForm: React.FC = () => {
 
         case 500:
           // Incorrect data
+          console.log(response.data);
           console.log("500: " + response.data.message);
           Alert.alert("Data is incorrect");
           break;
@@ -102,6 +116,7 @@ const RegisterForm: React.FC = () => {
       }
     } catch (error) {
       console.log("catch: " + error.message);
+      console.log("error: " + error.Trace);
       Alert.alert("Error", error.message || "There was an error registering.");
     }
   };

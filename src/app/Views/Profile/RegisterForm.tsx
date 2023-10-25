@@ -73,15 +73,12 @@ const RegisterForm: React.FC = () => {
           console.log("$$$$ "+LOGIN_URL);
           console.log("$$$$ "+username+" "+password+" "+email);
           // Success
-          try {
+          
             const loginResponse = await axios.post(LOGIN_URL, {
               password,
               email
             });
-          } catch (error) {
-            console.error("Login error:", error.response ? error.response.data : error.message);
-          }
-          
+                    
           console.log("####"+loginResponse.data);
           console.log("login attempt");
           if (loginResponse.status === 200) {

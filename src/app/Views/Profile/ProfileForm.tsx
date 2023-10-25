@@ -1,18 +1,25 @@
-import { View, Text, Button, StyleSheet, Image, Alert, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Button, StyleSheet, Image, Alert, TouchableOpacity, Dimensions, useColorScheme } from 'react-native';
 import { useAuth } from '../../Logic/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import stats_icon from "../../../../assets/player-stats.png";
 import collected_trash_icon from "../../../../assets/collected-trash.png";
 import guilds_icon from "../../../../assets/guilds.png";
 import settings_icon from "../../../../assets/settings.png";
 import user_profile_icon from "../../../../assets/user-profile.png";
+import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 
 interface ProfileFormProps {
   navigateTo: (screen: string) => void;
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = () => {
+
+  const [darkMode, _setDarkMode] = useState(
+    useColorScheme() === "dark" ? true : false
+  );
+  const themeFromContext = useContext(ThemeContext);
+
   const { logout } = useAuth();
   const navigation = useNavigation();
   const { getUserLogin } = useAuth();
@@ -52,36 +59,37 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
 
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('ProfileEdit')}>
+    <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
+      <View style={styles.container}>
+
         <Image
           source={user_profile_icon}
           style={styles.userIcon}
         />
-      </TouchableOpacity>
-      <Text style={styles.loginText}>{userLogin}</Text>
-      <View style={styles.buttonGrid}>
-        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileStats')}>
-          <Image source={stats_icon} style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>User Stats</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
-          <Image source={collected_trash_icon} style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>Collected trash</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
-          <Image source={guilds_icon} style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>Guilds</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
-          <Image source={settings_icon} style={styles.buttonIcon} />
-          <Text style={styles.buttonText}>Settings</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
-          <Text style={styles.buttonText}>Log out</Text>
-        </TouchableOpacity>
+        <Text style={{ ...styles.loginText, color: themeFromContext.colors.primaryText }}>{userLogin}</Text>
+        <View style={styles.buttonGrid}>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileEdit')}>
+            <Image source={stats_icon} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>User Stats</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
+            <Image source={collected_trash_icon} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Collected trash</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
+            <Image source={guilds_icon} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Guilds</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
+            <Image source={settings_icon} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Settings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Log out</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ThemeContext.Provider>
   );
 }
 

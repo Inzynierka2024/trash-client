@@ -1,16 +1,21 @@
-import React from "react";
+import { createContext } from "react";
 
-const palette = {
+export const palette = {
   lightgray: "#F5F5F5",
   lightblue: "#0ECD9D",
-  lightgreen: "#5EBD9E",
+  lightgreen: "#3c947f",
   lightyellow: "#F0C987",
   lightred: "#FF7F7F",
   darkgray: "#333333",
-  darkblue: "#272727",
-  darkgreen: "#3C947F",
+  darkblue: "#5048a8",
+  darkgreen: "#3c947f",
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
+
+  navbar: "rgb(255, 255, 255)",
+  navbardark: "rgb(18, 18, 18)",
+
+  disabled: "#555",
 
   black: "#000000",
   blacklighter: "#7F7F7F",
@@ -34,7 +39,8 @@ export const theme = {
     primaryText: palette.black,
     secondaryText: palette.blacklighter,
 
-    disabled: palette.lightgray,
+    disabled: palette.disabled,
+    navbar: palette.navbar,
   },
   spacing: {
     s: 8,
@@ -72,8 +78,45 @@ export const darkTheme = {
     primaryText: palette.white,
     secondaryText: palette.whitelighter,
 
-    disabled: palette.darkgray,
+    disabled: palette.disabled,
+    navbar: palette.navbardark,
   },
 };
 
-export const ThemeContext = React.createContext(theme);
+export const ThemeContext = createContext(theme);
+export interface CTheme {
+  colors: {
+    background: string;
+    foreground: string;
+    primary: string;
+    secondary: string;
+    danger: string;
+
+    blue: string;
+    green: string;
+    yellow: string;
+
+    primaryText: string;
+    secondaryText: string;
+
+    disabled: string;
+  };
+  spacing: {
+    s: number;
+    m: number;
+    l: number;
+    xl: number;
+  };
+  textVariants: {
+    header: {
+      // TODO:
+      //   fontFamily: "Raleway",
+      fontSize: number;
+      fontWeight: string;
+    };
+    body: {
+      //   fontFamily: "Merriweather",
+      fontSize: number;
+    };
+  };
+}

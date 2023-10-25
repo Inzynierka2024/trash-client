@@ -8,12 +8,13 @@ import {
   StyleProp,
 } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
-import { MapButton } from "./MapButton";
 import { TrashForm } from "../New/TrashForm";
 import exampleIcon from "../../../../assets/marker.png";
-import get_api_url from "../../Utils/get_api_url";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
+import { AddNewButton } from "./Buttons/AddNew";
+import { CenterButton } from "./Buttons/CenterButton";
+import { SearchNewButton } from "./Buttons/SearchNew";
 
 export interface MarkerData {
   id: number;
@@ -25,7 +26,6 @@ export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
 
   const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
-  const API_URL = get_api_url();
 
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
@@ -33,11 +33,11 @@ export const MapComponent = () => {
 
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
+  const [isCentered, setIsCentered] = useState(true);
+
   function onUserLocationUpdate(location: MapLibreGL.Location) {
     setUserState(location);
   }
-
-  // FIXME: sometimes user marker doesnt appear?
 
   function flyToUser() {
     if (!userState.coords || !CameraRef) return;
@@ -48,6 +48,7 @@ export const MapComponent = () => {
     );
 
     triggerUpdate("camera");
+    setIsCentered(true);
   }
 
   const [cameraModalVisible, setCameraModalVisible] = useState(false);
@@ -67,11 +68,6 @@ export const MapComponent = () => {
   let CameraRef: MapLibreGL.Camera = undefined;
   let UserLocationRef: MapLibreGL.UserLocation = undefined;
 
-  const MapTileURL =
-    useColorScheme() === "dark"
-      ? `https://api.maptiler.com/maps/streets-v2-dark/{z}/{x}/{y}.png?key=${MAPTILER_API_KEY}`
-      : `https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=${MAPTILER_API_KEY}`;
-
   const mapStyleURL =
     useColorScheme() === "dark"
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
@@ -81,7 +77,7 @@ export const MapComponent = () => {
     if (MapRef === null) return;
     const bounds = await MapRef.getVisibleBounds();
 
-    const result = await get_trash_in_area(API_URL, bounds);
+    const result = await get_trash_in_area(bounds);
 
     if (result.isOk) {
       const points = result.data["map_points"];
@@ -99,20 +95,24 @@ export const MapComponent = () => {
   }
 
   useEffect(() => {
-    let inv;
+    // Startup intervals
+    let markerInv;
+
     (async () => {
+      // Load markers one second after map load
       setTimeout(async () => {
         await updateMarkers();
       }, 1000);
 
-      inv = setInterval(async () => {
+      // Fetch new markers every minute
+      markerInv = setInterval(async () => {
         await updateMarkers();
       }, 60000);
     })();
 
     // Clean up interval
     return () => {
-      clearInterval(inv);
+      clearInterval(markerInv);
     };
   }, []);
 
@@ -192,9 +192,15 @@ export const MapComponent = () => {
       />
 
       <View style={styles.operationContainer}>
-        <MapButton iconName="center-focus-weak" onPress={flyToUser} />
-        <MapButton iconName="add" onPress={addNew} />
+        <AddNewButton newTrash={addNew} newCan={undefined} />
       </View>
+
+      {!isCentered && (
+        <View style={styles.actionsContainer}>
+          <CenterButton callback={flyToUser} />
+          <SearchNewButton callback={updateMarkers} />
+        </View>
+      )}
 
       <MapLibreGL.MapView
         compassViewPosition={1}
@@ -207,6 +213,9 @@ export const MapComponent = () => {
           if (c !== null) MapRef = c;
         }}
         attributionEnabled={true}
+        onRegionDidChange={(e) => {
+          setIsCentered(false);
+        }}
         style={styles.map}
         logoEnabled={false}
       >
@@ -215,9 +224,6 @@ export const MapComponent = () => {
           visible={true}
           onUpdate={onUserLocationUpdate}
           showsUserHeadingIndicator={true}
-          onPress={() => {
-            console.log("On user location press");
-          }}
         />
 
         <MapLibreGL.Camera
@@ -259,8 +265,18 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     right: 0,
     bottom: 0,
-    margin: theme.spacing.m,
-    gap: theme.spacing.s,
+    margin: theme.spacing.l,
+    marginRight: theme.spacing.m,
+  },
+
+  actionsContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    zIndex: 9998,
+    justifyContent: "center",
+    gap: 24,
+    alignItems: "center",
+    bottom: theme.spacing.l,
   },
 
   annotationContainer: {

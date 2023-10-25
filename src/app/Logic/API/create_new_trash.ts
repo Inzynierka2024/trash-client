@@ -1,7 +1,7 @@
 import _fetch from "./_fetch";
 
-export default async function (API_URL, locationData, imageData) {
-  const URL = `http://${API_URL}/garbage/`;
+export default async function (locationData, imageData) {
+  const URL = `/garbage/`;
 
   console.log("Sending new trash to:", URL, locationData.coords);
 

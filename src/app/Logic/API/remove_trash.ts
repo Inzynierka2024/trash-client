@@ -1,7 +1,7 @@
 import _fetch from "./_fetch";
 
-export default async function (API_URL, id) {
-  const URL = `http://${API_URL}/garbage/${id}`;
+export default async function (id) {
+  const URL = `/garbage/${id}`;
 
   console.log("Removing trash", URL, id);
 

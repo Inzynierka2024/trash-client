@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { useColorScheme } from "react-native";
 import {
@@ -23,18 +23,32 @@ import GuildsForm from "../../Views/Guilds/GuildsForm";
 import GuildDetailsForm from "../../Views/Guilds/GuildDetailsForm";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { CTheme, ThemeContext } from "../../../theme/theme";
+import { useAuth } from "../AuthContext";
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
 
 const ProfileStackNavigator = () => {
+
+  const [initialRoute, setInitialRoute] = React.useState(null);
+  const { state } = useAuth();
+  console.log("navigation >>> state >>> "+state.isLoggedIn);
+  console.log("navigation >>> initialRoute -b >>> "+initialRoute);
+  useEffect(() => {
+    setInitialRoute(state.isLoggedIn ? 'Profile' : 'Login');
+}, [state.isLoggedIn]);
+
+  console.log("navigation >>> initialRoute -a >>> "+initialRoute);
+  if (!initialRoute) return null;
+
   return (
     <ProfileStack.Navigator
+      initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,
       }}
     >
-      <ProfileStack.Screen name="Container" component={ProfileContainer} />
+      {/* <ProfileStack.Screen name="Container" component={ProfileContainer} /> */}
       <ProfileStack.Screen name="Login" component={LoginForm} />
       <ProfileStack.Screen name="Register" component={RegisterForm} />
       <ProfileStack.Screen name="Profile" component={ProfileForm} />

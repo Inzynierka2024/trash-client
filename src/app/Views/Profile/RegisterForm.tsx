@@ -62,7 +62,7 @@ const RegisterForm: React.FC = () => {
       const response = await axios.post(SIGNUP_URL, {
         username,
         password,
-        email
+        email: email.toLowerCase()
       });
       console.log("####"+response.data);
 
@@ -70,13 +70,10 @@ const RegisterForm: React.FC = () => {
         case 200:
           console.log("successfull registration");
           const LOGIN_URL = `${base}/user/login`;
-          console.log("$$$$ "+LOGIN_URL);
-          console.log("$$$$ "+username+" "+password+" "+email);
           // Success
-          
             const loginResponse = await axios.post(LOGIN_URL, {
               password,
-              email
+              email: email.toLowerCase()
             });
                     
           console.log("####"+loginResponse.data);
@@ -88,7 +85,7 @@ const RegisterForm: React.FC = () => {
             if (!token) {
               throw new Error("Token: Token not found in response.");
             } else {
-              login(token, loginResponse.data);
+              login(token);
 
               navigation.navigate("Profile");
             }

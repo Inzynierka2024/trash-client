@@ -34,6 +34,7 @@ const LoginForm: React.FC = () => {
   const navigation = useNavigation();
   const themeFromContext = useContext(ThemeContext);
 
+
   const animatePress = useRef(new Animated.Value(1)).current;
 
   const handleLogin = async () => {
@@ -41,7 +42,7 @@ const LoginForm: React.FC = () => {
       const base = await get_api_url();
       const URL = join(base, `user/login`);
       const response = await axios.post(URL, {
-        email,
+        email: email.toLowerCase(),
         password,
       });
 

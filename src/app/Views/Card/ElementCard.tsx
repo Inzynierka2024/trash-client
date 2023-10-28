@@ -36,10 +36,10 @@ export const ElementCard = (props: {
                     source={ElementIcons[props.type]}/>
 
                 <View style={[styles.info, {backgroundColor}]}>
-                    <Text style={{
+                    <Text numberOfLines={1} style={{
                         color: textColor,
                         fontWeight: 600,
-                        fontSize: 18
+                        fontSize: 17,
                     }}>{ElementNames[props.type]}</Text>
                     <Text
                         style={{

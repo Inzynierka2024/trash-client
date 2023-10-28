@@ -6,6 +6,7 @@ import { ThemeContext } from "../../../theme/theme";
 export const CameraButton = (props: {
   iconName: any;
   size: number;
+  backgroundColor: string;
   onPress: Function;
 }) => {
   const themeFromContext = useContext(ThemeContext);
@@ -26,7 +27,7 @@ export const CameraButton = (props: {
         size={props.size}
         borderRadius={props.size / 2}
         color={themeFromContext.colors.primaryText}
-        backgroundColor={themeFromContext.colors.secondary}
+        backgroundColor={props.backgroundColor}
         iconStyle={{
           marginRight: 0,
         }}

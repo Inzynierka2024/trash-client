@@ -109,14 +109,16 @@ export const TrashForm = (props: {
             >
               <CameraButton
                 size={30}
-                iconName="delete"
+                backgroundColor={themeFromContext.colors.danger}
+                iconName="keyboard-return"
                 onPress={() => {
                   close();
                 }}
               />
               <CameraButton
                 size={30}
-                iconName="send"
+                backgroundColor={themeFromContext.colors.primary}
+                iconName="add-location"
                 onPress={() => {
                   sendForm();
                 }}

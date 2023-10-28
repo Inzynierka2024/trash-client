@@ -11,6 +11,7 @@ import { Alert } from "react-native";
 import calculate_distance from "../../../Utils/calculate_distance";
 import round from "../../../Utils/round";
 import { Loading } from "../../../Utils/Loading";
+import {ElementCard} from "../../Card/ElementCard";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -20,6 +21,7 @@ export const TrashModal = (props: {
   userState: MapLibreGL.Location;
 }) => {
   const themeFromContext = useContext(ThemeContext);
+  const textColor = themeFromContext.colors.primaryText
 
   const [currentTrashData, setCurrentTrashData] =
     useState<TrashMetadata | null>(null);
@@ -115,41 +117,26 @@ export const TrashModal = (props: {
         <View
           style={{
             backgroundColor: themeFromContext.colors.background,
-            borderColor: themeFromContext.colors.primary,
             borderWidth: 4,
-            borderRadius: 20,
+            borderRadius: 8,
             alignSelf: "center",
             alignItems: "center",
             justifyContent: "center",
-            padding: 24,
-            gap: 32,
+            gap: 16,
+            paddingBottom: 12,
+            marginBottom: 48
           }}
         >
-          <Image
-            source={{
-              uri: "data:image/jpg;base64," + currentTrashData?.Picture,
-            }}
-            style={{
-              aspectRatio: "9 / 16",
-              height: 300,
-              resizeMode: "contain",
-            }}
-          />
+          <ElementCard type={"garbage"} imageEnabled={true} imageData={currentTrashData?.Picture} distance={distance} />
 
-          <Text
-            style={{
-              color: themeFromContext.colors.secondaryText,
-            }}
-          >
-            Odległość:
-            {distance !== -1 ? round(distance, 2) : "-"}km
-          </Text>
-
-          <ActionButton
-            disabled={!canRemove}
-            iconName={"delete"}
-            onPress={removeTrash}
-          />
+          {!canRemove && (
+              <Text style={{color: textColor}}>Jesteś za daleko by usunąć element z mapy</Text>
+          )}
+            <ActionButton
+                disabled={!canRemove}
+                iconName={"delete"}
+                onPress={removeTrash}
+            />
         </View>
       </View>
     </Modal>

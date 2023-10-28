@@ -3,6 +3,7 @@ import allIcon from "../../../assets/icons/container-all.png";
 import ewasteIcon from "../../../assets/icons/container-ewaste.png";
 import debrisIcon from "../../../assets/icons/container-debris.png";
 import clothIcon from "../../../assets/icons/container-cloth.png";
+import garbageIcon from "../../../assets/icons/container-cloth.png";
 
 export const ElementIcons = {
   all: allIcon,
@@ -15,4 +16,5 @@ export const ElementIcons = {
   pszok: generalIcon,
   debris: debrisIcon,
   cloth: clothIcon,
+  garbage: garbageIcon
 };

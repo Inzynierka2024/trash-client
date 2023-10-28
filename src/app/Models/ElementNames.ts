@@ -1,4 +1,5 @@
 export const ElementNames = {
+  garbage: "Odpad",
   general: "Ogólne",
   bio: "Bio",
   plastic: "Tworzywa sztuczne",

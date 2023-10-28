@@ -12,6 +12,8 @@ export const palette = {
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
 
+  brown: "#690d0d",
+
   navbar: "rgb(255, 255, 255)",
   navbardark: "rgb(18, 18, 18)",
 

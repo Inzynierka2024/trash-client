@@ -142,7 +142,7 @@ export const AddNewButton = (props: {
               },
             ]}
             onPress={() => {
-              console.log("press");
+              props.newCan("cloth")
             }}
           >
             <Image source={ElementIcons.cloth} style={styles.imageIcon} />
@@ -158,7 +158,7 @@ export const AddNewButton = (props: {
               },
             ]}
             onPress={() => {
-              console.log("press");
+              props.newCan("debris")
             }}
           >
             <Image source={ElementIcons.debris} style={styles.imageIcon} />
@@ -174,7 +174,7 @@ export const AddNewButton = (props: {
               },
             ]}
             onPress={() => {
-              console.log("press");
+              props.newCan("pszok")
             }}
           >
             <Image source={ElementIcons.pszok} style={styles.imageIcon} />
@@ -190,7 +190,7 @@ export const AddNewButton = (props: {
               },
             ]}
             onPress={() => {
-              console.log("press");
+              props.newCan("e-waste")
             }}
           >
             <Image source={ElementIcons["e-waste"]} style={styles.imageIcon} />
@@ -206,7 +206,7 @@ export const AddNewButton = (props: {
               },
             ]}
             onPress={() => {
-              console.log("press");
+              props.newCan("general")
             }}
           >
             <Image source={ElementIcons.general} style={styles.imageIcon} />

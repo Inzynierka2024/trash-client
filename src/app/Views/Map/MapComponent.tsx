@@ -15,6 +15,7 @@ import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 import { AddNewButton } from "./Buttons/AddNew";
 import { CenterButton } from "./Buttons/CenterButton";
 import { SearchNewButton } from "./Buttons/SearchNew";
+import {BinTypes} from "../../Models/BinTypes";
 
 export interface MarkerData {
   id: number;
@@ -55,6 +56,10 @@ export const MapComponent = () => {
 
   function addNew() {
     setCameraModalVisible(true);
+  }
+
+  function addCan(type : BinTypes) {
+    console.log(`trying to add can type=${type}`)
   }
 
   const [cameraTrigger, triggerCamera] = useState(false);
@@ -192,7 +197,7 @@ export const MapComponent = () => {
       />
 
       <View style={styles.operationContainer}>
-        <AddNewButton newTrash={addNew} newCan={undefined} />
+        <AddNewButton newTrash={addNew} newCan={addCan} />
       </View>
 
       {!isCentered && (

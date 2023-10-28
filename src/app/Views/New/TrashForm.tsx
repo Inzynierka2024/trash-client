@@ -5,6 +5,7 @@ import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
 import create_new_trash from "../../Logic/API/create_new_trash";
+import { Loading } from "../../Utils/Loading";
 
 export const TrashForm = (props: {
   location: MapLibreGL.Location;
@@ -18,6 +19,8 @@ export const TrashForm = (props: {
   });
   const [imageData, setImageData] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   function setData(imgData: string) {
     setImageData(imgData);
     setLocationData(props.location);
@@ -28,15 +31,19 @@ export const TrashForm = (props: {
   }
 
   function sendForm() {
+    setLoading(true);
+
     create_new_trash(locationData, imageData)
       .then((data) => {
         console.log("Trash added", data);
         close();
         props.updateMap();
         props.setModal(false);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("Error when adding trash", err);
+        setLoading(false);
       });
   }
 
@@ -62,6 +69,8 @@ export const TrashForm = (props: {
             alignItems: "center",
           }}
         >
+          <Loading visible={loading} />
+
           <View
             style={{
               margin: 20,
@@ -100,14 +109,16 @@ export const TrashForm = (props: {
             >
               <CameraButton
                 size={30}
-                iconName="delete"
+                backgroundColor={themeFromContext.colors.danger}
+                iconName="keyboard-return"
                 onPress={() => {
                   close();
                 }}
               />
               <CameraButton
                 size={30}
-                iconName="send"
+                backgroundColor={themeFromContext.colors.primary}
+                iconName="add-location"
                 onPress={() => {
                   sendForm();
                 }}

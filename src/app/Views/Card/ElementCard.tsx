@@ -76,8 +76,7 @@ export const ElementCard = (props: {
 
 const styles = StyleSheet.create({
     container: {
-        height: 340,
-        width: '100%'
+        width: 260
     },
     image: {
         aspectRatio: "1 / 1",

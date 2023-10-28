@@ -1,8 +1,10 @@
 import { useContext, useState, useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet, View } from "react-native";
+import { Animated, Easing, Text, StyleSheet, View, Image } from "react-native";
 import { ThemeContext, palette } from "../../../../theme/theme";
 import { FontAwesome } from "@expo/vector-icons";
 import AnimatedPressable from "../../../Animated/AnimatedPressable";
+import { ElementIcons } from "../../../Models/ElementIcons";
+import { ElementNames } from "../../../Models/ElementNames";
 
 export const AddNewButton = (props: {
   newTrash: Function;
@@ -11,6 +13,7 @@ export const AddNewButton = (props: {
   const themeFromContext = useContext(ThemeContext);
 
   const [open, setOpen] = useState(false);
+  const [containerOpen, setContainerOpen] = useState(false);
 
   const openRadius = 8;
   const iconSize = 32;
@@ -81,6 +84,135 @@ export const AddNewButton = (props: {
 
   return (
     <View style={styles.container}>
+      {containerOpen === true && (
+        <View style={[styles.container, styles.canContainer]}>
+          <View style={styles.labelContainer}>
+            <Text
+              style={[
+                styles.label,
+                { color: themeFromContext.colors.primaryText },
+              ]}
+            >
+              {ElementNames.cloth}
+            </Text>
+
+            <Text
+              style={[
+                styles.label,
+                { color: themeFromContext.colors.primaryText },
+              ]}
+            >
+              {ElementNames.debris}
+            </Text>
+
+            <Text
+              style={[
+                styles.label,
+                { color: themeFromContext.colors.primaryText },
+              ]}
+            >
+              {ElementNames.pszok}
+            </Text>
+
+            <Text
+              style={[
+                styles.label,
+                { color: themeFromContext.colors.primaryText },
+              ]}
+            >
+              {ElementNames["e-waste"]}
+            </Text>
+
+            <Text
+              style={[
+                styles.label,
+                { color: themeFromContext.colors.primaryText },
+              ]}
+            >
+              {ElementNames.general}
+            </Text>
+          </View>
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.canButton,
+              styles.cloth,
+              {
+                borderRadius: iconSize,
+              },
+            ]}
+            onPress={() => {
+              console.log("press");
+            }}
+          >
+            <Image source={ElementIcons.cloth} style={styles.imageIcon} />
+          </AnimatedPressable>
+
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.canButton,
+              styles.debris,
+              {
+                borderRadius: iconSize,
+              },
+            ]}
+            onPress={() => {
+              console.log("press");
+            }}
+          >
+            <Image source={ElementIcons.debris} style={styles.imageIcon} />
+          </AnimatedPressable>
+
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.canButton,
+              styles.pszok,
+              {
+                borderRadius: iconSize,
+              },
+            ]}
+            onPress={() => {
+              console.log("press");
+            }}
+          >
+            <Image source={ElementIcons.pszok} style={styles.imageIcon} />
+          </AnimatedPressable>
+
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.canButton,
+              styles.ewaste,
+              {
+                borderRadius: iconSize,
+              },
+            ]}
+            onPress={() => {
+              console.log("press");
+            }}
+          >
+            <Image source={ElementIcons["e-waste"]} style={styles.imageIcon} />
+          </AnimatedPressable>
+
+          <AnimatedPressable
+            style={[
+              styles.button,
+              styles.canButton,
+              styles.general,
+              {
+                borderRadius: iconSize,
+              },
+            ]}
+            onPress={() => {
+              console.log("press");
+            }}
+          >
+            <Image source={ElementIcons.general} style={styles.imageIcon} />
+          </AnimatedPressable>
+        </View>
+      )}
       <AnimatedPressable
         style={[
           styles.button,
@@ -91,9 +223,7 @@ export const AddNewButton = (props: {
           },
         ]}
         onPress={() => {
-          props.newTrash();
-          setOpen(false);
-          menuClose();
+          setContainerOpen(!containerOpen);
         }}
       >
         <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
@@ -130,7 +260,10 @@ export const AddNewButton = (props: {
 
           setOpen(toOpen);
           if (toOpen) menuOpen();
-          else menuClose();
+          else {
+            menuClose();
+            setContainerOpen(false);
+          }
         }}
       >
         <FontAwesome
@@ -153,6 +286,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 12,
   },
+  canContainer: {
+    marginBottom: 58,
+  },
   button: {
     padding: 8,
     alignItems: "center",
@@ -162,6 +298,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     bottom: 0,
+  },
+  canButton: {
+    right: 64,
+    position: "relative",
   },
   icon: {
     marginRight: 0,
@@ -175,5 +315,35 @@ const styles = StyleSheet.create({
   },
   menu: {
     backgroundColor: palette.darkgreen,
+  },
+  cloth: {
+    backgroundColor: palette.darkgreen,
+  },
+  debris: {
+    backgroundColor: palette.blacklighter,
+  },
+  pszok: {
+    backgroundColor: palette.blacklighter,
+  },
+  ewaste: {
+    backgroundColor: palette.darkblue,
+  },
+  general: {
+    backgroundColor: palette.darkgreen,
+  },
+  imageIcon: {
+    height: 32,
+    width: 32,
+  },
+  labelContainer: {
+    position: "absolute",
+    flexDirection: "column",
+    right: 124,
+    paddingTop: 14,
+    gap: 46,
+    width: 120,
+  },
+  label: {
+    textAlign: "right",
   },
 });

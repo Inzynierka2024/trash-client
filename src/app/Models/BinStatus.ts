@@ -1,0 +1,1 @@
+export type BinStatus = "empty" | "normal" | "full" | "overfilled"

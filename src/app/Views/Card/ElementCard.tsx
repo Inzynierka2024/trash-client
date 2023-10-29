@@ -6,14 +6,16 @@ import {palette, ThemeContext} from "../../../theme/theme";
 import {ElementNames} from "../../Models/ElementNames";
 import {ElementIcons} from "../../Models/ElementIcons";
 import {ElementColors} from "../../Models/ElementColors";
+import {BinStatus, BinStatusNames} from "../../Models/BinStatus";
 
 export const ElementCard = (props: {
     type: ElementTypes,
     imageEnabled: boolean,
     imageData?: string,
-    distance: number,
+    distance?: number,
     timestamp?: Date,
     addedBy?: string
+    binStatus?: BinStatus
 }) => {
     const themeFromContext = useContext(ThemeContext);
     const textColor = themeFromContext.colors.primaryText
@@ -38,22 +40,27 @@ export const ElementCard = (props: {
                 <View style={[styles.info, {backgroundColor}]}>
                     <Text numberOfLines={1} style={{
                         color: textColor,
-                        fontWeight: 600,
+                        fontWeight: "600",
                         fontSize: 17,
                     }}>{ElementNames[props.type]}</Text>
-                    <Text
-                        style={{
-                            color: textColor,
-                        }}
-                    >
-                        Odległość: {props.distance !== -1 ? round(props.distance, 2) : "-"}km
-                    </Text>
+
+                    {props.distance && (
+                        <Text
+                            style={{
+                                color: textColor,
+                            }}
+                        >
+                            Odległość: {props.distance !== -1 ? round(props.distance, 2) : "-"}km
+                        </Text>
+                    )}
+
 
                     {props.addedBy && (
                         <Text
                             style={{
                                 color: textColor,
                             }}
+                            numberOfLines={1}
                         >
                             Dodane przez: {props.addedBy}
                         </Text>
@@ -66,6 +73,16 @@ export const ElementCard = (props: {
                             }}
                         >
                             Data: {props.timestamp.toLocaleString()}
+                        </Text>
+                    )}
+
+                    {props.binStatus && (
+                        <Text
+                            style={{
+                                color: textColor,
+                            }}
+                        >
+                            Stan: {BinStatusNames[props.binStatus]}
                         </Text>
                     )}
                 </View>

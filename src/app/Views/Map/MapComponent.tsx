@@ -16,6 +16,8 @@ import { AddNewButton } from "./Buttons/AddNew";
 import { CenterButton } from "./Buttons/CenterButton";
 import { SearchNewButton } from "./Buttons/SearchNew";
 import {BinTypes} from "../../Models/BinTypes";
+import get_bins_in_area from "../../Logic/API/get_bins_in_area";
+import {BinForm} from "../New/BinForm";
 
 export interface MarkerData {
   id: number;
@@ -52,14 +54,18 @@ export const MapComponent = () => {
     setIsCentered(true);
   }
 
-  const [cameraModalVisible, setCameraModalVisible] = useState(false);
+  const [newTrashModalVisible, setNewTrashModalVisible] = useState(false);
+  const [newBinModalVisible, setNewBinModalVisible] = useState(false)
 
-  function addNew() {
-    setCameraModalVisible(true);
+  const [newBinType, setNewBinType] = useState<BinTypes>("general");
+
+  function addNewTrash() {
+    setNewTrashModalVisible(true);
   }
 
-  function addCan(type : BinTypes) {
-    console.log(`trying to add can type=${type}`)
+  function addNewBin(type : BinTypes) {
+    setNewBinType(type);
+    setNewBinModalVisible(true)
   }
 
   const [cameraTrigger, triggerCamera] = useState(false);
@@ -88,7 +94,23 @@ export const MapComponent = () => {
       const points = result.data["map_points"];
       return points;
     } else {
-      console.error("XD");
+      console.error("Invalid garbage points");
+      return [];
+    }
+  }
+
+  async function fetchNewBins() {
+    if (MapRef === null) return;
+    const bounds = await MapRef.getVisibleBounds();
+
+    const result = await get_bins_in_area(bounds);
+
+    if (result.isOk) {
+      const points = result.data["map_points"];
+      console.log(points)
+      return points;
+    } else {
+      console.error("Invalid bin points");
       return [];
     }
   }
@@ -99,6 +121,10 @@ export const MapComponent = () => {
     updateMapPoints(markers);
   }
 
+  async function updateBinMarkers() {
+    const markers = await fetchNewBins();
+  }
+
   useEffect(() => {
     // Startup intervals
     let markerInv;
@@ -107,11 +133,13 @@ export const MapComponent = () => {
       // Load markers one second after map load
       setTimeout(async () => {
         await updateMarkers();
+        await updateBinMarkers();
       }, 1000);
 
       // Fetch new markers every minute
       markerInv = setInterval(async () => {
         await updateMarkers();
+        await updateBinMarkers();
       }, 60000);
     })();
 
@@ -176,15 +204,32 @@ export const MapComponent = () => {
     >
       <Modal
         animationType="slide"
-        visible={cameraModalVisible}
+        visible={newTrashModalVisible}
         onRequestClose={() => {
-          setCameraModalVisible(false);
+          setNewTrashModalVisible(false);
         }}
       >
         <TrashForm
           location={userState}
-          setModal={setCameraModalVisible}
+          setModal={setNewTrashModalVisible}
           updateMap={updateMarkers}
+        />
+      </Modal>
+
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={newBinModalVisible}
+          onRequestClose={() => {
+            setNewBinModalVisible(false);
+          }}
+          style={{backgroundColor: "transparent"}}
+      >
+        <BinForm
+            location={userState}
+            type={newBinType}
+            setModal={setNewBinModalVisible}
+            updateMap={updateMarkers}
         />
       </Modal>
 
@@ -197,7 +242,7 @@ export const MapComponent = () => {
       />
 
       <View style={styles.operationContainer}>
-        <AddNewButton newTrash={addNew} newCan={addCan} />
+        <AddNewButton newTrash={addNewTrash} newCan={addNewBin} />
       </View>
 
       {!isCentered && (

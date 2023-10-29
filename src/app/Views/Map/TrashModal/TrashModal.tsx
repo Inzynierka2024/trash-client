@@ -12,6 +12,7 @@ import calculate_distance from "../../../Utils/calculate_distance";
 import round from "../../../Utils/round";
 import { Loading } from "../../../Utils/Loading";
 import {ElementCard} from "../../Card/ElementCard";
+import {ElementColors} from "../../../Models/ElementColors";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -118,7 +119,8 @@ export const TrashModal = (props: {
           style={{
             backgroundColor: themeFromContext.colors.background,
             borderWidth: 4,
-            borderRadius: 8,
+            borderColor: ElementColors.garbage,
+            borderRadius: 4,
             alignSelf: "center",
             alignItems: "center",
             justifyContent: "center",

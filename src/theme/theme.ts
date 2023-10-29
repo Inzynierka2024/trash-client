@@ -14,6 +14,8 @@ export const palette = {
 
   brown: "#690d0d",
 
+  dimmedBackground: "#00000099",
+
   navbar: "rgb(255, 255, 255)",
   navbardark: "rgb(18, 18, 18)",
 

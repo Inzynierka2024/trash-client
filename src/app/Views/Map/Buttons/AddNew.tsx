@@ -389,5 +389,11 @@ const styles = StyleSheet.create({
     },
     label: {
         textAlign: "right",
+        textShadowColor: "#0006",
+        textShadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        textShadowRadius: 2,
     },
 });

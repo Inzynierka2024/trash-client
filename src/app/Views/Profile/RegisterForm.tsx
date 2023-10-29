@@ -35,7 +35,7 @@ const RegisterForm: React.FC = () => {
   const { login } = useAuth();
   const navigation = useNavigation();
   const themeFromContext = useContext(ThemeContext);
-  
+
   // Animation state
   const animatePress = useRef(new Animated.Value(1)).current;
 
@@ -55,28 +55,24 @@ const RegisterForm: React.FC = () => {
         Alert.alert("Empty fields", "Please, fill all the fields");
         return;
       }
-      console.log("$$$$ "+base);
-      console.log("$$$$ "+SIGNUP_URL);
-      console.log("$$$$ "+username+" "+password+" "+email);
       // Modify this URL to match your API endpoint
       const response = await axios.post(SIGNUP_URL, {
         username,
         password,
         email: email.toLowerCase()
       });
-      console.log("####"+response.data);
+      console.log("####" + response.data);
 
       switch (response.status) {
         case 200:
           console.log("successfull registration");
           const LOGIN_URL = `${base}/user/login`;
           // Success
-            const loginResponse = await axios.post(LOGIN_URL, {
-              password,
-              email: email.toLowerCase()
-            });
-                    
-          console.log("####"+loginResponse.data);
+          const loginResponse = await axios.post(LOGIN_URL, {
+            password,
+            email: email.toLowerCase()
+          });
+
           console.log("login attempt");
           if (loginResponse.status === 200) {
             const token = loginResponse.data.token;
@@ -86,8 +82,8 @@ const RegisterForm: React.FC = () => {
               throw new Error("Token: Token not found in response.");
             } else {
               login(token);
-
               navigation.navigate("Profile");
+              ToastAndroid.show("Successfully registered!", ToastAndroid.SHORT);
             }
           }
           break;
@@ -130,7 +126,7 @@ const RegisterForm: React.FC = () => {
       useNativeDriver: true,
     }).start(() => {
       handleRegister();
-      ToastAndroid.show("Successfully registered!", ToastAndroid.SHORT);
+
     });
   };
 
@@ -146,47 +142,47 @@ const RegisterForm: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-    <View style={styles.container}>
-      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <View style={styles.container}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
 
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Username"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setUsername}
-        value={username}
-      />
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Email"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setEmail}
-        value={email}
-        keyboardType="email-address"
-        onEndEditing={handleEmailEndEditing}
-      />
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Password"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
-      <Animated.View style={{ transform: [{ scale: animatePress }] }}>
-        <TouchableOpacity
-          onPressIn={animateIn}
-          onPressOut={animateOut}
-          style={styles.button}
-        >
-          <Animated.Text style={styles.buttonText}>Register</Animated.Text>
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Username"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setUsername}
+          value={username}
+        />
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Email"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setEmail}
+          value={email}
+          keyboardType="email-address"
+          onEndEditing={handleEmailEndEditing}
+        />
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Password"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry
+        />
+        <Animated.View style={{ transform: [{ scale: animatePress }] }}>
+          <TouchableOpacity
+            onPressIn={animateIn}
+            onPressOut={animateOut}
+            style={styles.button}
+          >
+            <Animated.Text style={styles.buttonText}>Register</Animated.Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Already have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={[styles.text, styles.link]}>Login here</Text>
         </TouchableOpacity>
-      </Animated.View>
-      <Text style={{...styles.text, color: themeFromContext.colors.secondaryText}}>Already have an account? </Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={[styles.text, styles.link]}>Login here</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
     </ThemeContext.Provider>
   );
 };

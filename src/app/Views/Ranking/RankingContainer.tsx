@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, useColorScheme } from 'react-native';
 import axios from 'axios';
 import get_api_url from "../../Utils/get_api_url";
 import get_jwt_token from "../../Utils/get_jwt_token";
 import { join } from "path";
 import _fetch from '../../Logic/API/_fetch';
+import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
+import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const RankingContainer = () => {
-  const [scoreboardData, setScoreboardData] = useState<any[]>([]);
-  const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
-  const [base, setBase] = useState<string>('');
+  const [scoreboardData, setScoreboardData] = useState < any[] > ([]);
+  const [leaderboardData, setLeaderboardData] = useState < any[] > ([]);
+  const [base, setBase] = useState < string > ('');
+  const theme = useContext(ThemeContext);
+  const [darkMode, _setDarkMode] = useState(
+    useColorScheme() === "dark" ? true : false
+  );
 
   useEffect(() => {
     const fetchBaseUrl = async () => {
@@ -21,46 +28,56 @@ const RankingContainer = () => {
   }, []);
 
   useEffect(() => {
-  const fetchScoreboard = async () => {
-    try {
-      const response = await _fetch(`/ranking`, "GET", {});
-      setScoreboardData(response.data);
-    } catch (error) {
-      console.error('Error fetching scoreboard data:', error);
+    const fetchScoreboard = async () => {
+      try {
+        const response = await _fetch(`/ranking`, "GET", {});
+        console.log(response);
+        setScoreboardData(response.data);
+      } catch (error) {
+        console.error('Error fetching scoreboard data:', error);
+      }
+    };
+
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await _fetch(`/leaderboard`, "GET", {});
+        setLeaderboardData(response.data);
+      } catch (error) {
+        console.error('Error fetching leaderboard data:', error);
+      }
+    };
+
+    if (base) {
+      fetchScoreboard();
+      //fetchLeaderboard();
     }
+  }, [base]);
+
+  const renderScoreboardItem = (score, index) => {
+    return (
+      <View key={index} style={styles.item}>
+        
+        <View style={styles.scoreDetails}>
+        <Text style={styles.username}>
+        <Text style={styles.period}>{score.rank}. </Text>
+           {score.username}</Text>
+
+          <View style={styles.iconContainer}>
+          <FontAwesome5 name="coins" size={theme.spacing.m} color={theme.colors.primary} />
+          <Text style={styles.score}> {score.points} points</Text>
+        </View>
+          
+          <Text style={styles.period}>Period: {score.period}</Text>
+        </View>
+      </View>
+    );
   };
-
-  const fetchLeaderboard = async () => {
-    try {
-      const response = await _fetch(`/leaderboard`, "GET", {});
-      setLeaderboardData(response.data);
-    } catch (error) {
-      console.error('Error fetching leaderboard data:', error);
-    }
-  };
-
-  if (base) {
-    fetchScoreboard();
-    fetchLeaderboard();
-  }
-}, [base]);
-
 
   return (
+
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Scoreboard</Text>
-      {scoreboardData.map((score, index) => (
-        <View key={index} style={styles.item}>
-          <Text>{score.username}: {score.score}</Text>
-          <Text>Period: {score.period}</Text>
-        </View>
-      ))}
-      {/* <Text style={styles.title}>Leaderboard</Text>
-      {leaderboardData.map((leader, index) => (
-        <View key={index} style={styles.item}>
-          <Text>{index + 1}. {leader.username} - {leader.score}</Text>
-        </View>
-      ))} */}
+      {scoreboardData.map(renderScoreboardItem)}
     </ScrollView>
   );
 };
@@ -69,6 +86,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
+    backgroundColor: theme.colors.secondary
   },
   title: {
     fontSize: 24,
@@ -77,10 +95,34 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
     padding: 20,
-    marginVertical: 8,
+    marginVertical: 16,
     marginHorizontal: 16,
+    borderRadius: 10, // Rounded corners for the item
+    shadowOpacity: 0.1, // Optional shadow for elevation
+    shadowRadius: 5, // Optional shadow for elevation
+  },
+  iconContainer: {
+    marginRight: theme.spacing.m,
+    marginTop:theme.spacing.s,
+    marginBottom: theme.spacing.s,
+    flexDirection: 'row',
+  },
+  scoreDetails: {
+    flex: 1,
+  },
+  username: {
+    fontWeight: 'bold',
+    fontSize: theme.textVariants.body.fontSize,
+  },
+  score: {
+    color: theme.colors.secondaryText,
+  },
+  period: {
+    fontStyle: 'italic',
   },
 });
 

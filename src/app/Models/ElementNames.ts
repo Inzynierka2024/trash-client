@@ -1,6 +1,6 @@
 export const ElementNames = {
   garbage: "Odpad",
-  general: "Kosz",
+  general: "Kosz ogólny",
   bio: "Kosz na odpady bio",
   plastic: "Kosz na tworzywa sztuczne",
   paper: "Kosz na papier",

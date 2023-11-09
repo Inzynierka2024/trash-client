@@ -9,20 +9,22 @@ import {
 } from "react-native";
 import { ThemeContext, theme } from "../../../theme/theme";
 import { TrashForm } from "../New/TrashForm";
-import exampleIcon from "../../../../assets/marker.png";
 import { TrashModal } from "./TrashModal/TrashModal";
 import get_trash_in_area from "../../Logic/API/get_trash_in_area";
 import { AddNewButton } from "./Buttons/AddNew";
 import { CenterButton } from "./Buttons/CenterButton";
 import { SearchNewButton } from "./Buttons/SearchNew";
-import {BinTypes} from "../../Models/BinTypes";
+import { BinTypes } from "../../Models/BinTypes";
 import get_bins_in_area from "../../Logic/API/get_bins_in_area";
-import {BinForm} from "../New/BinForm";
+import { BinForm } from "../New/BinForm";
+import { ElementMapMarkers } from "../../Models/ElementMapMarkers";
+import { ElementTypes } from "../../Models/ElementTypes";
 
 export interface MarkerData {
   id: number;
-  lat: number;
-  lng: number;
+  latitude: number;
+  longitude: number;
+  type?: BinTypes;
 }
 
 export const MapComponent = () => {
@@ -34,7 +36,21 @@ export const MapComponent = () => {
     coords: { latitude: 0, longitude: 0 },
   });
 
+  // Trash markers
   const [markers, setMarkers] = useState<MarkerData[]>([]);
+
+  // Bin markers
+  const binMarkers = {
+    general: useState<MarkerData[]>([]),
+    bio: useState<MarkerData[]>([]),
+    plastic: useState<MarkerData[]>([]),
+    paper: useState<MarkerData[]>([]),
+    glass: useState<MarkerData[]>([]),
+    "e-waste": useState<MarkerData[]>([]),
+    pszok: useState<MarkerData[]>([]),
+    debris: useState<MarkerData[]>([]),
+    cloth: useState<MarkerData[]>([]),
+  };
 
   const [isCentered, setIsCentered] = useState(true);
 
@@ -47,7 +63,7 @@ export const MapComponent = () => {
 
     CameraRef.flyTo(
       [userState.coords.latitude, userState.coords.longitude],
-      500
+      500,
     );
 
     triggerUpdate("camera");
@@ -55,7 +71,7 @@ export const MapComponent = () => {
   }
 
   const [newTrashModalVisible, setNewTrashModalVisible] = useState(false);
-  const [newBinModalVisible, setNewBinModalVisible] = useState(false)
+  const [newBinModalVisible, setNewBinModalVisible] = useState(false);
 
   const [newBinType, setNewBinType] = useState<BinTypes>("general");
 
@@ -63,9 +79,9 @@ export const MapComponent = () => {
     setNewTrashModalVisible(true);
   }
 
-  function addNewBin(type : BinTypes) {
+  function addNewBin(type: BinTypes) {
     setNewBinType(type);
-    setNewBinModalVisible(true)
+    setNewBinModalVisible(true);
   }
 
   const [cameraTrigger, triggerCamera] = useState(false);
@@ -107,7 +123,6 @@ export const MapComponent = () => {
 
     if (result.isOk) {
       const points = result.data["map_points"];
-      console.log(points)
       return points;
     } else {
       console.error("Invalid bin points");
@@ -118,11 +133,22 @@ export const MapComponent = () => {
   async function updateMarkers() {
     const markers = await fetchNewMapMarkers();
     setMarkers(markers);
-    updateMapPoints(markers);
+    updateMapPoints();
+  }
+
+  function groupBinMarkers(markers: MarkerData[]) {
+    for (const marker of markers) {
+      const type = marker.type ?? "general";
+      const [binCollection, setBinCollection] = binMarkers[type];
+      const newBinCollection = [...binCollection, marker];
+      setBinCollection(newBinCollection);
+    }
   }
 
   async function updateBinMarkers() {
     const markers = await fetchNewBins();
+    groupBinMarkers(markers);
+    updateMapPoints();
   }
 
   useEffect(() => {
@@ -150,8 +176,8 @@ export const MapComponent = () => {
   }, []);
 
   // This updates points on a map
-  async function updateMapPoints(markers: any[]) {
-    setFeatureCollection({
+  async function updateMapPoints() {
+    setTrashCollection({
       type: "FeatureCollection",
       features: markers.map((marker) => {
         const { latitude, longitude, id } = marker;
@@ -164,9 +190,66 @@ export const MapComponent = () => {
         };
       }),
     });
+
+    for (const key in binCollections) {
+      const [_binCollection, setBinCollection] = binCollections[key];
+
+      setBinCollection({
+        type: "FeatureCollection",
+        features: binMarkers[key][0].map((marker) => {
+          const { latitude, longitude, id } = marker;
+
+          return {
+            type: "Feature",
+            id,
+            properties: {},
+            geometry: { type: "Point", coordinates: [longitude, latitude] },
+          };
+        }),
+      });
+    }
   }
 
-  const [featureCollection, setFeatureCollection] =
+  const binCollections = {
+    general: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    bio: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    plastic: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    paper: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    glass: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    "e-waste": useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    pszok: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    debris: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    cloth: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+  };
+
+  const [trashCollection, setTrashCollection] =
     useState<GeoJSON.FeatureCollection>({
       type: "FeatureCollection",
       features: [],
@@ -175,6 +258,9 @@ export const MapComponent = () => {
   const [currentMarker, setCurrentMarker] = useState<MarkerData>(null);
   const [trashModalVisible, setTrashModalVisible] = useState(false);
 
+  const [currentBin, setCurrentBin] = useState<MarkerData>(null);
+  const [binModalVisible, setBinModalVisible] = useState(false);
+
   async function showTrashData(id: number) {
     const marker = markers.find((e) => e["id"] == id);
 
@@ -182,9 +268,25 @@ export const MapComponent = () => {
     setTrashModalVisible(true);
   }
 
-  function onPinPress(event: any) {
+  async function showBinData(id: number) {
+    let bin = undefined;
+    for (const key in binMarkers) {
+      const [binCollection, _setBinCollection] = binMarkers[key];
+      bin = binCollection.find((e) => e["id"] == id);
+      if (bin) break;
+    }
+    setCurrentBin(bin);
+    setBinModalVisible(true);
+  }
+
+  function onTrashPinPress(event: any) {
     const id = event["features"][0]["id"];
     showTrashData(id);
+  }
+
+  function onBinPinPress(event: any) {
+    const id = event["features"][0]["id"];
+    showBinData(id);
   }
 
   function closeTrashModal() {
@@ -217,19 +319,19 @@ export const MapComponent = () => {
       </Modal>
 
       <Modal
-          animationType="slide"
-          transparent={true}
-          visible={newBinModalVisible}
-          onRequestClose={() => {
-            setNewBinModalVisible(false);
-          }}
-          style={{backgroundColor: "transparent"}}
+        animationType="slide"
+        transparent={true}
+        visible={newBinModalVisible}
+        onRequestClose={() => {
+          setNewBinModalVisible(false);
+        }}
+        style={{ backgroundColor: "transparent" }}
       >
         <BinForm
-            location={userState}
-            type={newBinType}
-            setModal={setNewBinModalVisible}
-            updateMap={updateMarkers}
+          location={userState}
+          type={newBinType}
+          setModal={setNewBinModalVisible}
+          updateMap={updateMarkers}
         />
       </Modal>
 
@@ -287,21 +389,83 @@ export const MapComponent = () => {
 
         <MapLibreGL.ShapeSource
           id="pinsSource"
-          shape={featureCollection}
-          onPress={onPinPress}
+          shape={trashCollection}
+          onPress={onTrashPinPress}
         >
-          <MapLibreGL.SymbolLayer id="pinsLayer" style={pinLayerStyle} />
+          <MapLibreGL.SymbolLayer
+            id="pinsLayer"
+            style={pinLayerStyles.garbage}
+          />
         </MapLibreGL.ShapeSource>
+
+        {Object.keys(binCollections).map((key) => {
+          const [binCollection, _setBinCollection] = binCollections[key];
+
+          return (
+            <MapLibreGL.ShapeSource
+              id={`${key}PinsSource`}
+              shape={binCollection}
+              onPress={onBinPinPress}
+            >
+              <MapLibreGL.SymbolLayer
+                id={`${key}PinsLayer`}
+                style={pinLayerStyles[key]}
+              />
+            </MapLibreGL.ShapeSource>
+          );
+        })}
       </MapLibreGL.MapView>
     </View>
   );
 };
 
-const pinLayerStyle: StyleProp<SymbolLayerStyle> = {
+const commonPinLayerStyle: StyleProp<SymbolLayerStyle> = {
   iconAllowOverlap: true,
   iconAnchor: "bottom",
   iconSize: 0.06,
-  iconImage: exampleIcon,
+};
+
+const pinLayerStyles: { [key in ElementTypes]: StyleProp<SymbolLayerStyle> } = {
+  general: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.general,
+  },
+  bio: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.bio,
+  },
+  plastic: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.plastic,
+  },
+  paper: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.paper,
+  },
+  glass: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.glass,
+  },
+  "e-waste": {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers["e-waste"],
+  },
+  pszok: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.pszok,
+  },
+  debris: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.debris,
+  },
+  cloth: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.cloth,
+  },
+  garbage: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.garbage,
+  },
 };
 
 const styles = StyleSheet.create({

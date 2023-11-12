@@ -7,9 +7,11 @@ import ewasteMarker from "../../../assets/markers/marker-ewaste.png";
 import pszokMarker from "../../../assets/markers/marker-pszok.png";
 import debrisMarker from "../../../assets/markers/marker-debris.png";
 import clothMarker from "../../../assets/markers/marker-cloth.png";
+import { ElementTypes } from "./ElementTypes";
 
-export const ElementMapMarkers = {
-  all: generalMarker,
+export const ElementMapMarkers: { [key in ElementTypes]: any } = {
+  garbage: generalMarker,
+
   general: generalMarker,
   bio: bioMarker,
   plastic: plasticMarker,
@@ -19,5 +21,4 @@ export const ElementMapMarkers = {
   pszok: pszokMarker,
   debris: debrisMarker,
   cloth: clothMarker,
-  garbage: generalMarker,
 };

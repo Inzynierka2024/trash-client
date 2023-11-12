@@ -19,6 +19,7 @@ import get_bins_in_area from "../../Logic/API/get_bins_in_area";
 import { BinForm } from "../New/BinForm";
 import { ElementMapMarkers } from "../../Models/ElementMapMarkers";
 import { ElementTypes } from "../../Models/ElementTypes";
+import { ViewFilter } from "./ViewFilter/ViewFilter";
 
 export interface MarkerData {
   id: number;
@@ -51,6 +52,25 @@ export const MapComponent = () => {
     debris: useState<MarkerData[]>([]),
     cloth: useState<MarkerData[]>([]),
   };
+
+  // Markers visibility
+  const [elementVisibility, setElementVisibility] = useState<{
+    [key in ElementTypes]: boolean;
+  }>({
+    // Trash
+    garbage: true,
+
+    // Bins
+    "e-waste": false,
+    bio: true,
+    cloth: false,
+    debris: false,
+    general: true,
+    glass: true,
+    paper: true,
+    plastic: true,
+    pszok: false,
+  });
 
   const [isCentered, setIsCentered] = useState(true);
 
@@ -294,6 +314,13 @@ export const MapComponent = () => {
     setTrashModalVisible(false);
   }
 
+  function toggleElementVisibility(type: ElementTypes) {
+    console.log("Toggling", type, elementVisibility);
+    const newVisibility = { ...elementVisibility };
+    newVisibility[type] = !newVisibility[type];
+    setElementVisibility(newVisibility);
+  }
+
   return (
     <View
       style={{
@@ -334,6 +361,11 @@ export const MapComponent = () => {
           updateMap={updateMarkers}
         />
       </Modal>
+
+      <ViewFilter
+        toggleElementVisibility={toggleElementVisibility}
+        elementVisibilites={elementVisibility}
+      />
 
       <TrashModal
         updateMapMarkers={updateMarkers}

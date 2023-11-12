@@ -362,11 +362,6 @@ export const MapComponent = () => {
         />
       </Modal>
 
-      <ViewFilter
-        toggleElementVisibility={toggleElementVisibility}
-        elementVisibilites={elementVisibility}
-      />
-
       <TrashModal
         updateMapMarkers={updateMarkers}
         currentTrash={currentMarker}
@@ -374,6 +369,13 @@ export const MapComponent = () => {
         onClose={closeTrashModal}
         userState={userState}
       />
+
+      <View style={styles.filterContainer}>
+        <ViewFilter
+          toggleElementVisibility={toggleElementVisibility}
+          elementVisibilites={elementVisibility}
+        />
+      </View>
 
       <View style={styles.operationContainer}>
         <AddNewButton newTrash={addNewTrash} newCan={addNewBin} />
@@ -506,6 +508,15 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
     alignSelf: "stretch",
+  },
+
+  filterContainer: {
+    position: "absolute",
+    zIndex: 9999,
+    right: 0,
+    top: 0,
+    marginRight: 18,
+    marginTop: 100,
   },
 
   operationContainer: {

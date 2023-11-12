@@ -12,6 +12,8 @@ export const palette = {
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
 
+  gray: "#999999",
+
   brown: "#690d0d",
 
   dimmedBackground: "#00000099",

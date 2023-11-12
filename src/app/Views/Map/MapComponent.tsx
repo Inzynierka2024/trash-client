@@ -433,6 +433,8 @@ export const MapComponent = () => {
         {Object.keys(binCollections).map((key) => {
           const [binCollection, _setBinCollection] = binCollections[key];
 
+          if (!elementVisibility[key]) return null;
+
           return (
             <MapLibreGL.ShapeSource
               id={`${key}PinsSource`}

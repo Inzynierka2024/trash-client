@@ -1,11 +1,11 @@
 import {
   View,
   StyleSheet,
-  Modal,
   Text,
   Pressable,
   TouchableOpacity,
 } from "react-native";
+import Modal from "react-native-modal";
 import { useContext, useState } from "react";
 import { palette, ThemeContext } from "../../../../theme/theme";
 import { ElementMapMarkers } from "../../../Models/ElementMapMarkers";
@@ -40,53 +40,50 @@ export const ViewFilter = (props: {
       </Pressable>
 
       <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
+        animationIn="slideInRight"
+        animationOut="slideOutRight"
+        isVisible={modalVisible}
+        onBackButtonPress={() => {
+          setModalVisible(false);
+        }}
+        backdropOpacity={0}
+        onBackdropPress={() => {
           setModalVisible(false);
         }}
         style={[styles.modal]}
       >
-        <TouchableOpacity
-          style={[{ flex: 1 }]}
-          onPressOut={() => {
-            setModalVisible(false);
-          }}
-          activeOpacity={1}
+        <View
+          style={[
+            styles.container,
+            {
+              backgroundColor: themeFromContext.colors.background,
+            },
+          ]}
         >
-          <View
+          <Text
             style={[
-              styles.container,
+              styles.title,
               {
-                backgroundColor: themeFromContext.colors.background,
+                color: textColor,
+                backgroundColor: themeFromContext.colors.contrastOverlay,
               },
             ]}
           >
-            <Text
-              style={[
-                styles.title,
-                {
-                  color: textColor,
-                  backgroundColor: themeFromContext.colors.contrastOverlay,
-                },
-              ]}
-            >
-              Pokaż na mapie:
-            </Text>
-            {Object.keys(ElementMapMarkers).map((key: ElementTypes) => {
-              return (
-                <FilterButton
-                  key={key}
-                  elementKey={key}
-                  toggleState={props.toggleElementVisibility}
-                  state={props.elementVisibilites[key]}
-                  name={ElementNames[key]}
-                  color={ElementColors[key]}
-                />
-              );
-            })}
-          </View>
-        </TouchableOpacity>
+            Pokaż na mapie:
+          </Text>
+          {Object.keys(ElementMapMarkers).map((key: ElementTypes) => {
+            return (
+              <FilterButton
+                key={key}
+                elementKey={key}
+                toggleState={props.toggleElementVisibility}
+                state={props.elementVisibilites[key]}
+                name={ElementNames[key]}
+                color={ElementColors[key]}
+              />
+            );
+          })}
+        </View>
       </Modal>
     </View>
   );
@@ -99,7 +96,8 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     left: 0,
-    margin: 12,
+    top: 0,
+    margin: 0,
     width: 260,
     flex: 1,
     flexDirection: "column",

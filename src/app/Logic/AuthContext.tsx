@@ -22,7 +22,7 @@ interface AuthContextProps {
   getUserLogin: () => void;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ state, login, logout, register, getUserLogin, getDecodedToken }}
+      value={{ state, login, logout, register, getUserLogin, getDecodedToken, getToken }}
     >
       {children}
     </AuthContext.Provider>

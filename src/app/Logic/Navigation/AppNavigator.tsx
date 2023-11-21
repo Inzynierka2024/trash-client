@@ -18,7 +18,6 @@ import ProfileTrashForm from "../../Views/Profile/ProfileTrashForm";
 import SettingsForm from "../../Views/Profile/SettingsForm";
 import RankingContainer from "../../Views/Ranking/RankingContainer";
 import { MapContainer } from "../../Views/Map/MapContainer";
-import ProfileContainer from "../../Views/Profile/ProfileContainer";
 import GuildsForm from "../../Views/Guilds/GuildsForm";
 import GuildDetailsForm from "../../Views/Guilds/GuildDetailsForm";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
@@ -32,13 +31,10 @@ const ProfileStackNavigator = () => {
 
   const [initialRoute, setInitialRoute] = React.useState(null);
   const { state } = useAuth();
-  console.log("navigation >>> state >>> "+state.isLoggedIn);
-  console.log("navigation >>> initialRoute -b >>> "+initialRoute);
   useEffect(() => {
     setInitialRoute(state.isLoggedIn ? 'Profile' : 'Login');
 }, [state.isLoggedIn]);
 
-  console.log("navigation >>> initialRoute -a >>> "+initialRoute);
   if (!initialRoute) return null;
 
   return (

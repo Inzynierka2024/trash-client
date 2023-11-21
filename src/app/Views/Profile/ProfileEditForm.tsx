@@ -1,96 +1,76 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ToastAndroid,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, Button, StyleSheet, ToastAndroid } from 'react-native';
+import _fetch from '../../Logic/API/_fetch';
+import { useAuth } from '../../Logic/AuthContext';
+import get_user_data from '../../Logic/API/get_user_data';
 
 const ProfileEditForm: React.FC = () => {
-  const [profile, setProfile] = useState({
-    picture: null,  // assuming this will be a URI link to an image
-    username: '',
-    email: '',
-    fullname: '',
-    password: '',
-    location: {
-      city: '',
-      country: '',
-    },
-    stats: {
-      gatheredTrash: 0,
-      reportedTrash: 0,
-    },
-    points: 0,
-  });
+  const { state } = useAuth();
+  const [userData, setUserData] = useState(
+    {
+      email: '',
+      location: {
+        city: '',
+        country: '',
+      },
+      username: '',
+      stats: {
+        points: '',
+        gatheredTrash: '',
+        reportedTrash: ''
+      }
+    });
+
+  useEffect(() => {
+    // Here you can fetch the current user data to populate the fields
+    // Assuming you have a function to fetch user data
+  }, []);
 
   const handleInputChange = (field, value) => {
-    if (field in profile) {
-      setProfile(prevState => ({ ...prevState, [field]: value }));
-      ToastAndroid.show('Data updated successfully!', ToastAndroid.SHORT);
+    setUserData(prevState => ({ ...prevState, [field]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!state.token) {
+      ToastAndroid.show('No authentication token found', ToastAndroid.SHORT);
+      return;
+    }
+
+    const success = await editUserData(userData);
+    if (success) {
+      ToastAndroid.show('User updated successfully', ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show('Error updating user', ToastAndroid.SHORT);
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* <Image source={{ uri: profile.picture }} style={styles.profileImage} /> */}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        onChangeText={value => handleInputChange('username', value)}
-        value={profile.username}
-      />
-
       <TextInput
         style={styles.input}
         placeholder="Email"
         onChangeText={value => handleInputChange('email', value)}
-        value={profile.email}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        onChangeText={value => handleInputChange('fullname', value)}
-        value={profile.fullname}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        onChangeText={value => handleInputChange('password', value)}
-        value={profile.password}
+        value={userData.email}
       />
 
       <TextInput
         style={styles.input}
         placeholder="City"
         onChangeText={value => handleInputChange('location.city', value)}
-        value={profile.location.city}
+        value={userData.location.city}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Country"
         onChangeText={value => handleInputChange('location.country', value)}
-        value={profile.location.country}
+        value={userData.location.country}
       />
+      <Text style={styles.readOnly}>Gathered Trash: {userData.stats.gatheredTrash}</Text>
+      <Text style={styles.readOnly}>Reported Trash: {userData.stats.reportedTrash}</Text>
+      <Text style={styles.readOnly}>Points: {userData.stats.points}</Text>
 
-      <Text style={styles.readOnly}>
-        Gathered Trash: {profile.stats.gatheredTrash}
-      </Text>
-
-      <Text style={styles.readOnly}>
-        Reported Trash: {profile.stats.reportedTrash}
-      </Text>
-
-      <Text style={styles.readOnly}>Points: {profile.points}</Text>
-
+      <Button title="Save Changes" onPress={handleSubmit} />
     </View>
   );
 };
@@ -99,33 +79,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
-    borderColor: '#3d9970',
-    borderWidth: 3,
   },
   input: {
     width: '90%',
     height: 40,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    borderColor: '#3d9970',
-    borderWidth: 2,
-    borderRadius: 8,
-    color: '#333',
-    backgroundColor: '#ffffff',
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
   readOnly: {
     fontSize: 16,
-    marginVertical: 4,
-    color: '#3d9970',
+    marginVertical: 8,
+    color: '#333333',
+    width: '100%',
+    textAlign: 'left',
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCCCCC',
+    paddingBottom: 4,
   },
 });
 
 export default ProfileEditForm;
+
+

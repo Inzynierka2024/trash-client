@@ -20,5 +20,6 @@ export default async function (bounds) {
     });
 
   const result = await _fetch(URL, "GET", {});
+  console.log("Finished fetching trash in area");
   return result;
 }

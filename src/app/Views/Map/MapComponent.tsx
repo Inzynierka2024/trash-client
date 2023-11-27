@@ -20,6 +20,7 @@ import { BinForm } from "../New/BinForm";
 import { ElementMapMarkers } from "../../Models/ElementMapMarkers";
 import { ElementTypes } from "../../Models/ElementTypes";
 import { ViewFilter } from "./ViewFilter/ViewFilter";
+import { BinModal } from "./BinModal/BinModal";
 
 export interface MarkerData {
   id: number;
@@ -293,6 +294,7 @@ export const MapComponent = () => {
       bin = binCollection.find((e) => e["id"] == id);
       if (bin) break;
     }
+    console.log(bin);
     setCurrentBin(bin);
     setBinModalVisible(true);
   }
@@ -304,12 +306,18 @@ export const MapComponent = () => {
 
   function onBinPinPress(event: any) {
     const id = event["features"][0]["id"];
+    console.log("Showing ", id);
     showBinData(id);
   }
 
   function closeTrashModal() {
     setCurrentMarker(null);
     setTrashModalVisible(false);
+  }
+
+  function closeBinModal() {
+    setCurrentBin(null);
+    setBinModalVisible(false);
   }
 
   function toggleElementVisibility(type: ElementTypes) {
@@ -366,6 +374,12 @@ export const MapComponent = () => {
         trashModalVisible={trashModalVisible}
         onClose={closeTrashModal}
         userState={userState}
+      />
+
+      <BinModal
+        currentBin={currentBin}
+        binModalVisible={binModalVisible}
+        onClose={closeBinModal}
       />
 
       <View style={styles.filterContainer}>

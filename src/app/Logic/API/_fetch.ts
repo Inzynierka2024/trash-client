@@ -7,7 +7,7 @@ export default async function (
   api_path: string,
   method: "GET" | "POST" | "DELETE" | "PUT",
   headers: { [key: string]: string },
-  body?: { [key: string]: string }
+  body?: { [key: string]: string },
 ): Promise<{ isOk: boolean; data: any; error?: string }> {
   const base = await get_api_url();
   const token = await get_jwt_token();
@@ -38,7 +38,7 @@ export default async function (
 
   if (isOk === true) return { isOk: true, data: json };
   else {
-    Alert.alert(`${code} Error fetching: ${json.message}`);
+    console.error(`${code}: ${json.message}`);
     return { isOk: false, data: {}, error: json.message };
   }
 }

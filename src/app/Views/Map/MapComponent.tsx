@@ -130,7 +130,6 @@ export const MapComponent = () => {
       const points = result.data["map_points"];
       return points;
     } else {
-      console.error("Invalid garbage points");
       return [];
     }
   }
@@ -145,7 +144,6 @@ export const MapComponent = () => {
       const points = result.data["map_points"];
       return points;
     } else {
-      console.error("Invalid bin points");
       return [];
     }
   }

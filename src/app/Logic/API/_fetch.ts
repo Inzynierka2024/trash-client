@@ -38,7 +38,7 @@ export default async function (
 
   if (isOk === true) return { isOk: true, data: json };
   else {
-    console.error(`${code}: ${json.message}`);
+    console.error(`${url} | ${code}: ${json.message}`);
     return { isOk: false, data: {}, error: json.message };
   }
 }

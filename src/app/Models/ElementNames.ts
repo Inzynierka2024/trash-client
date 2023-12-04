@@ -9,4 +9,5 @@ export const ElementNames = {
   pszok: "PSZOK",
   debris: "Śmietnik na gruz",
   cloth: "Kontener na odzież używaną",
+  battery: "Zbieranie baterii",
 };

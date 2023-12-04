@@ -16,5 +16,6 @@ export const ElementIcons = {
   pszok: generalIcon,
   debris: debrisIcon,
   cloth: clothIcon,
-  garbage: garbageIcon
+  garbage: garbageIcon,
+  battery: generalIcon,
 };

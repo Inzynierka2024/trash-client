@@ -11,8 +11,8 @@ import { Alert } from "react-native";
 import calculate_distance from "../../../Utils/calculate_distance";
 import round from "../../../Utils/round";
 import { Loading } from "../../../Utils/Loading";
-import {ElementCard} from "../../Card/ElementCard";
-import {ElementColors} from "../../../Models/ElementColors";
+import { ElementCard } from "../../Card/ElementCard";
+import { ElementColors } from "../../../Models/ElementColors";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -22,7 +22,7 @@ export const TrashModal = (props: {
   userState: MapLibreGL.Location;
 }) => {
   const themeFromContext = useContext(ThemeContext);
-  const textColor = themeFromContext.colors.primaryText
+  const textColor = themeFromContext.colors.primaryText;
 
   const [currentTrashData, setCurrentTrashData] =
     useState<TrashMetadata | null>(null);
@@ -84,7 +84,7 @@ export const TrashModal = (props: {
       props.userState.coords.latitude,
       props.userState.coords.longitude,
       currentTrashData.Latitude,
-      currentTrashData.Longitude
+      currentTrashData.Longitude,
     );
 
     setDistance(distance);
@@ -126,19 +126,27 @@ export const TrashModal = (props: {
             justifyContent: "center",
             gap: 16,
             paddingBottom: 12,
-            marginBottom: 48
+            marginBottom: 48,
           }}
         >
-          <ElementCard type={"garbage"} imageEnabled={true} imageData={currentTrashData?.Picture} distance={distance} />
+          <ElementCard
+            type={"garbage"}
+            timestamp={currentTrashData?.CreationTimestamp}
+            imageEnabled={true}
+            imageData={currentTrashData?.Picture}
+            distance={distance}
+          />
 
           {!canRemove && (
-              <Text style={{color: textColor}}>Jesteś za daleko by usunąć element z mapy</Text>
+            <Text style={{ color: textColor }}>
+              Jesteś za daleko by usunąć element z mapy
+            </Text>
           )}
-            <ActionButton
-                disabled={!canRemove}
-                iconName={"delete"}
-                onPress={removeTrash}
-            />
+          <ActionButton
+            disabled={!canRemove}
+            iconName={"delete"}
+            onPress={removeTrash}
+          />
         </View>
       </View>
     </Modal>

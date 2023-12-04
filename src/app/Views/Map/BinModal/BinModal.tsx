@@ -11,6 +11,8 @@ import calculate_distance from "../../../Utils/calculate_distance";
 import { Loading } from "../../../Utils/Loading";
 import { ElementCard } from "../../Card/ElementCard";
 import { ElementColors } from "../../../Models/ElementColors";
+import { BinMetadata } from "../../../Models/BinMetadata";
+import get_bin_metadata from "../../../Logic/API/get_bin_metadata";
 
 export const BinModal = (props: {
   currentBin: MarkerData;
@@ -21,6 +23,7 @@ export const BinModal = (props: {
   const textColor = themeFromContext.colors.primaryText;
 
   const [loading, setLoading] = useState(false);
+  const [binData, setBinData] = useState<BinMetadata | null>(null);
 
   useEffect(() => {
     if (props.binModalVisible === true) {
@@ -33,10 +36,17 @@ export const BinModal = (props: {
   }, [props.binModalVisible]);
 
   function loadData() {
-    setLoading(false);
+    if (props.currentBin && props.currentBin.id !== null)
+      get_bin_metadata(props.currentBin.id).then((result) => {
+        console.log(result);
+        setBinData(result);
+        setLoading(false);
+      });
   }
 
-  function clearData() {}
+  function clearData() {
+    setBinData(null);
+  }
 
   function closeBinModal() {
     props.onClose();
@@ -65,9 +75,7 @@ export const BinModal = (props: {
             backgroundColor: themeFromContext.colors.background,
             borderWidth: 4,
             borderColor:
-              ElementColors[
-                props.currentBin !== null ? props.currentBin.type : "general"
-              ],
+              ElementColors[binData !== null ? binData.Type : "general"],
             borderRadius: 4,
             alignSelf: "center",
             alignItems: "center",
@@ -76,8 +84,13 @@ export const BinModal = (props: {
             marginBottom: 48,
           }}
         >
-          {props.currentBin !== null && (
-            <ElementCard type={props.currentBin.type} imageEnabled={false} />
+          {binData !== null && (
+            <ElementCard
+              type={binData.Type}
+              timestamp={binData.CreationTimestamp}
+              binStatus={binData.Status}
+              imageEnabled={false}
+            />
           )}
         </View>
       </View>

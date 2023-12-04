@@ -71,6 +71,7 @@ export const MapComponent = () => {
     paper: true,
     plastic: true,
     pszok: false,
+    battery: false,
   });
 
   const [isCentered, setIsCentered] = useState(true);
@@ -294,7 +295,6 @@ export const MapComponent = () => {
       bin = binCollection.find((e) => e["id"] == id);
       if (bin) break;
     }
-    console.log(bin);
     setCurrentBin(bin);
     setBinModalVisible(true);
   }
@@ -509,6 +509,10 @@ const pinLayerStyles: { [key in ElementTypes]: StyleProp<SymbolLayerStyle> } = {
   cloth: {
     ...commonPinLayerStyle,
     iconImage: ElementMapMarkers.cloth,
+  },
+  battery: {
+    ...commonPinLayerStyle,
+    iconImage: ElementMapMarkers.battery,
   },
   garbage: {
     ...commonPinLayerStyle,

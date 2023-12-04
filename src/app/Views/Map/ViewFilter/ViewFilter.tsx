@@ -40,8 +40,8 @@ export const ViewFilter = (props: {
       </Pressable>
 
       <Modal
-        animationIn="slideInRight"
-        animationOut="slideOutRight"
+        animationIn="slideInLeft"
+        animationOut="slideOutLeft"
         isVisible={modalVisible}
         onBackButtonPress={() => {
           setModalVisible(false);

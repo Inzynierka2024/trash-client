@@ -21,4 +21,5 @@ export const ElementMapMarkers: { [key in ElementTypes]: any } = {
   pszok: pszokMarker,
   debris: debrisMarker,
   cloth: clothMarker,
+  battery: ewasteMarker,
 };

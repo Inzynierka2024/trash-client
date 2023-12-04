@@ -52,6 +52,7 @@ export const MapComponent = () => {
     pszok: useState<MarkerData[]>([]),
     debris: useState<MarkerData[]>([]),
     cloth: useState<MarkerData[]>([]),
+    battery: useState<MarkerData[]>([]),
   };
 
   // Markers visibility
@@ -122,38 +123,38 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
-  async function fetchNewMapMarkers() {
+  function fetchNewGarbage() {
     if (MapRef === null) return;
-    const bounds = await MapRef.getVisibleBounds();
 
-    const result = await get_trash_in_area(bounds);
-
-    if (result.isOk) {
-      const points = result.data["map_points"];
-      return points;
-    } else {
-      return [];
-    }
+    MapRef.getVisibleBounds().then((bounds) => {
+      get_trash_in_area(bounds).then((result) => {
+        if (result.isOk) {
+          const points = result.data["map_points"];
+          setMarkers(points);
+          updateMapPoints();
+        }
+      });
+    });
   }
 
-  async function fetchNewBins() {
+  function fetchNewBins() {
     if (MapRef === null) return;
-    const bounds = await MapRef.getVisibleBounds();
 
-    const result = await get_bins_in_area(bounds);
-
-    if (result.isOk) {
-      const points = result.data["map_points"];
-      return points;
-    } else {
-      return [];
-    }
+    MapRef.getVisibleBounds().then((bounds) => {
+      get_bins_in_area(bounds).then((result) => {
+        if (result.isOk) {
+          const points = result.data["map_points"];
+          console.log("New bins:", points);
+          groupBinMarkers(points);
+          updateMapPoints();
+        }
+      });
+    });
   }
 
-  async function updateMarkers() {
-    const markers = await fetchNewMapMarkers();
-    setMarkers(markers);
-    updateMapPoints();
+  function updateMarkers() {
+    fetchNewGarbage();
+    fetchNewBins();
   }
 
   function groupBinMarkers(markers: MarkerData[]) {
@@ -165,12 +166,6 @@ export const MapComponent = () => {
     }
   }
 
-  async function updateBinMarkers() {
-    const markers = await fetchNewBins();
-    groupBinMarkers(markers);
-    updateMapPoints();
-  }
-
   useEffect(() => {
     // Startup intervals
     let markerInv;
@@ -178,14 +173,12 @@ export const MapComponent = () => {
     (async () => {
       // Load markers one second after map load
       setTimeout(async () => {
-        await updateMarkers();
-        await updateBinMarkers();
+        updateMarkers();
       }, 1000);
 
       // Fetch new markers every minute
       markerInv = setInterval(async () => {
-        await updateMarkers();
-        await updateBinMarkers();
+        updateMarkers();
       }, 60000);
     })();
 
@@ -228,6 +221,8 @@ export const MapComponent = () => {
         }),
       });
     }
+
+    console.log("Finished updating collections");
   }
 
   const binCollections = {
@@ -264,6 +259,10 @@ export const MapComponent = () => {
       features: [],
     }),
     cloth: useState<GeoJSON.FeatureCollection>({
+      type: "FeatureCollection",
+      features: [],
+    }),
+    battery: useState<GeoJSON.FeatureCollection>({
       type: "FeatureCollection",
       features: [],
     }),
@@ -448,6 +447,8 @@ export const MapComponent = () => {
           const [binCollection, _setBinCollection] = binCollections[key];
 
           if (!elementVisibility[key]) return null;
+
+          if (key === "e-waste") console.log("E-waste:", binCollection);
 
           return (
             <MapLibreGL.ShapeSource

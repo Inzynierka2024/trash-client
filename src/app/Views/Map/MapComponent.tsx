@@ -1,5 +1,5 @@
 import MapLibreGL, { SymbolLayerStyle } from "@maplibre/maplibre-react-native";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -21,6 +21,12 @@ import { ElementMapMarkers } from "../../Models/ElementMapMarkers";
 import { ElementTypes } from "../../Models/ElementTypes";
 import { ViewFilter } from "./ViewFilter/ViewFilter";
 import { BinModal } from "./BinModal/BinModal";
+import binMarkersReducer, {
+  initialBinMarkers,
+} from "./Reducers/BinMarkersReducer";
+import binCollectionsReducer, {
+  initialBinCollections,
+} from "./Reducers/BinCollectionsReducer";
 
 export interface MarkerData {
   id: number;
@@ -42,18 +48,27 @@ export const MapComponent = () => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
 
   // Bin markers
-  const binMarkers = {
-    general: useState<MarkerData[]>([]),
-    bio: useState<MarkerData[]>([]),
-    plastic: useState<MarkerData[]>([]),
-    paper: useState<MarkerData[]>([]),
-    glass: useState<MarkerData[]>([]),
-    "e-waste": useState<MarkerData[]>([]),
-    pszok: useState<MarkerData[]>([]),
-    debris: useState<MarkerData[]>([]),
-    cloth: useState<MarkerData[]>([]),
-    battery: useState<MarkerData[]>([]),
-  };
+  const [binMarkers, binDispatch] = useReducer(
+    binMarkersReducer,
+    initialBinMarkers,
+  );
+  function clearBinMarkers() {
+    binDispatch({
+      type: "CLEAR_BIN_MARKERS",
+    });
+  }
+  function addBinMarker(marker: MarkerData) {
+    binDispatch({
+      type: "ADD_BIN_MARKER",
+      payload: marker,
+    });
+  }
+  function setBinMarkers(markers: MarkerData[]) {
+    binDispatch({
+      type: "SET_BIN_MARKERS",
+      payload: markers,
+    });
+  }
 
   // Markers visibility
   const [elementVisibility, setElementVisibility] = useState<{
@@ -145,6 +160,7 @@ export const MapComponent = () => {
         if (result.isOk) {
           const points = result.data["map_points"];
           console.log("New bins:", points);
+          clearBinMarkers();
           groupBinMarkers(points);
           updateMapPoints();
         }
@@ -158,11 +174,9 @@ export const MapComponent = () => {
   }
 
   function groupBinMarkers(markers: MarkerData[]) {
+    console.log("Grouping1", binMarkers, markers);
     for (const marker of markers) {
-      const type = marker.type ?? "general";
-      const [binCollection, setBinCollection] = binMarkers[type];
-      const newBinCollection = [...binCollection, marker];
-      setBinCollection(newBinCollection);
+      addBinMarker(marker);
     }
   }
 
@@ -189,7 +203,7 @@ export const MapComponent = () => {
   }, []);
 
   // This updates points on a map
-  async function updateMapPoints() {
+  function updateMapPoints() {
     setTrashCollection({
       type: "FeatureCollection",
       features: markers.map((marker) => {
@@ -204,69 +218,34 @@ export const MapComponent = () => {
       }),
     });
 
-    for (const key in binCollections) {
-      const [_binCollection, setBinCollection] = binCollections[key];
+    clearBinCollections();
 
-      setBinCollection({
-        type: "FeatureCollection",
-        features: binMarkers[key][0].map((marker) => {
-          const { latitude, longitude, id } = marker;
-
-          return {
-            type: "Feature",
-            id,
-            properties: {},
-            geometry: { type: "Point", coordinates: [longitude, latitude] },
-          };
-        }),
-      });
+    for (const key in binMarkers) {
+      console.log("1", key, binMarkers[key]);
+      createBinCollection(key as BinTypes, binMarkers[key]);
     }
 
     console.log("Finished updating collections");
   }
 
-  const binCollections = {
-    general: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    bio: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    plastic: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    paper: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    glass: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    "e-waste": useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    pszok: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    debris: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    cloth: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-    battery: useState<GeoJSON.FeatureCollection>({
-      type: "FeatureCollection",
-      features: [],
-    }),
-  };
+  const [binCollections, binClctDispatch] = useReducer(
+    binCollectionsReducer,
+    initialBinCollections,
+  );
+  function createBinCollection(type: BinTypes, markers: MarkerData[]) {
+    binClctDispatch({
+      type: "SET_BIN_COLLECTION",
+      payload: {
+        type,
+        markers,
+      },
+    });
+  }
+  function clearBinCollections() {
+    binClctDispatch({
+      type: "CLEAR_BIN_COLLECTIONS",
+    });
+  }
 
   const [trashCollection, setTrashCollection] =
     useState<GeoJSON.FeatureCollection>({
@@ -290,8 +269,7 @@ export const MapComponent = () => {
   async function showBinData(id: number) {
     let bin = undefined;
     for (const key in binMarkers) {
-      const [binCollection, _setBinCollection] = binMarkers[key];
-      bin = binCollection.find((e) => e["id"] == id);
+      bin = binMarkers[key].find((e) => e["id"] == id);
       if (bin) break;
     }
     setCurrentBin(bin);
@@ -443,21 +421,20 @@ export const MapComponent = () => {
           />
         </MapLibreGL.ShapeSource>
 
-        {Object.keys(binCollections).map((key) => {
-          const [binCollection, _setBinCollection] = binCollections[key];
-
+        {Object.entries(binCollections).map(([key, binCollection]) => {
           if (!elementVisibility[key]) return null;
 
-          if (key === "e-waste") console.log("E-waste:", binCollection);
+          // console.log("Returning", key, binCollection.features);
 
           return (
             <MapLibreGL.ShapeSource
-              id={`${key}PinsSource`}
+              key={key}
+              id={`bin${key}PinsSource`}
               shape={binCollection}
               onPress={onBinPinPress}
             >
               <MapLibreGL.SymbolLayer
-                id={`${key}PinsLayer`}
+                id={`bin${key}PinsLayer`}
                 style={pinLayerStyles[key]}
               />
             </MapLibreGL.ShapeSource>

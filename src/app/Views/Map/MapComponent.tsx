@@ -138,48 +138,6 @@ export const MapComponent = () => {
       ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
       : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
 
-  function fetchNewGarbage() {
-    if (MapRef === null) return;
-
-    MapRef.getVisibleBounds().then((bounds) => {
-      get_trash_in_area(bounds).then((result) => {
-        if (result.isOk) {
-          const points = result.data["map_points"];
-          setMarkers(points);
-          updateMapPoints();
-        }
-      });
-    });
-  }
-
-  function fetchNewBins() {
-    if (MapRef === null) return;
-
-    MapRef.getVisibleBounds().then((bounds) => {
-      get_bins_in_area(bounds).then((result) => {
-        if (result.isOk) {
-          const points = result.data["map_points"];
-          console.log("New bins:", points);
-          clearBinMarkers();
-          groupBinMarkers(points);
-          updateMapPoints();
-        }
-      });
-    });
-  }
-
-  function updateMarkers() {
-    fetchNewGarbage();
-    fetchNewBins();
-  }
-
-  function groupBinMarkers(markers: MarkerData[]) {
-    console.log("Grouping1", binMarkers, markers);
-    for (const marker of markers) {
-      addBinMarker(marker);
-    }
-  }
-
   useEffect(() => {
     // Startup intervals
     let markerInv;
@@ -187,12 +145,12 @@ export const MapComponent = () => {
     (async () => {
       // Load markers one second after map load
       setTimeout(async () => {
-        updateMarkers();
+        fetchAndShowPoints();
       }, 1000);
 
       // Fetch new markers every minute
       markerInv = setInterval(async () => {
-        updateMarkers();
+        fetchAndShowPoints();
       }, 60000);
     })();
 
@@ -202,30 +160,69 @@ export const MapComponent = () => {
     };
   }, []);
 
-  // This updates points on a map
-  function updateMapPoints() {
-    setTrashCollection({
-      type: "FeatureCollection",
-      features: markers.map((marker) => {
-        const { latitude, longitude, id } = marker;
+  function fetchAndShowPoints() {
+    if (MapRef == null) return;
 
-        return {
-          type: "Feature",
-          id,
-          properties: {},
-          geometry: { type: "Point", coordinates: [longitude, latitude] },
-        };
-      }),
+    console.log("Fetching points");
+    MapRef.getVisibleBounds().then((bounds) => {
+      // Trash
+      get_trash_in_area(bounds).then((result) => {
+        if (result.isOk) {
+          const points = result.data["map_points"];
+          setMarkers(points);
+
+          setTrashCollection({
+            type: "FeatureCollection",
+            features: points.map((marker) => {
+              const { latitude, longitude, id } = marker;
+
+              return {
+                type: "Feature",
+                id,
+                properties: {},
+                geometry: { type: "Point", coordinates: [longitude, latitude] },
+              };
+            }),
+          });
+        }
+      });
+
+      // Bins
+      get_bins_in_area(bounds).then((result) => {
+        if (result.isOk) {
+          const points = result.data["map_points"];
+          clearBinMarkers();
+
+          // FIXME: This is a hack to make sure that the bins are rendered
+          // ^ Not my words but Copilot's
+
+          const markers: { [key in BinTypes]: any[] } = {
+            general: [],
+            bio: [],
+            plastic: [],
+            paper: [],
+            glass: [],
+            "e-waste": [],
+            pszok: [],
+            debris: [],
+            cloth: [],
+            battery: [],
+          };
+
+          for (const marker of points) {
+            markers[marker.type].push(marker);
+          }
+
+          for (const marker of points) {
+            addBinMarker(marker);
+          }
+
+          for (const key in markers) {
+            createBinCollection(key as BinTypes, markers[key]);
+          }
+        }
+      });
     });
-
-    clearBinCollections();
-
-    for (const key in binMarkers) {
-      console.log("1", key, binMarkers[key]);
-      createBinCollection(key as BinTypes, binMarkers[key]);
-    }
-
-    console.log("Finished updating collections");
   }
 
   const [binCollections, binClctDispatch] = useReducer(
@@ -324,7 +321,7 @@ export const MapComponent = () => {
         <TrashForm
           location={userState}
           setModal={setNewTrashModalVisible}
-          updateMap={updateMarkers}
+          updateMap={fetchAndShowPoints}
         />
       </Modal>
 
@@ -341,12 +338,12 @@ export const MapComponent = () => {
           location={userState}
           type={newBinType}
           setModal={setNewBinModalVisible}
-          updateMap={updateMarkers}
+          updateMap={fetchAndShowPoints}
         />
       </Modal>
 
       <TrashModal
-        updateMapMarkers={updateMarkers}
+        updateMapMarkers={fetchAndShowPoints}
         currentTrash={currentMarker}
         trashModalVisible={trashModalVisible}
         onClose={closeTrashModal}
@@ -373,7 +370,7 @@ export const MapComponent = () => {
       {!isCentered && (
         <View style={styles.actionsContainer}>
           <CenterButton callback={flyToUser} />
-          <SearchNewButton callback={updateMarkers} />
+          <SearchNewButton callback={fetchAndShowPoints} />
         </View>
       )}
 
@@ -423,8 +420,6 @@ export const MapComponent = () => {
 
         {Object.entries(binCollections).map(([key, binCollection]) => {
           if (!elementVisibility[key]) return null;
-
-          // console.log("Returning", key, binCollection.features);
 
           return (
             <MapLibreGL.ShapeSource

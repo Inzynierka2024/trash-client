@@ -4,6 +4,7 @@ export default function binMarkersReducer(markers, action) {
       return action.payload;
     case "ADD_BIN_MARKER":
       const type = action.payload.type;
+      console.log("Adding bin marker id=", action.payload.id, " to ", type);
       return {
         ...markers,
         [type]: [...markers[type], action.payload],

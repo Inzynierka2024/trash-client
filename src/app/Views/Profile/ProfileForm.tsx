@@ -68,7 +68,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
         />
         <Text style={{ ...styles.loginText, color: themeFromContext.colors.primaryText }}>{userLogin}</Text>
         <View style={styles.buttonGrid}>
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileEdit')}>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileStats')}>
             <Image source={stats_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>User Stats</Text>
           </TouchableOpacity>

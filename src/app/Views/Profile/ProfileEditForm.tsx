@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Button, StyleSheet, ToastAndroid } from 'react-native';
+import { View, TextInput, Button, StyleSheet, ToastAndroid, Text } from 'react-native';
 import _fetch from '../../Logic/API/_fetch';
 import { useAuth } from '../../Logic/AuthContext';
 import get_user_data from '../../Logic/API/get_user_data';

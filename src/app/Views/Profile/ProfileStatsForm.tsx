@@ -10,6 +10,7 @@ import get_user_data from '../../Logic/API/get_user_data';
 
 
 export const ProfileStatsForm = () => {
+    console.log(">>>begin");
   const { state } = useAuth();
   const [userData, setUserData] = useState(
     {
@@ -25,6 +26,7 @@ export const ProfileStatsForm = () => {
         reportedTrash: ''
       }
     });
+    console.log(">>> setUserData");
   const [darkMode, _setDarkMode] = useState(
     useColorScheme() === "dark" ? true : false
   );
@@ -32,7 +34,7 @@ export const ProfileStatsForm = () => {
   const navigation = useNavigation();
 
   const navigateToEditForm = () => {
-    navigation.navigate('ProfileEditForm');
+    navigation.navigate('ProfileEdit');
   };
 
   useEffect(() => {
@@ -47,14 +49,14 @@ export const ProfileStatsForm = () => {
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
-          <Icon name='edit' size={24} color="#000" />
+          <Icon name='edit' size={24} color="#000"/>
         </TouchableOpacity>
         <Text style={styles.readOnly}>Username: {userData.username}</Text>
-        <Text style={styles.readOnly}>Email: {userData.email}</Text>
-        <Text style={styles.readOnly}>Location: {userData.location.city}, {userData.location.country}</Text>
-        <Text style={styles.readOnly}>Gathered Trash: {userData.stats.gatheredTrash}</Text>
+        <Text style={styles.readOnly}>Email: {userData.email}</Text> 
+        {/* <Text style={styles.readOnly}>Location: {userData.location.city}, {userData.location.country}</Text> */}
+        {/* <Text style={styles.readOnly}>Gathered Trash: {userData.stats.gatheredTrash}</Text>
         <Text style={styles.readOnly}>Reported Trash: {userData.stats.reportedTrash}</Text>
-        <Text style={styles.readOnly}>Points: {userData.stats.points}</Text>
+        <Text style={styles.readOnly}>Points: {userData.stats.points}</Text> */}
       </View>
     </ThemeContext.Provider>
   );
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: 'absolute',
+    marginTop: 25,
     top: 16,
     right: 16,
     zIndex: 10,
@@ -95,4 +98,4 @@ const styles = StyleSheet.create({
 
 });
 
-
+export default ProfileStatsForm;

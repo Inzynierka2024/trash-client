@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Modal, View, Image, Text } from "react-native";
+import { Button, View, Image, Text } from "react-native";
 import remove_trash from "../../../Logic/API/remove_trash";
 import { ThemeContext } from "../../../../theme/theme";
 import MapLibreGL from "@maplibre/maplibre-react-native";
@@ -13,6 +13,7 @@ import { ElementCard } from "../../Card/ElementCard";
 import { ElementColors } from "../../../Models/ElementColors";
 import { BinMetadata } from "../../../Models/BinMetadata";
 import get_bin_metadata from "../../../Logic/API/get_bin_metadata";
+import Modal from "react-native-modal";
 
 export const BinModal = (props: {
   currentBin: MarkerData;
@@ -54,16 +55,23 @@ export const BinModal = (props: {
 
   return (
     <Modal
-      animationType="slide"
-      visible={props.binModalVisible}
-      onRequestClose={() => {
+      animationIn="slideInUp"
+      isVisible={props.binModalVisible}
+      onBackButtonPress={() => {
         closeBinModal();
       }}
-      transparent={true}
+      onBackdropPress={() => {
+        closeBinModal();
+      }}
+      backdropOpacity={0}
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       <View
         style={{
-          flex: 1,
+          width: 260,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -77,11 +85,12 @@ export const BinModal = (props: {
             borderColor:
               ElementColors[binData !== null ? binData.Type : "general"],
             borderRadius: 4,
-            alignSelf: "center",
             alignItems: "center",
             justifyContent: "center",
             gap: 16,
             marginBottom: 48,
+            flex: 1,
+            position: "absolute",
           }}
         >
           {binData !== null && (

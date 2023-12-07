@@ -1,40 +1,45 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useContext } from "react";
-import { StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { StyleSheet, View } from "react-native";
 import { ThemeContext } from "../../../../theme/theme";
 
 export const ActionButton = (props: {
   iconName: any;
   onPress: Function;
   disabled: boolean;
+  width: number;
 }) => {
   const themeFromContext = useContext(ThemeContext);
 
   return (
-    <MaterialIcons.Button
-      onPress={() => {
-        props.onPress();
-      }}
-      name={props.iconName}
-      size={28}
-      borderRadius={8}
-      color={themeFromContext.colors.primaryText}
+    <View
       style={{
-        opacity: props.disabled ? 0.5 : 1,
+        width: props.width,
       }}
-      backgroundColor={
-        props.disabled
-          ? themeFromContext.colors.disabled
-          : themeFromContext.colors.primary
-      }
-      iconStyle={styles.operationIcon}
-      disabled={props.disabled}
-    ></MaterialIcons.Button>
+    >
+      <MaterialIcons.Button
+        onPress={() => {
+          props.onPress();
+        }}
+        name={props.iconName}
+        size={28}
+        borderRadius={8}
+        color={themeFromContext.colors.primaryText}
+        style={{
+          width: "100%",
+          opacity: props.disabled ? 0.5 : 1,
+          justifyContent: "center",
+        }}
+        backgroundColor={
+          props.disabled
+            ? themeFromContext.colors.disabled
+            : themeFromContext.colors.primary
+        }
+        iconStyle={{
+          marginRight: 0,
+        }}
+        disabled={props.disabled}
+      ></MaterialIcons.Button>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  operationIcon: {
-    marginRight: 0,
-  },
-});

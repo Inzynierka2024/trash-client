@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Modal, View, Image, Text } from "react-native";
+import { Button, View, Image, Text } from "react-native";
 import remove_trash from "../../../Logic/API/remove_trash";
 import { ThemeContext } from "../../../../theme/theme";
 import { ActionButton } from "./ActionButton";
@@ -13,6 +13,7 @@ import round from "../../../Utils/round";
 import { Loading } from "../../../Utils/Loading";
 import { ElementCard } from "../../Card/ElementCard";
 import { ElementColors } from "../../../Models/ElementColors";
+import Modal from "react-native-modal";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -99,12 +100,19 @@ export const TrashModal = (props: {
 
   return (
     <Modal
-      animationType="slide"
-      visible={props.trashModalVisible}
-      onRequestClose={() => {
+      animationIn="slideInUp"
+      isVisible={props.trashModalVisible}
+      onBackButtonPress={() => {
         closeTrashModal();
       }}
-      transparent={true}
+      onBackdropPress={() => {
+        closeTrashModal();
+      }}
+      backdropOpacity={0}
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       <View
         style={{
@@ -142,11 +150,25 @@ export const TrashModal = (props: {
               Jesteś za daleko by usunąć element z mapy
             </Text>
           )}
-          <ActionButton
-            disabled={!canRemove}
-            iconName={"delete"}
-            onPress={removeTrash}
-          />
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            <ActionButton
+              disabled={!canRemove}
+              width={236}
+              iconName={"delete"}
+              onPress={removeTrash}
+            />
+          </View>
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            <Text
+              style={{
+                color: textColor,
+                textAlign: "center",
+              }}
+              numberOfLines={1}
+            >
+              Zbierz śmiecia
+            </Text>
+          </View>
         </View>
       </View>
     </Modal>

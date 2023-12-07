@@ -43,7 +43,7 @@ export const ElementCard = (props: {
 
         <View style={[styles.info, { backgroundColor }]}>
           <Text
-            numberOfLines={1}
+            numberOfLines={2}
             style={{
               color: textColor,
               fontWeight: "600",

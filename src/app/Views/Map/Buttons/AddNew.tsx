@@ -87,7 +87,7 @@ export const AddNewButton = (props: {
     <View style={styles.container}>
       {containerOpen === true && (
         <View style={[styles.container, styles.canContainer]}>
-          <View style={styles.labelContainer}>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -97,6 +97,24 @@ export const AddNewButton = (props: {
               {ElementNames.battery}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.battery,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("battery");
+              }}
+            >
+              <Image source={ElementIcons.battery} style={styles.imageIcon} />
+            </AnimatedPressable>
+          </View>
+
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -106,6 +124,23 @@ export const AddNewButton = (props: {
               {ElementNames.cloth}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.cloth,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("cloth");
+              }}
+            >
+              <Image source={ElementIcons.cloth} style={styles.imageIcon} />
+            </AnimatedPressable>
+          </View>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -115,6 +150,26 @@ export const AddNewButton = (props: {
               {ElementNames["e-waste"]}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors["e-waste"],
+                },
+              ]}
+              onPress={() => {
+                props.newCan("e-waste");
+              }}
+            >
+              <Image
+                source={ElementIcons["e-waste"]}
+                style={styles.imageIcon}
+              />
+            </AnimatedPressable>
+          </View>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -124,6 +179,23 @@ export const AddNewButton = (props: {
               {ElementNames.bio}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.bio,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("bio");
+              }}
+            >
+              <Image source={ElementIcons.bio} style={styles.imageIcon} />
+            </AnimatedPressable>
+          </View>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -133,6 +205,23 @@ export const AddNewButton = (props: {
               {ElementNames.glass}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.glass,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("glass");
+              }}
+            >
+              <Image source={ElementIcons.glass} style={styles.imageIcon} />
+            </AnimatedPressable>
+          </View>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -142,6 +231,23 @@ export const AddNewButton = (props: {
               {ElementNames.paper}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.paper,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("paper");
+              }}
+            >
+              <Image source={ElementIcons.paper} style={styles.imageIcon} />
+            </AnimatedPressable>
+          </View>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -151,6 +257,23 @@ export const AddNewButton = (props: {
               {ElementNames.plastic}
             </Text>
 
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.plastic,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("plastic");
+              }}
+            >
+              <Image source={ElementIcons.plastic} style={styles.imageIcon} />
+            </AnimatedPressable>
+          </View>
+          <View style={[styles.field]}>
             <Text
               style={[
                 styles.label,
@@ -159,135 +282,23 @@ export const AddNewButton = (props: {
             >
               {ElementNames.general}
             </Text>
+
+            <AnimatedPressable
+              style={[
+                styles.button,
+                styles.canButton,
+                {
+                  borderRadius: iconSize,
+                  backgroundColor: ElementColors.general,
+                },
+              ]}
+              onPress={() => {
+                props.newCan("general");
+              }}
+            >
+              <Image source={ElementIcons.general} style={styles.imageIcon} />
+            </AnimatedPressable>
           </View>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.battery,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("battery");
-            }}
-          >
-            <Image source={ElementIcons.battery} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.cloth,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("cloth");
-            }}
-          >
-            <Image source={ElementIcons.cloth} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors["e-waste"],
-              },
-            ]}
-            onPress={() => {
-              props.newCan("e-waste");
-            }}
-          >
-            <Image source={ElementIcons["e-waste"]} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.bio,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("bio");
-            }}
-          >
-            <Image source={ElementIcons.bio} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.glass,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("glass");
-            }}
-          >
-            <Image source={ElementIcons.glass} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.paper,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("paper");
-            }}
-          >
-            <Image source={ElementIcons.paper} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.plastic,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("plastic");
-            }}
-          >
-            <Image source={ElementIcons.plastic} style={styles.imageIcon} />
-          </AnimatedPressable>
-
-          <AnimatedPressable
-            style={[
-              styles.button,
-              styles.canButton,
-              {
-                borderRadius: iconSize,
-                backgroundColor: ElementColors.general,
-              },
-            ]}
-            onPress={() => {
-              props.newCan("general");
-            }}
-          >
-            <Image source={ElementIcons.general} style={styles.imageIcon} />
-          </AnimatedPressable>
         </View>
       )}
       <AnimatedPressable
@@ -361,10 +372,18 @@ export const AddNewButton = (props: {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
-    gap: 8,
   },
   canContainer: {
-    marginBottom: 46,
+    marginRight: 16,
+    marginBottom: 54,
+  },
+  field: {
+    flexDirection: "row",
+    marginTop: 8,
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 8,
+    marginRight: 48,
   },
   button: {
     padding: 8,
@@ -372,12 +391,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingTop: 10,
     width: 50,
+    height: 50,
     position: "absolute",
     right: 0,
     bottom: 0,
   },
   canButton: {
-    right: 64,
     position: "relative",
   },
   icon: {
@@ -396,14 +415,6 @@ const styles = StyleSheet.create({
   imageIcon: {
     height: 32,
     width: 32,
-  },
-  labelContainer: {
-    position: "absolute",
-    flexDirection: "column",
-    right: 124,
-    paddingTop: 14,
-    gap: 42,
-    width: 240,
   },
   label: {
     textAlign: "right",

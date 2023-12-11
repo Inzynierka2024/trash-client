@@ -34,7 +34,7 @@ export default async function (
   const code = await response.status;
   const isOk = await response.ok;
 
-  const json = await response.json();
+  const json = isOk ? await response.json() : {};
 
   if (isOk === true) return { isOk: true, data: json };
   else {

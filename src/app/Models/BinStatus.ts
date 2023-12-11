@@ -1,8 +1,8 @@
-export type BinStatus = "empty" | "normal" | "full" | "overfilled"
+export type BinStatus = "empty" | "medium" | "full" | "overfilled";
 
-export const BinStatusNames : {[key in BinStatus]: string} = {
-    empty: "Pusty",
-    normal: "Normalny",
-    full: "Pełny",
-    overfilled: "Przepełniony"
-}
+export const BinStatusNames: { [key in BinStatus]: string } = {
+  empty: "Pusty",
+  medium: "Normalny",
+  full: "Pełny",
+  overfilled: "Przepełniony",
+};

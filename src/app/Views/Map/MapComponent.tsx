@@ -20,6 +20,8 @@ import { BinForm } from "../New/BinForm";
 import { ElementMapMarkers } from "../../Models/ElementMapMarkers";
 import { ElementTypes } from "../../Models/ElementTypes";
 import { ViewFilter } from "./ViewFilter/ViewFilter";
+import { useAuth } from "../../Logic/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
 export interface MarkerData {
   id: number;
@@ -30,8 +32,16 @@ export interface MarkerData {
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
-
-  const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
+  
+  const navigation = useNavigation();
+  const { state } = useAuth();
+  useEffect(() => {
+    if (!state.isLoggedIn) {
+      navigation.navigate('Profil');
+}
+}, [state.isLoggedIn]);
+  
+const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
 
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },

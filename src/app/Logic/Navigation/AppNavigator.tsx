@@ -33,7 +33,7 @@ const ProfileStackNavigator = () => {
   const { state } = useAuth();
   useEffect(() => {
     setInitialRoute(state.isLoggedIn ? 'Profile' : 'Login');
-}, [state.isLoggedIn]);
+  }, [state.isLoggedIn]);
 
   if (!initialRoute) return null;
 
@@ -61,28 +61,18 @@ const ProfileStackNavigator = () => {
 const AppNavigator = () => {
   const themeFromContext: CTheme = useContext(ThemeContext);
 
-  return (
-    <NavigationContainer
-      theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <Tab.Navigator
-        initialRouteName="Map"
+  const { state } = useAuth();
+
+  // Render null if the user is not logged in
+  if (!state.isLoggedIn) {
+    return <NavigationContainer theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}>
+      <Tab.Navigator initialRouteName="Profil"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let provider: "Ionicons" | "FontAwesome" = "Ionicons";
             let iconColor = themeFromContext.colors.green;
             let iconName = "trash";
 
-            if (route.name === "Ranking") {
-              provider = "Ionicons";
-              iconColor = themeFromContext.colors.yellow;
-              iconName = "medal";
-            }
-            if (route.name === "Map") {
-              provider = "Ionicons";
-              iconColor = themeFromContext.colors.green;
-              iconName = "map";
-            }
             if (route.name === "Profil") {
               provider = "FontAwesome";
               iconColor = themeFromContext.colors.blue;
@@ -111,12 +101,67 @@ const AppNavigator = () => {
           tabBarInactiveTintColor: themeFromContext.colors.disabled,
         })}
       >
-        <Tab.Screen name="Ranking" component={RankingContainer} />
-        <Tab.Screen name="Map" component={MapContainer} />
         <Tab.Screen name="Profil" component={ProfileStackNavigator} />
       </Tab.Navigator>
-    </NavigationContainer>
-  );
+    </NavigationContainer>;
+  }
+  else
+    return (
+      <NavigationContainer
+        theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
+      >
+        <Tab.Navigator
+          initialRouteName="Map"
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let provider: "Ionicons" | "FontAwesome" = "Ionicons";
+              let iconColor = themeFromContext.colors.green;
+              let iconName = "trash";
+
+              if (route.name === "Ranking") {
+                provider = "Ionicons";
+                iconColor = themeFromContext.colors.yellow;
+                iconName = "medal";
+              }
+              if (route.name === "Map") {
+                provider = "Ionicons";
+                iconColor = themeFromContext.colors.green;
+                iconName = "map";
+              }
+              if (route.name === "Profil") {
+                provider = "FontAwesome";
+                iconColor = themeFromContext.colors.blue;
+                iconName = "user";
+              }
+
+              if (provider === "FontAwesome") {
+                if (!focused) {
+                  iconName += "-o";
+                  iconColor = themeFromContext.colors.disabled;
+                }
+                return (
+                  <FontAwesome name={iconName} size={size} color={iconColor} />
+                );
+              } else {
+                if (!focused) {
+                  iconColor = themeFromContext.colors.disabled;
+                  iconName += "-outline";
+                }
+                return <Ionicons name={iconName} size={size} color={iconColor} />;
+              }
+            },
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarActiveTintColor: themeFromContext.colors.primary,
+            tabBarInactiveTintColor: themeFromContext.colors.disabled,
+          })}
+        >
+          <Tab.Screen name="Ranking" component={RankingContainer} />
+          <Tab.Screen name="Map" component={MapContainer} />
+          <Tab.Screen name="Profil" component={ProfileStackNavigator} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    );
 };
 
 export default AppNavigator;

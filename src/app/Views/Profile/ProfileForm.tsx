@@ -27,7 +27,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
   const handleLogout = async () => {
     try {
       logout();
-      Alert.alert("You were successfully logged out");
+      Alert.alert("Zostałeś pomyślnie wylogowany!");
       navigation.navigate("Login");
     }
     catch (e) {
@@ -80,10 +80,10 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
             <Image source={guilds_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Gildie</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
+          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
             <Image source={settings_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Ustawienia</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
             <Text style={styles.buttonText}>Wyloguj</Text>
           </TouchableOpacity>

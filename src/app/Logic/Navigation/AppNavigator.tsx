@@ -63,6 +63,7 @@ const AppNavigator = () => {
 
   const { state } = useAuth();
 
+  console.log("> "+state.isLoggedIn);
   // Render null if the user is not logged in
   if (!state.isLoggedIn) {
     return <NavigationContainer theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}>
@@ -105,7 +106,7 @@ const AppNavigator = () => {
       </Tab.Navigator>
     </NavigationContainer>;
   }
-  else
+  
     return (
       <NavigationContainer
         theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}

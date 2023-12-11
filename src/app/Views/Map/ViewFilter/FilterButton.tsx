@@ -37,7 +37,6 @@ export const FilterButton = (props: {
   }
 
   function toggle() {
-    console.log("XD", props.elementKey);
     if (props.state === true) {
       toggleOffAnim();
     } else {

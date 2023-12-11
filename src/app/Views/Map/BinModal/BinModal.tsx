@@ -201,8 +201,9 @@ export const BinModal = (props: {
                     iconName={"check"}
                     onPress={() => {
                       update_bin_status(props.currentBin.id, newStatus).then(
-                        (data) => {
-                          closeBinModal();
+                        (result) => {
+                          setBinData(result.data);
+                          setStatusOptionsVisible(false);
                         },
                       );
                     }}

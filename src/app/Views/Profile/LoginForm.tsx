@@ -1,4 +1,4 @@
-import React, { useState, useRef , useContext} from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   Animated,
   Alert,
@@ -23,7 +23,7 @@ import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 const { width: screenWidth } = Dimensions.get("window");
 
 const LoginForm: React.FC = () => {
-  
+
   const [darkMode, _setDarkMode] = useState(
     useColorScheme() === "dark" ? true : false
   );
@@ -33,7 +33,6 @@ const LoginForm: React.FC = () => {
   const { login } = useAuth();
   const navigation = useNavigation();
   const themeFromContext = useContext(ThemeContext);
-
 
   const animatePress = useRef(new Animated.Value(1)).current;
 
@@ -87,38 +86,38 @@ const LoginForm: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-    <View style={styles.container}>
-      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <View style={styles.container}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
 
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}        
-        placeholder="Email"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Password"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
-      <Animated.View style={{ transform: [{ scale: animatePress }] }}>
-        <TouchableOpacity
-          onPressIn={animateIn}
-          onPressOut={animateOut}
-          style={styles.button}
-        >
-          <Animated.Text style={styles.buttonText}>Login</Animated.Text>
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Email"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setEmail}
+          value={email}
+        />
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Password"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry
+        />
+        <Animated.View style={{ transform: [{ scale: animatePress }] }}>
+          <TouchableOpacity
+            onPressIn={animateIn}
+            onPressOut={animateOut}
+            style={styles.button}
+          >
+            <Animated.Text style={styles.buttonText}>Login</Animated.Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Don't have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={[styles.text, styles.link]}>Register here</Text>
         </TouchableOpacity>
-      </Animated.View>
-      <Text style={{...styles.text, color: themeFromContext.colors.secondaryText}}>Don't have an account? </Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={[styles.text, styles.link]}>Register here</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
     </ThemeContext.Provider>
   );
 };

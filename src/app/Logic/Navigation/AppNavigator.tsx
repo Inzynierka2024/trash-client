@@ -15,7 +15,7 @@ import ProfileForm from "../../Views/Profile/ProfileForm";
 import ProfileEditForm from "../../Views/Profile/ProfileEditForm";
 import ProfileStatsForm from "../../Views/Profile/ProfileStatsForm";
 import ProfileTrashForm from "../../Views/Profile/ProfileTrashForm";
-import SettingsForm from "../../Views/Profile/SettingsForm";
+// import SettingsForm from "../../Views/Profile/SettingsForm";
 import RankingContainer from "../../Views/Ranking/RankingContainer";
 import { MapContainer } from "../../Views/Map/MapContainer";
 import GuildsForm from "../../Views/Guilds/GuildsForm";
@@ -49,7 +49,7 @@ const ProfileStackNavigator = () => {
       <ProfileStack.Screen name="Register" component={RegisterForm} />
       <ProfileStack.Screen name="Profile" component={ProfileForm} />
       <ProfileStack.Screen name="CollectedTrash" component={ProfileTrashForm} />
-      <ProfileStack.Screen name="Settings" component={SettingsForm} />
+      {/* <ProfileStack.Screen name="Settings" component={SettingsForm} /> */}
       <ProfileStack.Screen name="ProfileStats" component={ProfileStatsForm} />
       <ProfileStack.Screen name="ProfileEdit" component={ProfileEditForm} />
       <ProfileStack.Screen name="Guilds" component={GuildsForm} />

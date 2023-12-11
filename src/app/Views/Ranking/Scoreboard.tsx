@@ -30,11 +30,13 @@ export const Scoreboard = () => {
       const fetchScoreboard = async () => {
         try {
           const response = await _fetch(`/ranking`, "GET", {});
-          console.log(response);
+          
           if (response.data && Array.isArray(response.data)) {
             setScoreboardData(response.data);
+            console.error('>>> ', response.data);
           } else {
             setScoreboardData([]); 
+            console.error('>>>empty');
           }
         } catch (error) {
           console.error('Error fetching scoreboard data:', error);

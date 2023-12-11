@@ -38,7 +38,8 @@ export default async function (
 
   if (isOk === true) return { isOk: true, data: json };
   else {
-    Alert.alert(`${code} Error fetching: ${json.message}`);
+    //Alert.alert(`${code} Error fetching: ${json.message}`);
+    console.error((`${url} ${code} Error fetching: ${json.message}`));
     return { isOk: false, data: {}, error: json.message };
   }
 }

@@ -70,24 +70,25 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
         <View style={styles.buttonGrid}>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileStats')}>
             <Image source={stats_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>User Stats</Text>
+            <Text style={styles.buttonText}>Statystyki użytkownika</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Collected trash</Text>
+            <Text style={styles.buttonText}>Zebrane śmieci</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
             <Image source={guilds_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Guilds</Text>
+            <Text style={styles.buttonText}>Gildie</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
             <Image source={settings_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Settings</Text>
+            <Text style={styles.buttonText}>Ustawienia</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Log out</Text>
+            <Text style={styles.buttonText}>Wyloguj</Text>
           </TouchableOpacity>
         </View>
+
       </View>
     </ThemeContext.Provider>
   );

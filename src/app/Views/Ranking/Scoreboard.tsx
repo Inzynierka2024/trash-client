@@ -5,8 +5,6 @@ import _fetch from '../../Logic/API/_fetch';
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
 export const Scoreboard = () => {
     const theme = useContext(ThemeContext);
     const [base, setBase] = useState<string>('');
@@ -32,12 +30,13 @@ export const Scoreboard = () => {
                 if (response.data && Array.isArray(response.data)) {
                     setScoreboardData(response.data);
                     console.log('>>> ', response.data);
+                    console.log('Length of scoreboardData array:', response.data.length);
                 } else {
                     setScoreboardData([]);
                     console.error('>>>empty');
                 }
             } catch (error) {
-                console.error('Błąd podczas pobierania danych z tablicy wyników:', error);
+                console.error('Error fetching scoreboard data:', error);
             }
         };
 
@@ -46,21 +45,18 @@ export const Scoreboard = () => {
         }
     }, [base]);
 
-    const renderScoreboardItem = (score, index) => {
+    const renderScoreboardItem = (user, index) => {
         return (
             <View key={index} style={styles.item}>
-
                 <View style={styles.scoreDetails}>
                     <Text style={styles.username}>
-                        <Text style={styles.period}>{score.rank}. </Text>
-                        {score.username}</Text>
-
+                        <Text style={styles.period}>{user.rank}. </Text>
+                        {user.username}</Text>
                     <View style={styles.iconContainer}>
                         <FontAwesome5 name="coins" size={theme.spacing.m} color={theme.colors.primary} />
-                        <Text style={styles.score}> {score.points} punktów</Text>
+                        <Text style={styles.score}> {user.points} punktów</Text>
                     </View>
-
-                    <Text style={styles.period}>Okres: {score.period}</Text>
+                    <Text style={styles.period}>Okres: {user.period}</Text>
                 </View>
             </View>
         );
@@ -93,9 +89,9 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 16,
         marginHorizontal: 16,
-        borderRadius: 10, // Zaokrąglone rogi dla elementu
-        shadowOpacity: 0.1, // Opcjonalna cień dla efektu wznoszenia
-        shadowRadius: 5, // Opcjonalna cień dla efektu wznoszenia
+        borderRadius: 10,
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
     },
     iconContainer: {
         marginRight: theme.spacing.m,

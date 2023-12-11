@@ -8,6 +8,7 @@ export const ActionButton = (props: {
   onPress: Function;
   disabled: boolean;
   width: number;
+  backgroundColor?: string;
 }) => {
   const themeFromContext = useContext(ThemeContext);
 
@@ -15,6 +16,7 @@ export const ActionButton = (props: {
     <View
       style={{
         width: props.width,
+        maxWidth: props.width,
       }}
     >
       <MaterialIcons.Button
@@ -26,14 +28,14 @@ export const ActionButton = (props: {
         borderRadius={8}
         color={themeFromContext.colors.primaryText}
         style={{
-          width: "100%",
+          width: props.width,
           opacity: props.disabled ? 0.5 : 1,
           justifyContent: "center",
         }}
         backgroundColor={
           props.disabled
             ? themeFromContext.colors.disabled
-            : themeFromContext.colors.primary
+            : props.backgroundColor ?? themeFromContext.colors.primary
         }
         iconStyle={{
           marginRight: 0,

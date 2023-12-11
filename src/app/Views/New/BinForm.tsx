@@ -7,10 +7,11 @@ import { CameraButton } from "./CameraButton";
 import create_new_trash from "../../Logic/API/create_new_trash";
 import { Loading } from "../../Utils/Loading";
 import add_new_bin from "../../Logic/API/add_new_bin";
-import { BinStatus } from "../../Models/BinStatus";
+import { BinStatus, BinStatusNames } from "../../Models/BinStatus";
 import { BinTypes } from "../../Models/BinTypes";
 import { ElementCard } from "../Card/ElementCard";
 import { ElementColors } from "../../Models/ElementColors";
+import { BinStatusButtons } from "../Map/Buttons/BinStatusButtons";
 
 export const BinForm = (props: {
   location: MapLibreGL.Location;
@@ -23,10 +24,10 @@ export const BinForm = (props: {
   const textColor = themeFromContext.colors.primaryText;
 
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<BinStatus>("normal");
+  const [status, setStatus] = useState<BinStatus>("medium");
 
   function close() {
-    setStatus("normal");
+    setStatus("medium");
     props.setModal(false);
   }
 
@@ -79,6 +80,7 @@ export const BinForm = (props: {
           <Text style={[styles.intentTitle, { color: textColor }]}>
             Zostanie dodany element:
           </Text>
+
           <ElementCard
             type={props.type}
             imageEnabled={false}
@@ -86,6 +88,15 @@ export const BinForm = (props: {
             timestamp={new Date()}
             addedBy={"FIXME: tu dodać nazwe aktualnego użytkownika"}
           />
+
+          <Text
+            numberOfLines={1}
+            style={[styles.statusTitle, { color: textColor }]}
+          >
+            Stan:
+          </Text>
+          <BinStatusButtons status={status} setStatus={setStatus} />
+
           <View
             style={{
               marginTop: 36,
@@ -144,5 +155,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     marginBottom: 12,
+  },
+  statusTitle: {
+    fontSize: 14,
+    fontWeight: "400",
+    marginVertical: 12,
   },
 });

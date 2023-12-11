@@ -8,4 +8,5 @@ export interface BinMetadata {
   Longitude: number;
   Type: BinTypes;
   Status: BinStatus;
+  Username: string;
 }

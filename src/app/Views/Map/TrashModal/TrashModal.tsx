@@ -142,6 +142,7 @@ export const TrashModal = (props: {
             timestamp={currentTrashData?.CreationTimestamp}
             imageEnabled={true}
             imageData={currentTrashData?.Picture}
+            addedBy={currentTrashData?.Username}
             distance={distance}
           />
 

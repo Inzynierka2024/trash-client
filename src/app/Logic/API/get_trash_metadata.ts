@@ -8,6 +8,7 @@ export default async function (id): Promise<TrashMetadata> {
 
   return {
     Id: parseInt(result.data["garbage_id"]),
+    Username: result.data["username"],
     CreationTimestamp: new Date(result.data["creation_timestamp"]),
     Latitude: parseFloat(result.data["latitude"]),
     Longitude: parseFloat(result.data["longitude"]),

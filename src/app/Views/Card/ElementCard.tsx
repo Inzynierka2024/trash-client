@@ -112,10 +112,11 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    height: 80,
   },
   elementIcon: {
-    height: 80,
+    height: "100%",
+    minHeight: 80,
+    resizeMode: "contain",
     width: 80,
   },
   info: {

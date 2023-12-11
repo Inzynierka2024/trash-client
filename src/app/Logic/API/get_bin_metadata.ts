@@ -9,6 +9,7 @@ export default async function (id): Promise<BinMetadata> {
   console.log(result.data);
   return {
     Id: parseInt(result.data["bin_id"]) ?? parseInt(result.data["id"]),
+    Username: result.data["username"],
     CreationTimestamp: new Date(result.data["creation_timestamp"]),
     Latitude: parseFloat(result.data["latitude"]),
     Longitude: parseFloat(result.data["longitude"]),

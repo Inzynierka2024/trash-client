@@ -32,15 +32,7 @@ export interface MarkerData {
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
-  
-  const navigation = useNavigation();
-  const { state } = useAuth();
-  useEffect(() => {
-    if (!state.isLoggedIn) {
-      navigation.navigate('Profil');
-}
-}, [state.isLoggedIn]);
-  
+    
 const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
 
   const [userState, setUserState] = useState<MapLibreGL.Location>({

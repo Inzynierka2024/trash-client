@@ -61,7 +61,7 @@ export const Scoreboard = () => {
       <View key={index} style={styles.item}>
         <View style={styles.scoreDetails}>
           <Text style={styles.username}>
-            <Text style={styles.period}>{user.rank}. </Text>
+            <Text style={styles.period}>#{user.rank}. </Text>
             {user.username}</Text>
           <View style={styles.iconContainer}>
             <FontAwesome5 name="coins" size={theme.spacing.m} color={theme.colors.primary} />
@@ -75,7 +75,7 @@ export const Scoreboard = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Tablica Wyników</Text>
+      <Text style={styles.title}>Wyniki gracza</Text>
       {scoreboardData.map(renderScoreboardItem)}
     </ScrollView>
   );

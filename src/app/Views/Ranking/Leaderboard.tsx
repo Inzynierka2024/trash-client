@@ -52,15 +52,15 @@ export const Leaderboard = () => {
           
           <View style={styles.scoreDetails}>
           <Text style={styles.username}>
-          <Text style={styles.period}>{score.rank}. </Text>
+          <Text style={styles.period}>#{score.rank}. </Text>
              {score.username}</Text>
   
             <View style={styles.iconContainer}>
             <FontAwesome5 name="coins" size={theme.spacing.m} color={theme.colors.primary} />
-            <Text style={styles.score}> {score.points} points</Text>
+            <Text style={styles.score}> {score.points} punktów</Text>
           </View>
             
-            <Text style={styles.period}>Period: {score.period}</Text>
+            <Text style={styles.period}>Okres: {score.period}</Text>
           </View>
         </View>
       );

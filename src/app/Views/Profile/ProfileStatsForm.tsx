@@ -7,6 +7,7 @@ import get_api_url from '../../Utils/get_api_url';
 import _fetch from '../../Logic/API/_fetch';
 import { useAuth } from '../../Logic/AuthContext';
 import get_user_data from '../../Logic/API/get_user_data';
+import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 
 
 export const ProfileStatsForm = () => {
@@ -43,12 +44,9 @@ export const ProfileStatsForm = () => {
     }
 
     useEffect(async () => {
-
         if (state.token) {
             const tempUser = await getUser();
-            console.log("tempUser", tempUser);
             setUserData(tempUser);
-            console.log("user", user);
         }
     }, [state.token]);
 
@@ -58,12 +56,31 @@ export const ProfileStatsForm = () => {
                 <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
                     <Icon name='edit' size={24} color="#000" />
                 </TouchableOpacity>
-                <Text style={styles.readOnly}>Username: {user.username}</Text>
-                <Text style={styles.readOnly}>Email: {user['email']}</Text>
-                {/* <Text style={styles.readOnly}>Location: {userData.location.city}, {userData.location.country}</Text> */}
-                {/* <Text style={styles.readOnly}>Gathered Trash: {userData.stats.gatheredTrash}</Text>
-        <Text style={styles.readOnly}>Reported Trash: {userData.stats.reportedTrash}</Text>
-        <Text style={styles.readOnly}>Points: {userData.stats.points}</Text> */}
+                <Image
+                    source={ll_icon}
+                    style={styles.userIcon}
+                />
+                <Text style={styles.readOnlyBold}> Login:
+                    <Text style={styles.readOnly}> {user.username}</Text>
+                </Text>
+                <Text style={styles.readOnlyBold}>Email:
+                    <Text style={styles.readOnly}> {user.email}</Text>
+                </Text>
+                <Text style={styles.readOnlyBold}>Hasło:
+                    <Text style={styles.readOnly}>***</Text>
+                </Text>
+                <Text style={styles.readOnlyBold}>Lokacja:
+                    <Text style={styles.readOnly}></Text>
+                </Text>
+                <Text style={styles.readOnlyBold}>Zebrane odpady:
+                    <Text style={styles.readOnly}></Text>
+                </Text>
+                <Text style={styles.readOnlyBold}>Zgłoszone odpady:
+                    <Text style={styles.readOnly}></Text>
+                </Text>
+                <Text style={styles.readOnlyBold}>Punkty:
+                    <Text style={styles.readOnly}></Text>
+                </Text>
             </View>
         </ThemeContext.Provider>
     );
@@ -101,6 +118,25 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#CCCCCC',
         paddingBottom: 4,
+        fontWeight: 'normal'
+    },
+    readOnlyBold: {
+        fontSize: 16,
+        marginVertical: 8,
+        //color: '#ccc',
+        width: '100%',
+        textAlign: 'left',
+        borderBottomWidth: 1,
+        borderBottomColor: '#CCCCCC',
+        paddingBottom: 4,
+        fontWeight: 'bold'
+    },
+    userIcon: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 20,
+        backgroundColor: '#fff'
     },
 
 });

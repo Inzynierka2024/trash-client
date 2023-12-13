@@ -4,10 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect, useContext } from 'react';
 import stats_icon from "../../../../assets/player-stats.png";
 import collected_trash_icon from "../../../../assets/collected-trash.png";
+import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import guilds_icon from "../../../../assets/guilds.png";
 import settings_icon from "../../../../assets/settings.png";
 import user_profile_icon from "../../../../assets/user-profile.png";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
+
 
 interface ProfileFormProps {
   navigateTo: (screen: string) => void;
@@ -41,7 +43,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
   // Button width based on orientation: 2 in vertical and 3 in horizontal
   const buttonWidth = isPortrait ? (width * 0.4) : (width / 3) - 20;  // -20 accounts for margins and padding
 
-  const [userLogin, setUserLogin] = useState < string | null > (null);
+  const [userLogin, setUserLogin] = useState < any > (null);
 
   useEffect(() => {
     const fetchUserLogin = async () => {
@@ -63,7 +65,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
       <View style={styles.container}>
 
         <Image
-          source={user_profile_icon}
+          source={ll_icon}
           style={styles.userIcon}
         />
         <Text style={{ ...styles.loginText, color: themeFromContext.colors.primaryText }}>{userLogin}</Text>
@@ -74,12 +76,12 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Zebrane śmieci</Text>
+            <Text style={styles.buttonText}>Zebrane odpady</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
+          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
             <Image source={guilds_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Gildie</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
             <Image source={settings_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Ustawienia</Text>
@@ -113,8 +115,8 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
-    backgroundColor: '#1dc'
-  },
+    backgroundColor: '#fff'
+    },
   buttonContainer: {
     marginBottom: 10,
     width: '80%',

@@ -28,8 +28,6 @@ export const AddNewButton = (props: {
 
   // Menu button open animations
   const radiusAnim = useRef(new Animated.Value(iconSize)).current;
-  const canAnim = useRef(new Animated.Value(0)).current;
-  const garbageAnim = useRef(new Animated.Value(0)).current;
 
   const menuOpen = () => {
     Animated.parallel([
@@ -37,22 +35,6 @@ export const AddNewButton = (props: {
         toValue: openRadius,
         delay: 0,
         duration: radiusSpeed,
-        useNativeDriver: true,
-      }),
-
-      Animated.timing(canAnim, {
-        toValue: -(distance * 2),
-        delay: 0,
-        easing: Easing.quad,
-        duration: flySpeed,
-        useNativeDriver: true,
-      }),
-
-      Animated.timing(garbageAnim, {
-        toValue: -distance,
-        delay: 0,
-        easing: Easing.quad,
-        duration: flySpeed,
         useNativeDriver: true,
       }),
     ]).start();
@@ -64,22 +46,6 @@ export const AddNewButton = (props: {
         toValue: iconSize,
         delay: 0,
         duration: radiusSpeed,
-        useNativeDriver: true,
-      }),
-
-      Animated.timing(canAnim, {
-        toValue: 0,
-        delay: 0,
-        easing: Easing.quad,
-        duration: flySpeed,
-        useNativeDriver: true,
-      }),
-
-      Animated.timing(garbageAnim, {
-        toValue: 0,
-        delay: 0,
-        easing: Easing.quad,
-        duration: flySpeed,
         useNativeDriver: true,
       }),
     ]).start();
@@ -150,55 +116,6 @@ export const AddNewButton = (props: {
       <AnimatedPressable
         style={[
           styles.button,
-          {
-            borderRadius: iconSize,
-            transform: [{ translateY: canAnim }],
-            backgroundColor: ElementColors.general,
-          },
-        ]}
-        onPress={() => {
-          setContainerOpen(!containerOpen);
-        }}
-      >
-        {containerOpen && (
-          <FontAwesome
-            name="close"
-            size={iconSize}
-            style={[
-              styles.icon,
-              {
-                bottom: open ? 3 : 0,
-              },
-            ]}
-          />
-        )}
-        {!containerOpen && (
-          <Image source={ElementIcons.recyclingBin} style={styles.imageIcon} />
-        )}
-      </AnimatedPressable>
-
-      <AnimatedPressable
-        style={[
-          styles.button,
-          {
-            borderRadius: iconSize,
-            transform: [{ translateY: garbageAnim }],
-            backgroundColor: ElementColors.garbage,
-          },
-        ]}
-        onPress={() => {
-          props.newTrash();
-          setOpen(false);
-          setContainerOpen(false);
-          menuClose();
-        }}
-      >
-        <Image source={ElementIcons.garbage} style={styles.imageIcon} />
-      </AnimatedPressable>
-
-      <AnimatedPressable
-        style={[
-          styles.button,
           styles.menu,
           {
             borderRadius: radiusAnim,
@@ -206,8 +123,8 @@ export const AddNewButton = (props: {
         ]}
         onPress={() => {
           const toOpen = !open;
-
           setOpen(toOpen);
+
           if (toOpen) menuOpen();
           else {
             menuClose();
@@ -215,17 +132,100 @@ export const AddNewButton = (props: {
           }
         }}
       >
-        <FontAwesome
-          name={open ? "close" : "plus"}
-          size={iconSize}
-          style={[
-            styles.icon,
-            {
-              bottom: open ? 3 : 0,
-            },
-          ]}
-        />
+        {open && (
+          <FontAwesome
+            name="close"
+            size={iconSize}
+            style={[
+              styles.icon,
+              {
+                bottom: 3,
+              },
+            ]}
+          />
+        )}
+
+        {!open && (
+          <FontAwesome
+            name="plus"
+            size={iconSize}
+            style={[
+              styles.icon,
+              {
+                bottom: 0,
+              },
+            ]}
+          />
+        )}
       </AnimatedPressable>
+
+      <Modal
+        animationIn="fadeInUp"
+        animationOut="fadeOutDown"
+        isVisible={open}
+        onBackButtonPress={() => {
+          setOpen(false);
+          menuClose();
+        }}
+        onBackdropPress={() => {
+          setOpen(false);
+          menuClose();
+        }}
+        backdropOpacity={0.1}
+        style={[styles.fullScreenModal]}
+      >
+        <View style={[styles.menusContainer]}>
+          <AnimatedPressable
+            style={[
+              styles.button,
+              {
+                borderRadius: iconSize,
+                backgroundColor: ElementColors.general,
+              },
+            ]}
+            onPress={() => {
+              setContainerOpen(!containerOpen);
+            }}
+          >
+            {containerOpen && (
+              <FontAwesome
+                name="close"
+                size={iconSize}
+                style={[
+                  styles.icon,
+                  {
+                    bottom: open ? 3 : 0,
+                  },
+                ]}
+              />
+            )}
+            {!containerOpen && (
+              <Image
+                source={ElementIcons.recyclingBin}
+                style={styles.imageIcon}
+              />
+            )}
+          </AnimatedPressable>
+
+          <AnimatedPressable
+            style={[
+              styles.button,
+              {
+                borderRadius: iconSize,
+                backgroundColor: ElementColors.garbage,
+              },
+            ]}
+            onPress={() => {
+              props.newTrash();
+              setOpen(false);
+              setContainerOpen(false);
+              menuClose();
+            }}
+          >
+            <Image source={ElementIcons.garbage} style={styles.imageIcon} />
+          </AnimatedPressable>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -247,9 +247,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     width: 50,
     height: 50,
-    position: "absolute",
-    right: 0,
-    bottom: 0,
   },
   canButton: {
     position: "relative",
@@ -279,5 +276,10 @@ const styles = StyleSheet.create({
     padding: 0,
     justifyContent: "flex-end",
     alignItems: "flex-end",
+  },
+  menusContainer: {
+    marginBottom: 134,
+    marginRight: 16,
+    gap: 12,
   },
 });

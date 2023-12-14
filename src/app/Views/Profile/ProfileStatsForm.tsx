@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ToastAndroid, useColorScheme, Platform, Dimensions } from 'react-native';
-import { TabView, TabBar } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 import { Icon } from 'react-native-elements'
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
@@ -22,15 +22,15 @@ import { FontAwesome } from '@expo/vector-icons'; // Import FontAwesome from Exp
 const initialLayout = { width: Dimensions.get('window').width };
 
 const CollectedTrashTab = () => (
-  <View style={[styles.tabScene, { backgroundColor: '#ff4081' }]}>
-    {/* Content for Collected Trash */}
-  </View>
+    <View style={[styles.tabScene, { backgroundColor: '#ccf324' }]}>
+        {/* Content for Collected Trash */}
+    </View>
 );
 
 const ReportedTrashTab = () => (
-  <View style={[styles.tabScene, { backgroundColor: '#673ab7' }]}>
-    {/* Content for Reported Trash */}
-  </View>
+    <View style={[styles.tabScene, { backgroundColor: '#673ab7' }]}>
+        {/* Content for Reported Trash */}
+    </View>
 );
 
 export const ProfileStatsForm = () => {
@@ -70,6 +70,26 @@ export const ProfileStatsForm = () => {
             setUserData(tempUser);
         }
     }, [state.token]);
+
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+        { key: 'collected', title: 'Zebrane Odpady' },
+        { key: 'reported', title: 'Zgłoszone Odpady' },
+    ]);
+
+    const renderScene = SceneMap({
+        collected: CollectedTrashTab,
+        reported: ReportedTrashTab,
+    });
+
+    const renderTabBar = props => (
+        <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: themeFromContext.colors.green }}
+            style={{ backgroundColor: themeFromContext.colors.green }}
+            labelStyle={{ color: themeFromContext.colors.primaryText }}
+        />
+    );
 
     const styles = StyleSheet.create({
         container: {
@@ -136,6 +156,13 @@ export const ProfileStatsForm = () => {
             resizeMode: 'contain', // Adjusts the image to fit within the specified dimensions
             marginLeft: 4,
         },
+        tabView: {
+            flex: 1,
+            width: '100%',
+        },
+        tabScene: {
+            flex: 1,
+        },
 
 
     });
@@ -177,7 +204,14 @@ export const ProfileStatsForm = () => {
                     <Text style={styles.readOnly}></Text>
                 </View>
 
-
+                <TabView
+                    navigationState={{ index, routes }}
+                    renderScene={renderScene}
+                    onIndexChange={setIndex}
+                    initialLayout={initialLayout}
+                    renderTabBar={renderTabBar}
+                    style={{...styles.tabView, backgroundColor: themeFromContext.colors.background}}
+                />
                 {/* <StickyTabView/> */}
 
             </View>
@@ -187,4 +221,18 @@ export const ProfileStatsForm = () => {
 
 
 };
+
+const styles = StyleSheet.create({
+    // ... existing styles ...
+    tabView: {
+        flex: 1,
+        width: '100%',
+        marginTop:5,
+        
+    },
+    tabScene: {
+        flex: 1,
+    },
+    // ... other styles ...
+});
 export default ProfileStatsForm;

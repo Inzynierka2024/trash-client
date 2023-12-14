@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-end",
     gap: 8,
-    marginRight: 48,
     borderRadius: 8,
     padding: 8,
   },

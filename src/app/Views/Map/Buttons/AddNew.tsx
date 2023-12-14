@@ -7,6 +7,7 @@ import { ElementIcons } from "../../../Models/ElementIcons";
 import { ElementNames } from "../../../Models/ElementNames";
 import { ElementColors } from "../../../Models/ElementColors";
 import { AddBinButton } from "./AddBinButton";
+import Modal from "react-native-modal";
 
 export const AddNewButton = (props: {
   newTrash: Function;
@@ -86,8 +87,20 @@ export const AddNewButton = (props: {
 
   return (
     <View style={styles.container}>
-      {containerOpen === true && (
-        <View style={[styles.container, styles.canContainer]}>
+      <Modal
+        animationIn="fadeInUp"
+        animationOut="fadeOutDown"
+        isVisible={containerOpen}
+        onBackButtonPress={() => {
+          setContainerOpen(false);
+        }}
+        onBackdropPress={() => {
+          setContainerOpen(false);
+        }}
+        backdropOpacity={0}
+        style={[styles.fullScreenModal]}
+      >
+        <View style={[styles.binContainer]}>
           <AddBinButton
             type="battery"
             newBin={props.newCan}
@@ -132,7 +145,8 @@ export const AddNewButton = (props: {
             iconSize={iconSize}
           />
         </View>
-      )}
+      </Modal>
+
       <AnimatedPressable
         style={[
           styles.button,
@@ -206,20 +220,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
   },
-  canContainer: {
-    marginRight: 16,
-    marginBottom: 54,
-  },
-  field: {
-    flexDirection: "row",
-    marginTop: 8,
-    alignItems: "center",
-    justifyContent: "flex-end",
-    gap: 8,
-    marginRight: 48,
-    borderRadius: 8,
-    padding: 2,
-    paddingLeft: 12,
+  binContainer: {
+    flexDirection: "column",
+    marginRight: 80,
+    marginBottom: 128,
+    width: 224,
   },
   button: {
     padding: 8,
@@ -254,5 +259,11 @@ const styles = StyleSheet.create({
       height: 1,
     },
     textShadowRadius: 4,
+  },
+  fullScreenModal: {
+    margin: 0,
+    padding: 0,
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
 });

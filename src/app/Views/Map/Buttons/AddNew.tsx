@@ -6,6 +6,7 @@ import AnimatedPressable from "../../../Animated/AnimatedPressable";
 import { ElementIcons } from "../../../Models/ElementIcons";
 import { ElementNames } from "../../../Models/ElementNames";
 import { ElementColors } from "../../../Models/ElementColors";
+import { AddBinButton } from "./AddBinButton";
 
 export const AddNewButton = (props: {
   newTrash: Function;
@@ -87,280 +88,49 @@ export const AddNewButton = (props: {
     <View style={styles.container}>
       {containerOpen === true && (
         <View style={[styles.container, styles.canContainer]}>
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.battery,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.battery}
-            </Text>
+          <AddBinButton
+            type="battery"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
 
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.battery,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("battery");
-              }}
-            >
-              <Image source={ElementIcons.battery} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
+          <AddBinButton
+            type="cloth"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
 
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.cloth,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.cloth}
-            </Text>
+          <AddBinButton
+            type="e-waste"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
 
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.cloth,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("cloth");
-              }}
-            >
-              <Image source={ElementIcons.cloth} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
+          <AddBinButton type="bio" newBin={props.newCan} iconSize={iconSize} />
 
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors["e-waste"],
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames["e-waste"]}
-            </Text>
+          <AddBinButton
+            type="glass"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
 
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors["e-waste"],
-                },
-              ]}
-              onPress={() => {
-                props.newCan("e-waste");
-              }}
-            >
-              <Image
-                source={ElementIcons["e-waste"]}
-                style={styles.imageIcon}
-              />
-            </AnimatedPressable>
-          </View>
+          <AddBinButton
+            type="paper"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
 
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.bio,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.bio}
-            </Text>
+          <AddBinButton
+            type="plastic"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
 
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.bio,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("bio");
-              }}
-            >
-              <Image source={ElementIcons.bio} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
-
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.glass,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.glass}
-            </Text>
-
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.glass,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("glass");
-              }}
-            >
-              <Image source={ElementIcons.glass} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
-
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.paper,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.paper}
-            </Text>
-
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.paper,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("paper");
-              }}
-            >
-              <Image source={ElementIcons.paper} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
-
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.plastic,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.plastic}
-            </Text>
-
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.plastic,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("plastic");
-              }}
-            >
-              <Image source={ElementIcons.plastic} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
-
-          <View
-            style={[
-              styles.field,
-              {
-                backgroundColor: ElementColors.general,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.label,
-                { color: themeFromContext.colors.primaryText },
-              ]}
-            >
-              {ElementNames.general}
-            </Text>
-
-            <AnimatedPressable
-              style={[
-                styles.button,
-                styles.canButton,
-                {
-                  borderRadius: iconSize,
-                  backgroundColor: ElementColors.general,
-                },
-              ]}
-              onPress={() => {
-                props.newCan("general");
-              }}
-            >
-              <Image source={ElementIcons.general} style={styles.imageIcon} />
-            </AnimatedPressable>
-          </View>
+          <AddBinButton
+            type="general"
+            newBin={props.newCan}
+            iconSize={iconSize}
+          />
         </View>
       )}
       <AnimatedPressable

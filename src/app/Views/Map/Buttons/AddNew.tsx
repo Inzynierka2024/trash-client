@@ -229,7 +229,6 @@ export const AddNewButton = (props: {
           <View
             style={[
               styles.field,
-              ,
               {
                 backgroundColor: ElementColors.glass,
               },
@@ -367,10 +366,10 @@ export const AddNewButton = (props: {
       <AnimatedPressable
         style={[
           styles.button,
-          styles.garbagecan,
           {
             borderRadius: iconSize,
             transform: [{ translateY: canAnim }],
+            backgroundColor: ElementColors.general,
           },
         ]}
         onPress={() => {
@@ -383,10 +382,10 @@ export const AddNewButton = (props: {
       <AnimatedPressable
         style={[
           styles.button,
-          styles.trash,
           {
             borderRadius: iconSize,
             transform: [{ translateY: garbageAnim }],
+            backgroundColor: ElementColors.garbage,
           },
         ]}
         onPress={() => {
@@ -469,12 +468,6 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 0,
     color: palette.white,
-  },
-  garbagecan: {
-    backgroundColor: palette.darkyellow,
-  },
-  trash: {
-    backgroundColor: palette.darkred,
   },
   menu: {
     backgroundColor: palette.darkgreen,

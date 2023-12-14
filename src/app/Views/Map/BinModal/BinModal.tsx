@@ -18,6 +18,7 @@ import { BinStatus } from "../../../Models/BinStatus";
 import { ActionButton } from "../TrashModal/ActionButton";
 import update_bin_status from "../../../Logic/API/update_bin_status";
 import { BinStatusButtons } from "../Buttons/BinStatusButtons";
+import api_to_BinMetadata from "../../../Models/Converters/api_to_BinMetadata";
 
 export const BinModal = (props: {
   currentBin: MarkerData;
@@ -202,11 +203,11 @@ export const BinModal = (props: {
                     onPress={() => {
                       update_bin_status(props.currentBin.id, newStatus).then(
                         (result) => {
-                          console.log(result);
+                          const added_points = result["added_points"];
+                          const user_points = result["user_points"];
+                          console.log("FIXME: handle points here");
 
-                          // const new_points = result["new_points"];
-                          // const bin = result["bin"];
-                          // setBinData(bin);
+                          setBinData({ ...binData, Status: newStatus });
                           setStatusOptionsVisible(false);
                         },
                       );

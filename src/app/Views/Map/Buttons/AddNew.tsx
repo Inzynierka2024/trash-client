@@ -160,7 +160,21 @@ export const AddNewButton = (props: {
           setContainerOpen(!containerOpen);
         }}
       >
-        <Image source={ElementIcons.recyclingBin} style={styles.imageIcon} />
+        {containerOpen && (
+          <FontAwesome
+            name="close"
+            size={iconSize}
+            style={[
+              styles.icon,
+              {
+                bottom: open ? 3 : 0,
+              },
+            ]}
+          />
+        )}
+        {!containerOpen && (
+          <Image source={ElementIcons.recyclingBin} style={styles.imageIcon} />
+        )}
       </AnimatedPressable>
 
       <AnimatedPressable

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ToastAndroid, useColorScheme, Platform, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ToastAndroid, useColorScheme, Platform, Dimensions, ScrollView } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
 import { Icon } from 'react-native-elements'
@@ -95,9 +95,12 @@ export const ProfileStatsForm = () => {
         container: {
             flex: 1,
             padding: 16,
-            justifyContent: 'center',
+        },
+        element: {
+            flexDirection: 'row',
+            padding: 10,
+            margin: 2,
             alignItems: 'center',
-            //backgroundColor: '#F5F5F5',
         },
         emailContainer: {
             flexDirection: 'row',
@@ -106,12 +109,7 @@ export const ProfileStatsForm = () => {
         emailText: {
             marginLeft: 10,
         },
-        element: {
-            flexDirection: 'row',
-            padding: 10,
-            margin: 2,
-            alignItems: 'center', // Center items vertically
-        },
+        
         textCentered: {
             alignSelf: 'center', // Center the text vertically within its parent
             color: themeFromContext.colors.primaryText
@@ -143,17 +141,39 @@ export const ProfileStatsForm = () => {
             marginLeft: 10,
             color: themeFromContext.colors.primaryText
         },
+        headerContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 20,
+        },
         userIcon: {
             width: 100,
             height: 100,
             borderRadius: 50,
-            marginBottom: 20,
-            backgroundColor: '#fff'
+            backgroundColor: '#fff',
+        },
+        pointsContainer: {
+            flex: 1,
+            justifyContent: 'flex-start',
+            flexDirection: 'row',
+            alignItems: 'flex-start', // Align items to the start of the container
+        },
+        pointsIcon: {
+            width: 30,
+            height: 30,
+            marginLeft: 5,
+            resizeMode: 'contain',
+        },
+        pointsText: {
+            marginTop: 5,
+            marginLeft: 5,
+            fontSize: 16,
+            color: themeFromContext.colors.primaryText,
         },
         icon: {
             width: 48,
             height: 48,
-            resizeMode: 'contain', // Adjusts the image to fit within the specified dimensions
+            resizeMode: 'contain',
             marginLeft: 4,
         },
         tabView: {
@@ -169,14 +189,18 @@ export const ProfileStatsForm = () => {
 
     return (
         <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
                     <Icon name='edit' size={24} color="#000" />
                 </TouchableOpacity>
-                <Image
-                    source={ll_icon}
-                    style={styles.userIcon}
-                />
+                <View style={styles.headerContainer}>
+                    <Image source={ll_icon} style={styles.userIcon} />
+
+                    <View style={styles.pointsContainer}>
+                        <Image source={pointsIcon} style={styles.pointsIcon} />
+                        <Text style={styles.pointsText}>{user.points}</Text> 
+                    </View>
+                </View>
 
                 <View style={styles.element}>
                     <Image source={profileIcon} style={styles.icon} />
@@ -193,17 +217,15 @@ export const ProfileStatsForm = () => {
                     <Text style={styles.readOnly}>***</Text>
                 </View>
 
-
                 <View style={styles.element}>
                     <Image source={locationIcon} style={styles.icon} />
-                    <Text style={styles.readOnly}></Text>
+                    <Text style={styles.readOnly}>{user.location}</Text>
                 </View>
 
                 <View style={styles.element}>
                     <Image source={pointsIcon} style={styles.icon} />
                     <Text style={styles.readOnly}></Text>
                 </View>
-
                 <TabView
                     navigationState={{ index, routes }}
                     renderScene={renderScene}
@@ -214,7 +236,7 @@ export const ProfileStatsForm = () => {
                 />
                 {/* <StickyTabView/> */}
 
-            </View>
+            </ScrollView>
         </ThemeContext.Provider >
     );
 

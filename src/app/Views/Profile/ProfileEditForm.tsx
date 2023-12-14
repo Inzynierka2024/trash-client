@@ -1,106 +1,135 @@
-import React, { useEffect, useState } from 'react';
-import { View, TextInput, Button, StyleSheet, ToastAndroid, Text } from 'react-native';
-import _fetch from '../../Logic/API/_fetch';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { ThemeContext } from "../../../theme/theme";
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../Logic/AuthContext';
 import get_user_data from '../../Logic/API/get_user_data';
+import ll_icon from "../../../../assets/litter-looter/adaptive.png";
+import gmailIcon from '../../../../assets/profile/gmail.png';
+import locationIcon from '../../../../assets/profile/home.png';
+import profileIcon from '../../../../assets/profile/profile.png';
 
-const ProfileEditForm: React.FC = () => {
-  const { state } = useAuth();
-  const [userData, setUserData] = useState(
-    {
-      email: '',
-      location: {
-        city: '',
-        country: '',
-      },
-      username: '',
-      stats: {
-        points: '',
-        gatheredTrash: '',
-        reportedTrash: ''
-      }
+export const ProfileEditForm = () => {
+    const { state } = useAuth();
+    const themeFromContext = useContext(ThemeContext);
+    const navigation = useNavigation();
+
+    const [user, setUserData] = useState({
+        email: '',
+        location: '',
+        username: ''
     });
 
-  useEffect(() => {
-    // Here you can fetch the current user data to populate the fields
-    // Assuming you have a function to fetch user data
-  }, []);
+    async function getUser() {
+      const result = await get_user_data(state.token);
+      if (result.isOk) {
+          const user = result["data"];
+          return user;
+      } else {
+          console.error("Invalid user");
+          return [];
+      }
+  }
 
-  const handleInputChange = (field, value) => {
-    setUserData(prevState => ({ ...prevState, [field]: value }));
-  };
+  useEffect(async () => {
+      if (state.token) {
+          const tempUser = await getUser();
+          setUserData(tempUser);
+      }
+  }, [state.token]);
 
-  const handleSubmit = async () => {
-    if (!state.token) {
-      ToastAndroid.show('No authentication token found', ToastAndroid.SHORT);
-      return;
-    }
+    const handleSave = () => {
+        // Logic to save the updated user data
+    };
 
-    const success = await editUserData(userData);
-    if (success) {
-      ToastAndroid.show('User updated successfully', ToastAndroid.SHORT);
-    } else {
-      ToastAndroid.show('Error updating user', ToastAndroid.SHORT);
-    }
-  };
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            padding: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        element: {
+            flexDirection: 'row',
+            padding: 10,
+            margin: 2,
+            alignItems: 'center',
+        },
+        textInput: {
+            borderBottomWidth: 1,
+            borderBottomColor: '#CCCCCC',
+            flex: 1,
+            marginLeft: 10,
+            color: themeFromContext.colors.primaryText,
+        },
+        icon: {
+            width: 48,
+            height: 48,
+            resizeMode: 'contain',
+            marginLeft: 4,
+        },
+        userIcon: {
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            marginBottom: 20,
+            backgroundColor: '#fff'
+        },
+        saveButton: {
+            marginTop: 20,
+            padding: 10,
+            backgroundColor: themeFromContext.colors.green,
+            borderRadius: 5,
+        },
+        buttonText: {
+            color: 'white',
+            textAlign: 'center',
+        },
+    });
 
-  return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={value => handleInputChange('email', value)}
-        value={userData.email}
-      />
+    return (
+        <ThemeContext.Provider value={themeFromContext}>
+            <View style={styles.container}>
+                <Image source={ll_icon} style={styles.userIcon} />
 
-      <TextInput
-        style={styles.input}
-        placeholder="City"
-        onChangeText={value => handleInputChange('location.city', value)}
-        value={userData.location.city}
-      />
+                <View style={styles.element}>
+                    <Image source={profileIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={user.username}
+                        onChangeText={(text) => setUserData({ ...user, username: text })}
+                        placeholder="Username"
+                    />
+                </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Country"
-        onChangeText={value => handleInputChange('location.country', value)}
-        value={userData.location.country}
-      />
-      <Text style={styles.readOnly}>Gathered Trash: {userData.stats.gatheredTrash}</Text>
-      <Text style={styles.readOnly}>Reported Trash: {userData.stats.reportedTrash}</Text>
-      <Text style={styles.readOnly}>Points: {userData.stats.points}</Text>
+                <View style={styles.element}>
+                    <Image source={gmailIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={user.email}
+                        onChangeText={(text) => setUserData({ ...user, email: text })}
+                        placeholder="Email"
+                        keyboardType="email-address"
+                    />
+                </View>
 
-      <Button title="Save Changes" onPress={handleSubmit} />
-    </View>
-  );
+                <View style={styles.element}>
+                    <Image source={locationIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={user.location}
+                        onChangeText={(text) => setUserData({ ...user, location: text })}
+                        placeholder="Location"
+                    />
+                </View>
+
+                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                    <Text style={styles.buttonText}>Save Changes</Text>
+                </TouchableOpacity>
+            </View>
+        </ThemeContext.Provider>
+    );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    width: '90%',
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  readOnly: {
-    fontSize: 16,
-    marginVertical: 8,
-    color: '#333333',
-    width: '100%',
-    textAlign: 'left',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    paddingBottom: 4,
-  },
-});
-
 export default ProfileEditForm;
-
-

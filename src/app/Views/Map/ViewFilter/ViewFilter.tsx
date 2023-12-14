@@ -52,20 +52,13 @@ export const ViewFilter = (props: {
         }}
         style={[styles.modal]}
       >
-        <View
-          style={[
-            styles.container,
-            {
-              backgroundColor: themeFromContext.colors.background,
-            },
-          ]}
-        >
+        <View style={[styles.container, {}]}>
           <Text
             style={[
               styles.title,
               {
                 color: textColor,
-                backgroundColor: themeFromContext.colors.contrastOverlay,
+                backgroundColor: themeFromContext.colors.transparentBackground,
               },
             ]}
           >

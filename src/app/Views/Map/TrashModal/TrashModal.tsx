@@ -44,12 +44,12 @@ export const TrashModal = (props: {
     if (currentTrashData) setCanRemove(isTrashInRange());
   }, [props.userState]);
 
-  async function loadTrashMetadata() {
-    const result = await get_trash_metadata(props.currentTrash.id);
-    setCurrentTrashData(result);
-    setCanRemove(isTrashInRange());
-
-    setLoading(false);
+  function loadTrashMetadata() {
+    get_trash_metadata(props.currentTrash.id).then((result) => {
+      setCurrentTrashData(result);
+      setCanRemove(isTrashInRange());
+      setLoading(false);
+    });
   }
 
   function clearData() {
@@ -137,14 +137,16 @@ export const TrashModal = (props: {
             marginBottom: 48,
           }}
         >
-          <ElementCard
-            type={"garbage"}
-            timestamp={currentTrashData?.CreationTimestamp}
-            imageEnabled={true}
-            imageData={currentTrashData?.Picture}
-            addedBy={currentTrashData?.Username}
-            distance={distance}
-          />
+          {currentTrashData !== null && (
+            <ElementCard
+              type={"garbage"}
+              timestamp={currentTrashData?.CreationTimestamp}
+              imageEnabled={true}
+              imageData={currentTrashData?.Picture}
+              addedBy={currentTrashData?.Username}
+              distance={distance}
+            />
+          )}
 
           {!canRemove && (
             <Text style={{ color: textColor }}>

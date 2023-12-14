@@ -46,7 +46,15 @@ export const FilterButton = (props: {
   }
 
   return (
-    <Pressable onPress={toggle} style={[styles.button]}>
+    <Pressable
+      onPress={toggle}
+      style={[
+        styles.button,
+        {
+          backgroundColor: themeFromContext.colors.background,
+        },
+      ]}
+    >
       <Animated.View
         style={[
           styles.colorOverlay,

@@ -87,7 +87,14 @@ export const AddNewButton = (props: {
     <View style={styles.container}>
       {containerOpen === true && (
         <View style={[styles.container, styles.canContainer]}>
-          <View style={[styles.field]}>
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors.battery,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -114,7 +121,14 @@ export const AddNewButton = (props: {
             </AnimatedPressable>
           </View>
 
-          <View style={[styles.field]}>
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors.cloth,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -140,7 +154,15 @@ export const AddNewButton = (props: {
               <Image source={ElementIcons.cloth} style={styles.imageIcon} />
             </AnimatedPressable>
           </View>
-          <View style={[styles.field]}>
+
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors["e-waste"],
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -169,7 +191,15 @@ export const AddNewButton = (props: {
               />
             </AnimatedPressable>
           </View>
-          <View style={[styles.field]}>
+
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors.bio,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -195,7 +225,16 @@ export const AddNewButton = (props: {
               <Image source={ElementIcons.bio} style={styles.imageIcon} />
             </AnimatedPressable>
           </View>
-          <View style={[styles.field]}>
+
+          <View
+            style={[
+              styles.field,
+              ,
+              {
+                backgroundColor: ElementColors.glass,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -221,7 +260,15 @@ export const AddNewButton = (props: {
               <Image source={ElementIcons.glass} style={styles.imageIcon} />
             </AnimatedPressable>
           </View>
-          <View style={[styles.field]}>
+
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors.paper,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -247,7 +294,15 @@ export const AddNewButton = (props: {
               <Image source={ElementIcons.paper} style={styles.imageIcon} />
             </AnimatedPressable>
           </View>
-          <View style={[styles.field]}>
+
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors.plastic,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -273,7 +328,15 @@ export const AddNewButton = (props: {
               <Image source={ElementIcons.plastic} style={styles.imageIcon} />
             </AnimatedPressable>
           </View>
-          <View style={[styles.field]}>
+
+          <View
+            style={[
+              styles.field,
+              {
+                backgroundColor: ElementColors.general,
+              },
+            ]}
+          >
             <Text
               style={[
                 styles.label,
@@ -314,7 +377,7 @@ export const AddNewButton = (props: {
           setContainerOpen(!containerOpen);
         }}
       >
-        <FontAwesome name="recycle" size={iconSize} style={styles.icon} />
+        <Image source={ElementIcons.recyclingBin} style={styles.imageIcon} />
       </AnimatedPressable>
 
       <AnimatedPressable
@@ -332,7 +395,7 @@ export const AddNewButton = (props: {
           menuClose();
         }}
       >
-        <FontAwesome name="trash" size={iconSize} style={styles.icon} />
+        <Image source={ElementIcons.garbage} style={styles.imageIcon} />
       </AnimatedPressable>
 
       <AnimatedPressable
@@ -384,6 +447,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     gap: 8,
     marginRight: 48,
+    borderRadius: 8,
+    padding: 2,
+    paddingLeft: 12,
   },
   button: {
     padding: 8,
@@ -420,9 +486,9 @@ const styles = StyleSheet.create({
     textAlign: "right",
     textShadowColor: "#0006",
     textShadowOffset: {
-      width: 2,
-      height: 2,
+      width: 1,
+      height: 1,
     },
-    textShadowRadius: 2,
+    textShadowRadius: 4,
   },
 });

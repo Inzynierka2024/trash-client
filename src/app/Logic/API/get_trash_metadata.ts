@@ -6,6 +6,7 @@ export default async function (id): Promise<TrashMetadata> {
 
   const result = await _fetch(URL, "GET", {});
 
+  console.log("XD#", Object.keys(result.data));
   return {
     Id: parseInt(result.data["garbage_id"]),
     Username: result.data["username"],

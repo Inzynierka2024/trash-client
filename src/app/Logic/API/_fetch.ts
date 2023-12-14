@@ -14,7 +14,7 @@ export default async function (
 
   const url = join(base, api_path);
 
-  console.log("Fetching: ", url);
+  console.log(`[${method}] ${url}`);
 
   const response = await fetch(url, {
     method,
@@ -39,7 +39,10 @@ export default async function (
   if (isOk === true) return { isOk: true, data: json };
   else {
     console.error(`${url} | ${code}: ${json.message}: ${json.details}`);
-    console.log("Request that triggered error:", url, body);
+    console.log("Request that triggered error:", url, {
+      ...body,
+      image: json.image ? "!image data here!" : undefined,
+    });
     return { isOk: false, data: {}, error: json.message };
   }
 }

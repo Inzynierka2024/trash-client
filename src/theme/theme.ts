@@ -30,7 +30,9 @@ export const palette = {
   whitelighter: "#BEBEBE",
 
   whiten: "#FFFFFF20",
+  whiten2: "#FFFFFF60",
   darken: "#00000020",
+  darken2: "#00000060",
 };
 
 export const theme = {
@@ -53,6 +55,8 @@ export const theme = {
     navbar: palette.navbar,
 
     contrastOverlay: palette.darken,
+
+    transparentBackground: palette.lightgray + "A0",
   },
   spacing: {
     s: 8,
@@ -94,6 +98,8 @@ export const darkTheme = {
     navbar: palette.navbardark,
 
     contrastOverlay: palette.whiten,
+
+    transparentBackground: palette.darkgray + "A0",
   },
 };
 

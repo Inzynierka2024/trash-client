@@ -392,6 +392,7 @@ export const AddNewButton = (props: {
         onPress={() => {
           props.newTrash();
           setOpen(false);
+          setContainerOpen(false);
           menuClose();
         }}
       >

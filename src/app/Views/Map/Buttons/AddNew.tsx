@@ -1,5 +1,5 @@
 import { useContext, useState, useRef } from "react";
-import { Animated, Easing, Text, StyleSheet, View, Image } from "react-native";
+import { Animated, StyleSheet, View, Image } from "react-native";
 import { ThemeContext, palette } from "../../../../theme/theme";
 import { FontAwesome } from "@expo/vector-icons";
 import AnimatedPressable from "../../../Animated/AnimatedPressable";
@@ -21,10 +21,7 @@ export const AddNewButton = (props: {
   const openRadius = 8;
   const iconSize = 32;
 
-  const flySpeed = 200;
   const radiusSpeed = 200;
-
-  const distance = 66;
 
   // Menu button open animations
   const radiusAnim = useRef(new Animated.Value(iconSize)).current;
@@ -57,6 +54,8 @@ export const AddNewButton = (props: {
         animationIn="fadeInUp"
         animationOut="fadeOutDown"
         isVisible={containerOpen}
+        hideModalContentWhileAnimating
+        statusBarTranslucent
         onBackButtonPress={() => {
           setContainerOpen(false);
         }}
@@ -162,6 +161,8 @@ export const AddNewButton = (props: {
       <Modal
         animationIn="fadeInUp"
         animationOut="fadeOutDown"
+        hideModalContentWhileAnimating
+        statusBarTranslucent
         isVisible={open}
         onBackButtonPress={() => {
           setOpen(false);
@@ -171,7 +172,7 @@ export const AddNewButton = (props: {
           setOpen(false);
           menuClose();
         }}
-        backdropOpacity={0.1}
+        backdropOpacity={0}
         style={[styles.fullScreenModal]}
       >
         <View style={[styles.menusContainer]}>

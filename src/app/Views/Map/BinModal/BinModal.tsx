@@ -202,7 +202,11 @@ export const BinModal = (props: {
                     onPress={() => {
                       update_bin_status(props.currentBin.id, newStatus).then(
                         (result) => {
-                          setBinData(result.data);
+                          console.log(result);
+
+                          // const new_points = result["new_points"];
+                          // const bin = result["bin"];
+                          // setBinData(bin);
                           setStatusOptionsVisible(false);
                         },
                       );

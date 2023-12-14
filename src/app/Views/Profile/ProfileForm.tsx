@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f4f4f4', // Consider a light gray to contrast the green buttons
+   
   },
   loginText: {
     fontSize: 18,

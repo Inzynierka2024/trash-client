@@ -2,8 +2,9 @@ import { View, Text, Button, StyleSheet, Image, Alert, TouchableOpacity, Dimensi
 import { useAuth } from '../../Logic/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect, useContext } from 'react';
-import stats_icon from "../../../../assets/player-stats.png";
-import collected_trash_icon from "../../../../assets/collected-trash.png";
+import stats_icon from "../../../../assets/profile/profile-stats.png";
+import collected_trash_icon from "../../../../assets/profile/statistics.png";
+import logout_icon from "../../../../assets/profile/logout.png";
 import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import guilds_icon from "../../../../assets/guilds.png";
 import settings_icon from "../../../../assets/settings.png";
@@ -76,7 +77,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Zebrane odpady</Text>
+            <Text style={styles.buttonText}>Heatmapa</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
             <Image source={guilds_icon} style={styles.buttonIcon} />
@@ -87,6 +88,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
             <Text style={styles.buttonText}>Ustawienia</Text>
           </TouchableOpacity> */}
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
+            <Image source={logout_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Wyloguj</Text>
           </TouchableOpacity>
         </View>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-   
+
   },
   loginText: {
     fontSize: 18,
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 20,
     backgroundColor: '#fff'
-    },
+  },
   buttonContainer: {
     marginBottom: 10,
     width: '80%',
@@ -132,19 +134,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#3d9970', // Light Dark Green Color
     padding: 10,
     margin: 2,
-    borderRadius: 4,
+    borderRadius: 75, // Adjusted for round shape
     alignItems: 'center',
     justifyContent: 'center',
-    width: 150
-  },
-  buttonIcon: {
-    width: 50,
-    height: 50,
+    width: 150,
+    height: 150, // Set a fixed height
   },
 
   buttonText: {
     color: '#ffffff',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'center', // Ensure text is centered
+  },
+  buttonIcon: {
+    width: 50,
+    color: '#fff',
+    height: 50,
   },
   text: {
     fontSize: 16,

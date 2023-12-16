@@ -78,7 +78,7 @@ export const TrashModal = (props: {
 
   function isTrashInRange(): boolean {
     if (!props.userState || currentTrashData === null) {
-      return true;
+      return false;
     }
 
     const distance = calculate_distance(

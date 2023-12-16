@@ -1,12 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, View, Image, Text } from "react-native";
-import remove_trash from "../../../Logic/API/remove_trash";
+import { Text, View } from "react-native";
 import { palette, ThemeContext } from "../../../../theme/theme";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { MarkerData } from "../MapComponent";
-import { TrashMetadata } from "../../../Models/TrashMetadata";
-import get_trash_metadata from "../../../Logic/API/get_trash_metadata";
-import { Alert } from "react-native";
 import calculate_distance from "../../../Utils/calculate_distance";
 import { Loading } from "../../../Utils/Loading";
 import { ElementCard } from "../../Card/ElementCard";
@@ -18,18 +14,21 @@ import { BinStatus } from "../../../Models/BinStatus";
 import { ActionButton } from "../TrashModal/ActionButton";
 import update_bin_status from "../../../Logic/API/update_bin_status";
 import { BinStatusButtons } from "../Buttons/BinStatusButtons";
-import api_to_BinMetadata from "../../../Models/Converters/api_to_BinMetadata";
 
 export const BinModal = (props: {
   currentBin: MarkerData;
   binModalVisible: boolean;
   onClose: Function;
+  userState: MapLibreGL.Location;
 }) => {
   const themeFromContext = useContext(ThemeContext);
   const textColor = themeFromContext.colors.primaryText;
 
   const [loading, setLoading] = useState(false);
   const [binData, setBinData] = useState<BinMetadata | null>(null);
+
+  const [canRemove, setCanRemove] = useState(false);
+  const [distance, setDistance] = useState<number>(-1);
 
   const [statusOptionsVisible, setStatusOptionsVisible] = useState(false);
   const [newStatus, setNewStatus] = useState<BinStatus>("medium");
@@ -44,11 +43,32 @@ export const BinModal = (props: {
     }
   }, [props.binModalVisible]);
 
+  useEffect(() => {
+    if (binData) setCanRemove(isBinInRange());
+  }, [props.userState]);
+
+  function isBinInRange(): boolean {
+    if (!props.userState || binData === null) {
+      return false;
+    }
+
+    const distance = calculate_distance(
+      props.userState.coords.latitude,
+      props.userState.coords.longitude,
+      binData.Latitude,
+      binData.Longitude,
+    );
+
+    setDistance(distance);
+
+    return distance < 0.2;
+  }
+
   function loadData() {
     if (props.currentBin && props.currentBin.id !== null)
       get_bin_metadata(props.currentBin.id).then((result) => {
-        console.log(result);
         setBinData(result);
+        setCanRemove(isBinInRange());
         setLoading(false);
         setNewStatus(result.Status);
       });
@@ -80,15 +100,16 @@ export const BinModal = (props: {
         justifyContent: "center",
       }}
     >
+      <Loading visible={true} />
+
       <View
         style={{
           width: 260,
           alignItems: "center",
           justifyContent: "center",
+          position: "relative",
         }}
       >
-        <Loading visible={loading} />
-
         <View
           style={{
             backgroundColor: themeFromContext.colors.background,
@@ -102,6 +123,7 @@ export const BinModal = (props: {
             flex: 1,
             position: "absolute",
             paddingBottom: 12,
+            zIndex: 9,
           }}
         >
           {binData !== null && (
@@ -110,6 +132,7 @@ export const BinModal = (props: {
               timestamp={binData.CreationTimestamp}
               addedBy={binData.Username}
               binStatus={binData.Status}
+              distance={distance}
               imageEnabled={false}
             />
           )}
@@ -124,8 +147,14 @@ export const BinModal = (props: {
                   justifyContent: "center",
                 }}
               >
+                {!canRemove && (
+                  <Text style={{ color: textColor }}>
+                    Jesteś za daleko by zmienić stan
+                  </Text>
+                )}
+
                 <ActionButton
-                  disabled={false}
+                  disabled={!canRemove}
                   width={48}
                   iconName={"update"}
                   backgroundColor={palette.lightyellow}

@@ -354,6 +354,7 @@ export const MapComponent = () => {
         currentBin={currentBin}
         binModalVisible={binModalVisible}
         onClose={closeBinModal}
+        userState={userState}
       />
 
       <View style={styles.filterContainer}>

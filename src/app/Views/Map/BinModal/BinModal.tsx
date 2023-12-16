@@ -100,7 +100,7 @@ export const BinModal = (props: {
         justifyContent: "center",
       }}
     >
-      <Loading visible={true} />
+      <Loading visible={loading} />
 
       <View
         style={{

@@ -140,10 +140,10 @@ export const TrashModal = (props: {
           {currentTrashData !== null && (
             <ElementCard
               type={"garbage"}
-              timestamp={currentTrashData?.CreationTimestamp}
+              timestamp={currentTrashData.CreationTimestamp}
               imageEnabled={true}
-              imageData={currentTrashData?.Picture}
-              addedBy={currentTrashData?.Username}
+              imageData={currentTrashData.Picture}
+              addedBy={currentTrashData.CreationUsername}
               distance={distance}
             />
           )}

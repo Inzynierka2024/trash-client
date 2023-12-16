@@ -1,6 +1,6 @@
 export interface TrashMetadata {
   Id: number;
-  Username: string;
+  CreationUsername: string;
   CreationTimestamp: Date;
   Latitude: number;
   Longitude: number;

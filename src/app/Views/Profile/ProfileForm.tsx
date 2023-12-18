@@ -73,11 +73,11 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
         <View style={styles.buttonGrid}>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileStats')}>
             <Image source={stats_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Statystyki użytkownika</Text>
+            <Text style={styles.buttonText}>Statystyka użytkownika</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Heatmapa</Text>
+            <Text style={styles.buttonText}>Statystyka odpadów</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
             <Image source={guilds_icon} style={styles.buttonIcon} />
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     width: 50,
-    color: '#fff',
+    // color: '#fff',
     height: 50,
   },
   text: {

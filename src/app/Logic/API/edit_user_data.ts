@@ -1,12 +1,8 @@
 // editUserData.ts
 import _fetch from './_fetch';
-import {useAuth} from "../AuthContext";
-import { UserModel } from '../../Models/UserMetadata';
 
-
-export async function edit_user_data(userData: UserModel): Promise<boolean> {
-  const { state } = useAuth();
-  const token = state.token;
+export async function edit_user_data(userData: any, token: string): Promise<boolean> {
+  
   if (!token) {
     console.error("No token found");
     return false;
@@ -16,8 +12,8 @@ export async function edit_user_data(userData: UserModel): Promise<boolean> {
   const headers = { Authorization: `Bearer ${token}` };
 
   try {
-    const response = await _fetch(URL, "PUT", headers, {userData});
-    if (response.status === 200) {
+    const response = await _fetch(URL, "PUT", headers, userData);
+    if (response.isOk) {
       return true;
     } else {
       console.error('Error updating user:', response);

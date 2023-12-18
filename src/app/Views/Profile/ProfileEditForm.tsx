@@ -9,6 +9,8 @@ import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import gmailIcon from '../../../../assets/profile/gmail.png';
 import locationIcon from '../../../../assets/profile/home.png';
 import profileIcon from '../../../../assets/profile/profile.png';
+import Toast from 'react-native-toast-message';
+import { edit_user_data } from '../../Logic/API/edit_user_data';
 
 export const ProfileEditForm = () => {
     const { state } = useAuth();
@@ -22,6 +24,7 @@ export const ProfileEditForm = () => {
     });
 
     async function getUser() {
+      console.log("token:: ", state.token);
       const result = await get_user_data(state.token);
       if (result.isOk) {
           const user = result["data"];
@@ -32,16 +35,34 @@ export const ProfileEditForm = () => {
       }
   }
 
-  useEffect(async () => {
+  useEffect(() => {
+    async function fetchData() {
       if (state.token) {
-          const tempUser = await getUser();
-          setUserData(tempUser);
+        const tempUser = await getUser();
+        setUserData(tempUser);
       }
+    }
+    fetchData();
   }, [state.token]);
+  
 
-    const handleSave = () => {
-        // Logic to save the updated user data
-    };
+  const handleSave = async () => {
+    const result = await edit_user_data(user, state.token);
+    if (result) {
+        Toast.show({
+            type: 'success',
+            text1: 'Informacje o użytkowniku zostały pomyślnie zaktualizowane!'
+        });
+        setUserData(user);
+        navigation.goBack();
+    } else {
+        Toast.show({
+            type: 'error',
+            text1: 'Aktualizacja informacji o użytkowniku nie powiodła się'
+        });
+    }
+};
+
 
     const styles = StyleSheet.create({
         container: {

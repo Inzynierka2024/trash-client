@@ -18,21 +18,33 @@ import passwordIcon from '../../../../assets/profile/password.png';
 import profileIcon from '../../../../assets/profile/profile.png';
 import pointsIcon from '../../../../assets/profile/coin.png';
 import { FontAwesome } from '@expo/vector-icons'; // Import FontAwesome from Expo
+import { useIsFocused } from '@react-navigation/native';
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-const CollectedTrashTab = () => (
-    <View style={[styles.tabScene, { backgroundColor: '#ccf324' }]}>
-        {/* Content for Collected Trash */}
+const Tile = () => (
+    <View style={styles.tile}>
+      {/* Content of the tile */}
+      <Text style={styles.tileText}>Empty Tile</Text>
     </View>
-);
-
-const ReportedTrashTab = () => (
-    <View style={[styles.tabScene, { backgroundColor: '#673ab7' }]}>
-        {/* Content for Reported Trash */}
+  );
+  
+  
+  const CollectedTrashTab = () => (
+    <View style={styles.tabScene}>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <Tile key={index} />
+      ))}
     </View>
-);
-
+  );
+  
+  const ReportedTrashTab = () => (
+    <View style={styles.tabScene}>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <Tile key={index} />
+      ))}
+    </View>
+  );
 export const ProfileStatsForm = () => {
 
     const { state } = useAuth();
@@ -64,12 +76,29 @@ export const ProfileStatsForm = () => {
         }
     }
 
-    useEffect(async () => {
-        if (state.token) {
+    useEffect(() => {
+        async function fetchData() {
+          if (state.token) {
             const tempUser = await getUser();
             setUserData(tempUser);
+          }
         }
-    }, [state.token]);
+        fetchData();
+      }, [state.token]);
+      
+      const isFocused = useIsFocused();
+      
+      useEffect(() => {
+        async function fetchDataOnFocus() {
+          if (isFocused) {
+            const tempUser = await getUser();
+            setUserData(tempUser);
+          }
+        }
+        fetchDataOnFocus();
+      }, [isFocused]);
+      
+
 
     const [index, setIndex] = useState(0);
     const [routes] = useState([
@@ -121,7 +150,7 @@ export const ProfileStatsForm = () => {
             right: 16,
             zIndex: 10,
             padding: 8,
-            backgroundColor: '#dcf',
+            backgroundColor: themeFromContext.colors.background,
             borderRadius: 20,
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 1 },
@@ -183,7 +212,18 @@ export const ProfileStatsForm = () => {
         tabScene: {
             flex: 1,
         },
-
+        tile: {
+            height: 100, // Adjust height as needed
+            backgroundColor: '#e0e0e0', // Example background color
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginVertical: 5,
+            marginHorizontal: 10,
+          },
+          tileText: {
+            color: 'black', // Adjust text color as needed
+          },
 
     });
 
@@ -255,6 +295,18 @@ const styles = StyleSheet.create({
     tabScene: {
         flex: 1,
     },
+    tile: {
+        height: 100, // Adjust height as needed
+        backgroundColor: '#e0e0e0', // Example background color
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 5,
+        marginHorizontal: 10,
+      },
+      tileText: {
+        color: 'black', // Adjust text color as needed
+      },
     // ... other styles ...
 });
 export default ProfileStatsForm;

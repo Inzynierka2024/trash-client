@@ -31,6 +31,10 @@ export default async function (
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  // response.text().then((text) => {
+  //   console.log("Response text:", text);
+  // });
+
   const code = await response.status;
   const isOk = await response.ok;
 

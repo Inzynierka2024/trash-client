@@ -63,13 +63,10 @@ export const MapComponent = () => {
       payload: marker,
     });
   }
-  function setBinMarkers(markers: MarkerData[], type: BinTypes) {
+  function setBinMarkers(markers: any) {
     binDispatch({
       type: "SET_BIN_MARKERS",
-      payload: {
-        type,
-        markers,
-      },
+      payload: markers,
     });
   }
 
@@ -196,9 +193,6 @@ export const MapComponent = () => {
           const points = result.data["map_points"];
           clearBinMarkers();
 
-          // FIXME: This is a hack to make sure that the bins are rendered
-          // ^ Not my words but Copilot's
-
           const markers: { [key in BinTypes]: any[] } = {
             general: [],
             bio: [],
@@ -217,7 +211,7 @@ export const MapComponent = () => {
           }
 
           for (const key in markers) {
-            setBinMarkers(markers[key]);
+            setBinMarkers(markers);
           }
 
           for (const key in markers) {

@@ -405,16 +405,18 @@ export const MapComponent = () => {
           triggerKey={cameraTrigger}
         />
 
-        <MapLibreGL.ShapeSource
-          id="pinsSource"
-          shape={trashCollection}
-          onPress={onTrashPinPress}
-        >
-          <MapLibreGL.SymbolLayer
-            id="pinsLayer"
-            style={pinLayerStyles.garbage}
-          />
-        </MapLibreGL.ShapeSource>
+        {elementVisibility["garbage"] && (
+          <MapLibreGL.ShapeSource
+            id="pinsSource"
+            shape={trashCollection}
+            onPress={onTrashPinPress}
+          >
+            <MapLibreGL.SymbolLayer
+              id="pinsLayer"
+              style={pinLayerStyles.garbage}
+            />
+          </MapLibreGL.ShapeSource>
+        )}
 
         {Object.entries(binCollections).map(([key, binCollection]) => {
           if (!elementVisibility[key]) return null;

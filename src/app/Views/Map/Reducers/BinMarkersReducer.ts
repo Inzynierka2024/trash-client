@@ -1,10 +1,14 @@
 export default function binMarkersReducer(markers, action) {
+  let type;
   switch (action.type) {
     case "SET_BIN_MARKERS":
-      return action.payload;
+      type = action.payload.type;
+      return {
+        ...markers,
+        [type]: action.payload.markers,
+      };
     case "ADD_BIN_MARKER":
-      const type = action.payload.type;
-      console.log(`Parsed bin id=${action.payload.id} type=${type}`);
+      type = action.payload.type;
 
       return {
         ...markers,

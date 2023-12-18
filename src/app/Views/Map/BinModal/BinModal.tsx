@@ -66,12 +66,14 @@ export const BinModal = (props: {
 
   function loadData() {
     if (props.currentBin && props.currentBin.id !== null)
-      get_bin_metadata(props.currentBin.id).then((result) => {
-        setBinData(result);
-        setCanRemove(isBinInRange());
-        setLoading(false);
-        setNewStatus(result.Status);
-      });
+      get_bin_metadata(props.currentBin.id, props.currentBin.type).then(
+        (result) => {
+          setBinData(result);
+          setCanRemove(isBinInRange());
+          setLoading(false);
+          setNewStatus(result.Status);
+        },
+      );
   }
 
   function clearData() {

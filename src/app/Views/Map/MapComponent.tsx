@@ -63,10 +63,13 @@ export const MapComponent = () => {
       payload: marker,
     });
   }
-  function setBinMarkers(markers: MarkerData[]) {
+  function setBinMarkers(markers: MarkerData[], type: BinTypes) {
     binDispatch({
       type: "SET_BIN_MARKERS",
-      payload: markers,
+      payload: {
+        type,
+        markers,
+      },
     });
   }
 
@@ -213,8 +216,8 @@ export const MapComponent = () => {
             markers[marker.type].push(marker);
           }
 
-          for (const marker of points) {
-            addBinMarker(marker);
+          for (const key in markers) {
+            setBinMarkers(markers[key]);
           }
 
           for (const key in markers) {

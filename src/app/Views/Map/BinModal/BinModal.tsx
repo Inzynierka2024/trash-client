@@ -102,8 +102,6 @@ export const BinModal = (props: {
         justifyContent: "center",
       }}
     >
-      <Loading visible={loading} />
-
       <View
         style={{
           width: 260,
@@ -112,6 +110,8 @@ export const BinModal = (props: {
           position: "relative",
         }}
       >
+        <Loading visible={loading} />
+
         <View
           style={{
             backgroundColor: themeFromContext.colors.background,

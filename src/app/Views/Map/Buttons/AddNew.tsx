@@ -78,12 +78,6 @@ export const AddNewButton = (props: {
             iconSize={iconSize}
           />
 
-          <AddBinButton
-            type="e-waste"
-            newBin={props.newCan}
-            iconSize={iconSize}
-          />
-
           <AddBinButton type="bio" newBin={props.newCan} iconSize={iconSize} />
 
           <AddBinButton

@@ -4,6 +4,9 @@ import api_to_BinMetadata from "../../Models/Converters/api_to_BinMetadata";
 import { BinTypes } from "../../Models/BinTypes";
 
 const STATIC_BINS_TABLE_TYPES = ["e-waste"];
+export const is_static_bin = (type: BinTypes) => {
+  return STATIC_BINS_TABLE_TYPES.includes(type);
+};
 
 export default async function (
   id: number,

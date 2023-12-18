@@ -84,14 +84,14 @@ export const ViewFilter = (props: {
 
 const styles = StyleSheet.create({
   modal: {
-    width: 260,
+    width: 300,
   },
   container: {
     position: "absolute",
     left: 0,
     top: 0,
     margin: 0,
-    width: 260,
+    width: 295,
     flex: 1,
     flexDirection: "column",
     borderRadius: 8,

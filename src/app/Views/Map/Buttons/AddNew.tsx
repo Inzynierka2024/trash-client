@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginRight: 80,
     marginBottom: 128,
-    width: 224,
+    width: 256,
   },
   button: {
     padding: 8,

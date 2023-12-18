@@ -5,7 +5,9 @@ export default function (data): BinMetadata {
   return {
     Id: parseInt(data["bin_id"]) ?? parseInt(data["id"]),
     Username: data["username"],
-    CreationTimestamp: new Date(data["creation_timestamp"]),
+    CreationTimestamp: data["creation_timestamp"]
+      ? new Date(data["creation_timestamp"])
+      : undefined,
     Latitude: parseFloat(data["latitude"]),
     Longitude: parseFloat(data["longitude"]),
     Type: data["type"],

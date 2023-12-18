@@ -8,7 +8,9 @@ import { Loading } from "../../../Utils/Loading";
 import { ElementCard } from "../../Card/ElementCard";
 import { ElementColors } from "../../../Models/ElementColors";
 import { BinMetadata } from "../../../Models/BinMetadata";
-import get_bin_metadata from "../../../Logic/API/get_bin_metadata";
+import get_bin_metadata, {
+  is_static_bin,
+} from "../../../Logic/API/get_bin_metadata";
 import Modal from "react-native-modal";
 import { BinStatus } from "../../../Models/BinStatus";
 import { ActionButton } from "../TrashModal/ActionButton";
@@ -27,7 +29,8 @@ export const BinModal = (props: {
   const [loading, setLoading] = useState(false);
   const [binData, setBinData] = useState<BinMetadata | null>(null);
 
-  const [canRemove, setCanRemove] = useState(false);
+  const [isStatic, setIsStatic] = useState(false);
+  const [canChangeStatus, setCanChangeStatus] = useState(false);
   const [distance, setDistance] = useState<number>(-1);
 
   const [statusOptionsVisible, setStatusOptionsVisible] = useState(false);
@@ -44,7 +47,7 @@ export const BinModal = (props: {
   }, [props.binModalVisible]);
 
   useEffect(() => {
-    if (binData) setCanRemove(isBinInRange());
+    if (binData) setCanChangeStatus(isBinInRange());
   }, [props.userState]);
 
   function isBinInRange(): boolean {
@@ -69,7 +72,8 @@ export const BinModal = (props: {
       get_bin_metadata(props.currentBin.id, props.currentBin.type).then(
         (result) => {
           setBinData(result);
-          setCanRemove(isBinInRange());
+          setCanChangeStatus(isBinInRange());
+          setIsStatic(is_static_bin(result.Type));
           setLoading(false);
           setNewStatus(result.Status);
         },
@@ -124,7 +128,6 @@ export const BinModal = (props: {
             gap: 16,
             flex: 1,
             position: "absolute",
-            paddingBottom: 12,
             zIndex: 9,
           }}
         >
@@ -139,7 +142,7 @@ export const BinModal = (props: {
             />
           )}
 
-          {!statusOptionsVisible && (
+          {!isStatic && !statusOptionsVisible && (
             <View style={{ flexDirection: "row", gap: 16 }}>
               <View
                 style={{
@@ -149,14 +152,14 @@ export const BinModal = (props: {
                   justifyContent: "center",
                 }}
               >
-                {!canRemove && (
+                {!canChangeStatus && (
                   <Text style={{ color: textColor }}>
                     Jesteś za daleko by zmienić stan
                   </Text>
                 )}
 
                 <ActionButton
-                  disabled={!canRemove}
+                  disabled={!canChangeStatus}
                   width={48}
                   iconName={"update"}
                   backgroundColor={palette.lightyellow}
@@ -169,6 +172,7 @@ export const BinModal = (props: {
                   style={{
                     color: textColor,
                     textAlign: "center",
+                    marginBottom: 12,
                   }}
                   numberOfLines={1}
                 >
@@ -178,7 +182,7 @@ export const BinModal = (props: {
             </View>
           )}
 
-          {statusOptionsVisible && (
+          {!isStatic && statusOptionsVisible && (
             <View
               style={{
                 flexDirection: "column",
@@ -212,6 +216,7 @@ export const BinModal = (props: {
                     style={{
                       color: textColor,
                       textAlign: "center",
+                      marginBottom: 12,
                     }}
                     numberOfLines={1}
                   >
@@ -249,6 +254,7 @@ export const BinModal = (props: {
                     style={{
                       color: textColor,
                       textAlign: "center",
+                      marginBottom: 12,
                     }}
                     numberOfLines={1}
                   >

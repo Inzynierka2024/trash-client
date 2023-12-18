@@ -27,11 +27,6 @@
       "package": "com.inzynierka2024squad.litterlooterdev"
     },
 
-    "androidNavigationBar": {
-      "visible": "sticky-immersive",
-      "backgroundColor": "#000000"
-    },
-
     "web": {
       "favicon": "./assets/favicon.png"
     },

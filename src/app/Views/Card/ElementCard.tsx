@@ -60,7 +60,7 @@ export const ElementCard = (props: {
               }}
             >
               Odległość:{" "}
-              {props.distance !== -1 ? round(props.distance, 2) : "-"}km
+              {props.distance !== -1 ? `${round(props.distance, 2)}km` : "..."}
             </Text>
           )}
 

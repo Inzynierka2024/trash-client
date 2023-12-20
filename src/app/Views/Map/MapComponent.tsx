@@ -464,10 +464,11 @@ export const MapComponent = () => {
       )}
 
       <MapLibreGL.MapView
-        compassViewPosition={1}
+        compassEnabled={true}
+        compassViewPosition={0}
         compassViewMargins={{
           x: themeFromContext.spacing.m,
-          y: themeFromContext.spacing.xl,
+          y: themeFromContext.spacing.l,
         }}
         styleURL={mapStyleURL}
         ref={(c) => {
@@ -629,7 +630,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     marginRight: 18,
-    marginTop: 100,
+    marginTop: 32,
     flexDirection: "column",
     gap: 16,
   },

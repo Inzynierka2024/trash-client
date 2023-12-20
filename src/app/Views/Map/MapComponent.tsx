@@ -27,6 +27,9 @@ import binMarkersReducer, {
 import binCollectionsReducer, {
   initialBinCollections,
 } from "./Reducers/BinCollectionsReducer";
+import get_heatmap_data from "../../Logic/API/get_heatmap_data";
+import { ToggleHeatmapButton } from "./Buttons/ToggleHeatmapButton";
+import { HeatmapControls } from "./Heatmap/HeatmapControls";
 
 export interface MarkerData {
   id: number;
@@ -43,6 +46,75 @@ export const MapComponent = () => {
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
   });
+
+  const [heatmapOpen, setHeatmapOpen] = useState(false);
+  const [heatmapData, setHeatmapData] = useState<GeoJSON.FeatureCollection>({
+    type: "FeatureCollection",
+    features: [],
+  });
+
+  useEffect(() => {
+    if (heatmapOpen) fetchHeatmapData();
+    else fetchAndShowPoints();
+  }, [heatmapOpen]);
+
+  const [heatmapPeriod, _setHeatmapPeriod] = useState<[Date, Date] | null>(
+    null,
+  );
+
+  const setHeatmapPeriod = (date: Date) => {
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    console.log("Setting heatmap period", firstDay, lastDay);
+
+    _setHeatmapPeriod([firstDay, lastDay]);
+  };
+
+  const moveHeatmapPeriod = (months: number) => {
+    const newDate = new Date(heatmapPeriod[0]);
+    newDate.setMonth(newDate.getMonth() + months);
+    setHeatmapPeriod(newDate);
+  };
+
+  useEffect(() => {
+    if (heatmapOpen) fetchHeatmapData();
+  }, [heatmapPeriod]);
+
+  function toggleHeatmap() {
+    setHeatmapOpen(!heatmapOpen);
+  }
+
+  function fetchHeatmapData() {
+    if (!heatmapOpen) return;
+    if (heatmapPeriod === null) return;
+    if (MapRef == null) return;
+
+    const begdate = heatmapPeriod[0].toISOString();
+    const enddate = heatmapPeriod[1].toISOString();
+
+    MapRef.getVisibleBounds().then((bounds) => {
+      get_heatmap_data(bounds, begdate, enddate).then((result) => {
+        if (result.isOk) {
+          const points = result.data["map_points"];
+
+          setHeatmapData({
+            type: "FeatureCollection",
+            features: points.map((marker) => {
+              const { latitude, longitude, id } = marker;
+
+              return {
+                type: "Feature",
+                id,
+                properties: {},
+                geometry: { type: "Point", coordinates: [longitude, latitude] },
+              };
+            }),
+          });
+        }
+      });
+    });
+  }
 
   // Trash markers
   const [garbageMarkers, setGarbageMarkers] = useState<MarkerData[]>([]);
@@ -137,6 +209,9 @@ export const MapComponent = () => {
   useEffect(() => {
     // Startup intervals
     let markerInv;
+    let heatmapInv;
+
+    setHeatmapPeriod(new Date());
 
     (async () => {
       // Load markers one second after map load
@@ -145,18 +220,25 @@ export const MapComponent = () => {
       }, 1000);
 
       // Fetch new markers every minute
-      markerInv = setInterval(async () => {
+      markerInv = setInterval(() => {
         fetchAndShowPoints();
       }, 60000);
+
+      // Fetch new heatmap data every 5 minutes
+      heatmapInv = setInterval(() => {
+        fetchHeatmapData();
+      }, 300000);
     })();
 
     // Clean up interval
     return () => {
       clearInterval(markerInv);
+      clearInterval(heatmapInv);
     };
   }, []);
 
   function fetchAndShowPoints() {
+    if (heatmapOpen) return;
     if (MapRef == null) return;
 
     console.log("Fetching points");
@@ -211,7 +293,7 @@ export const MapComponent = () => {
           }
 
           for (const key in markers) {
-            createBinCollection(key as BinTypes, markers[key]);
+            setBinCollection(key as BinTypes, markers[key]);
           }
         }
       });
@@ -222,18 +304,13 @@ export const MapComponent = () => {
     binCollectionsReducer,
     initialBinCollections,
   );
-  function createBinCollection(type: BinTypes, markers: MarkerData[]) {
+  function setBinCollection(type: BinTypes, markers: MarkerData[]) {
     binClctDispatch({
       type: "SET_BIN_COLLECTION",
       payload: {
         type,
         markers,
       },
-    });
-  }
-  function clearBinCollections() {
-    binClctDispatch({
-      type: "CLEAR_BIN_COLLECTIONS",
     });
   }
 
@@ -350,12 +427,25 @@ export const MapComponent = () => {
         userState={userState}
       />
 
-      <View style={styles.filterContainer}>
+      <View style={styles.buttonsContainer}>
         <ViewFilter
           toggleElementVisibility={toggleElementVisibility}
           elementVisibilites={elementVisibility}
         />
+        <ToggleHeatmapButton
+          toggleHeatmap={toggleHeatmap}
+          state={heatmapOpen}
+        />
       </View>
+
+      {heatmapOpen && (
+        <View style={styles.heatmapActionsContainer}>
+          <HeatmapControls
+            currentHeatmapPeriod={heatmapPeriod}
+            moveHeatmapPeriod={moveHeatmapPeriod}
+          />
+        </View>
+      )}
 
       <View style={styles.operationContainer}>
         <AddNewButton newTrash={addNewTrash} newCan={addNewBin} />
@@ -364,7 +454,12 @@ export const MapComponent = () => {
       {!isCentered && (
         <View style={styles.actionsContainer}>
           <CenterButton callback={flyToUser} />
-          <SearchNewButton callback={fetchAndShowPoints} />
+          <SearchNewButton
+            callback={() => {
+              if (heatmapOpen) fetchHeatmapData();
+              else fetchAndShowPoints();
+            }}
+          />
         </View>
       )}
 
@@ -401,7 +496,36 @@ export const MapComponent = () => {
           triggerKey={cameraTrigger}
         />
 
-        {true && (
+        {heatmapOpen && (
+          <MapLibreGL.ShapeSource id="heatmapSource" shape={heatmapData}>
+            <MapLibreGL.HeatmapLayer
+              id="heatmapLayer"
+              style={{
+                heatmapRadius: 50,
+                heatmapWeight: 0.5,
+                heatmapIntensity: 0.5,
+                heatmapColor: [
+                  "interpolate",
+                  ["linear"],
+                  ["heatmap-density"],
+                  0,
+                  "rgba(29,108,189,0)",
+                  0.1,
+                  "rgb(96,166,206)",
+                  0.3,
+                  "rgb(195,218,231)",
+                  0.5,
+                  "rgb(227,196,178)",
+                  0.7,
+                  "rgb(211,121,86)",
+                  1,
+                  "rgb(171,12,31)",
+                ],
+              }}
+            />
+          </MapLibreGL.ShapeSource>
+        )}
+        {!heatmapOpen && (
           <>
             {elementVisibility["garbage"] && (
               <MapLibreGL.ShapeSource
@@ -499,13 +623,15 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
 
-  filterContainer: {
+  buttonsContainer: {
     position: "absolute",
     zIndex: 9999,
     right: 0,
     top: 0,
     marginRight: 18,
     marginTop: 100,
+    flexDirection: "column",
+    gap: 16,
   },
 
   operationContainer: {
@@ -515,6 +641,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     margin: theme.spacing.l,
     marginRight: theme.spacing.m,
+  },
+
+  heatmapActionsContainer: {
+    flexDirection: "row",
+    position: "absolute",
+    zIndex: 9998,
+    justifyContent: "center",
+    gap: 24,
+    alignItems: "center",
+    top: 64,
+    width: 192,
   },
 
   actionsContainer: {

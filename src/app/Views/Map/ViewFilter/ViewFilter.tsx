@@ -21,13 +21,18 @@ export const ViewFilter = (props: {
 }) => {
   const themeFromContext = useContext(ThemeContext);
   const textColor = themeFromContext.colors.primaryText;
+  const secondaryText = themeFromContext.colors.secondaryText;
+  const background = themeFromContext.colors.background;
 
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View>
       <Pressable
-        style={[styles.openButton]}
+        style={[
+          styles.openButton,
+          { backgroundColor: background, borderColor: secondaryText },
+        ]}
         onPress={() => {
           setModalVisible(!modalVisible);
         }}
@@ -99,7 +104,6 @@ const styles = StyleSheet.create({
   openButton: {
     width: 46,
     height: 46,
-    backgroundColor: "black",
     borderRadius: 23,
     justifyContent: "center",
     alignItems: "center",

@@ -45,24 +45,20 @@ export const MapComponent = () => {
   });
 
   // Trash markers
-  const [markers, setMarkers] = useState<MarkerData[]>([]);
+  const [garbageMarkers, setGarbageMarkers] = useState<MarkerData[]>([]);
 
   // Bin markers
   const [binMarkers, binDispatch] = useReducer(
     binMarkersReducer,
     initialBinMarkers,
   );
+
   function clearBinMarkers() {
     binDispatch({
       type: "CLEAR_BIN_MARKERS",
     });
   }
-  function addBinMarker(marker: MarkerData) {
-    binDispatch({
-      type: "ADD_BIN_MARKER",
-      payload: marker,
-    });
-  }
+
   function setBinMarkers(markers: any) {
     binDispatch({
       type: "SET_BIN_MARKERS",
@@ -169,7 +165,7 @@ export const MapComponent = () => {
       get_trash_in_area(bounds).then((result) => {
         if (result.isOk) {
           const points = result.data["map_points"];
-          setMarkers(points);
+          setGarbageMarkers(points);
 
           setTrashCollection({
             type: "FeatureCollection",
@@ -254,7 +250,7 @@ export const MapComponent = () => {
   const [binModalVisible, setBinModalVisible] = useState(false);
 
   async function showTrashData(id: number) {
-    const marker = markers.find((e) => e["id"] == id);
+    const marker = garbageMarkers.find((e) => e["id"] == id);
 
     setCurrentMarker(marker);
     setTrashModalVisible(true);
@@ -405,36 +401,40 @@ export const MapComponent = () => {
           triggerKey={cameraTrigger}
         />
 
-        {elementVisibility["garbage"] && (
-          <MapLibreGL.ShapeSource
-            id="pinsSource"
-            shape={trashCollection}
-            onPress={onTrashPinPress}
-          >
-            <MapLibreGL.SymbolLayer
-              id="pinsLayer"
-              style={pinLayerStyles.garbage}
-            />
-          </MapLibreGL.ShapeSource>
+        {true && (
+          <>
+            {elementVisibility["garbage"] && (
+              <MapLibreGL.ShapeSource
+                id="pinsSource"
+                shape={trashCollection}
+                onPress={onTrashPinPress}
+              >
+                <MapLibreGL.SymbolLayer
+                  id="pinsLayer"
+                  style={pinLayerStyles.garbage}
+                />
+              </MapLibreGL.ShapeSource>
+            )}
+
+            {Object.entries(binCollections).map(([key, binCollection]) => {
+              if (!elementVisibility[key]) return null;
+
+              return (
+                <MapLibreGL.ShapeSource
+                  key={key}
+                  id={`bin${key}PinsSource`}
+                  shape={binCollection}
+                  onPress={onBinPinPress}
+                >
+                  <MapLibreGL.SymbolLayer
+                    id={`bin${key}PinsLayer`}
+                    style={pinLayerStyles[key]}
+                  />
+                </MapLibreGL.ShapeSource>
+              );
+            })}
+          </>
         )}
-
-        {Object.entries(binCollections).map(([key, binCollection]) => {
-          if (!elementVisibility[key]) return null;
-
-          return (
-            <MapLibreGL.ShapeSource
-              key={key}
-              id={`bin${key}PinsSource`}
-              shape={binCollection}
-              onPress={onBinPinPress}
-            >
-              <MapLibreGL.SymbolLayer
-                id={`bin${key}PinsLayer`}
-                style={pinLayerStyles[key]}
-              />
-            </MapLibreGL.ShapeSource>
-          );
-        })}
       </MapLibreGL.MapView>
     </View>
   );

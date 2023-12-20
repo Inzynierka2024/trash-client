@@ -82,6 +82,7 @@ export const BinModal = (props: {
 
   function clearData() {
     setBinData(null);
+    setDistance(-1);
     setNewStatus("medium");
     setStatusOptionsVisible(false);
   }

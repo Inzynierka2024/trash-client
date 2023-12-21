@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
         />
         <TextInput
           style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
-          placeholder="Password"
+          placeholder="Hasło"  // Password in Polish
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setPassword}
           value={password}
@@ -110,18 +110,17 @@ const LoginForm: React.FC = () => {
             onPressOut={animateOut}
             style={styles.button}
           >
-            <Animated.Text style={styles.buttonText}>Login</Animated.Text>
+            <Animated.Text style={styles.buttonText}>Zaloguj się</Animated.Text>  
           </TouchableOpacity>
         </Animated.View>
-        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Don't have an account? </Text>
+        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Nie masz konta? </Text> 
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={[styles.text, styles.link]}>Register here</Text>
+          <Text style={[styles.text, styles.link]}>Zarejestruj się tutaj</Text>  
         </TouchableOpacity>
       </View>
     </ThemeContext.Provider>
   );
 };
-
 const styles = StyleSheet.create({
   logo: {
     width: screenWidth - 32,

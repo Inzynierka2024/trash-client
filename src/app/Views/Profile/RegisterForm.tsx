@@ -144,14 +144,14 @@ const RegisterForm: React.FC = () => {
 
         <TextInput
           style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
-          placeholder="Nazwa użytkownika"
+          placeholder="Nazwa użytkownika" 
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setUsername}
           value={username}
         />
         <TextInput
           style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
-          placeholder="E-mail"
+          placeholder="E-mail"  
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setEmail}
           value={email}
@@ -160,7 +160,7 @@ const RegisterForm: React.FC = () => {
         />
         <TextInput
           style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
-          placeholder="Hasło"
+          placeholder="Hasło"  
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setPassword}
           value={password}
@@ -172,12 +172,12 @@ const RegisterForm: React.FC = () => {
             onPressOut={animateOut}
             style={styles.button}
           >
-            <Animated.Text style={styles.buttonText}>Zarejestruj</Animated.Text>
+            <Animated.Text style={styles.buttonText}>Zarejestruj</Animated.Text> 
           </TouchableOpacity>
         </Animated.View>
-        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Masz już konto? </Text>
+        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Masz już konto? </Text> 
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={[styles.text, styles.link]}>Zaloguj się tutaj</Text>
+          <Text style={[styles.text, styles.link]}>Zaloguj się tutaj</Text> 
         </TouchableOpacity>
       </View>
     </ThemeContext.Provider>

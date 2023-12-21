@@ -20,7 +20,7 @@ interface AuthContextProps {
   logout: () => void;
   register: (token: string) => void;
   getDecodedToken: () => void;
-  getUserLogin: () => void;
+  getUserLogin: () => Promise<string | null>;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(

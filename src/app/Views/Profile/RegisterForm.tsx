@@ -23,16 +23,15 @@ import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 const { width: screenWidth } = Dimensions.get("window");
 
 const RegisterForm: React.FC = () => {
-
   const [darkMode, _setDarkMode] = useState(
-    useColorScheme() === "dark" ? true : false
+    useColorScheme() === "dark" ? true : false,
   );
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const themeFromContext = useContext(ThemeContext);
 
   // Animation state
@@ -57,7 +56,7 @@ const RegisterForm: React.FC = () => {
       const response = await axios.post(SIGNUP_URL, {
         username,
         password,
-        email: email.toLowerCase()
+        email: email.toLowerCase(),
       });
       console.log("####" + response.data);
 
@@ -68,7 +67,7 @@ const RegisterForm: React.FC = () => {
           // Success
           const loginResponse = await axios.post(LOGIN_URL, {
             password,
-            email: email.toLowerCase()
+            email: email.toLowerCase(),
           });
 
           console.log("próba logowania");
@@ -81,7 +80,10 @@ const RegisterForm: React.FC = () => {
             } else {
               login(token);
               navigation.navigate("Profile");
-              ToastAndroid.show("Pomyślnie zarejestrowano!", ToastAndroid.SHORT);
+              ToastAndroid.show(
+                "Pomyślnie zarejestrowano!",
+                ToastAndroid.SHORT,
+              );
             }
           }
           break;
@@ -105,7 +107,10 @@ const RegisterForm: React.FC = () => {
     } catch (error) {
       console.log("catch: " + error.message);
       console.log("error: " + error.Trace);
-      Alert.alert("Błąd", error.message || "Wystąpił błąd podczas rejestracji.");
+      Alert.alert(
+        "Błąd",
+        error.message || "Wystąpił błąd podczas rejestracji.",
+      );
     }
   };
 
@@ -130,7 +135,10 @@ const RegisterForm: React.FC = () => {
   const handleEmailEndEditing = () => {
     if (email) {
       if (!validateEmail(email)) {
-        Alert.alert("Nieprawidłowy adres e-mail", "Proszę wprowadzić poprawny adres e-mail.");
+        Alert.alert(
+          "Nieprawidłowy adres e-mail",
+          "Proszę wprowadzić poprawny adres e-mail.",
+        );
         return;
       }
       ToastAndroid.show("E-mail zweryfikowany!", ToastAndroid.SHORT);
@@ -143,14 +151,20 @@ const RegisterForm: React.FC = () => {
         <Image source={logo} style={styles.logo} resizeMode="contain" />
 
         <TextInput
-          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          style={{
+            ...styles.input,
+            color: themeFromContext.colors.primaryText,
+          }}
           placeholder="Nazwa użytkownika"
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setUsername}
           value={username}
         />
         <TextInput
-          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          style={{
+            ...styles.input,
+            color: themeFromContext.colors.primaryText,
+          }}
           placeholder="E-mail"
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setEmail}
@@ -159,7 +173,10 @@ const RegisterForm: React.FC = () => {
           onEndEditing={handleEmailEndEditing}
         />
         <TextInput
-          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          style={{
+            ...styles.input,
+            color: themeFromContext.colors.primaryText,
+          }}
           placeholder="Hasło"
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setPassword}
@@ -175,7 +192,14 @@ const RegisterForm: React.FC = () => {
             <Animated.Text style={styles.buttonText}>Zarejestruj</Animated.Text>
           </TouchableOpacity>
         </Animated.View>
-        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Masz już konto? </Text>
+        <Text
+          style={{
+            ...styles.text,
+            color: themeFromContext.colors.secondaryText,
+          }}
+        >
+          Masz już konto?{" "}
+        </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={[styles.text, styles.link]}>Zaloguj się tutaj</Text>
         </TouchableOpacity>

@@ -16,14 +16,16 @@ interface AuthState {
 
 interface AuthContextProps {
   state: AuthState;
-  login: (token: string) => void;
+  login: (token: string) => Promise<void>;
   logout: () => void;
   register: (token: string) => void;
   getDecodedToken: () => void;
   getUserLogin: () => void;
 }
 
-export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(
+  undefined,
+);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -58,12 +60,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const getUserLogin = async () => {
     const result = await get_user_data(state.token);
-        if (result.isOk) {
-            const user = result["data"];
-            return user.username;
-        } else {
-            return null;
-        }
+    if (result.isOk) {
+      const user = result["data"];
+      return user.username;
+    } else {
+      return null;
+    }
   };
 
   useEffect(() => {
@@ -76,7 +78,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     fetchToken();
   }, []);
 
-  const login = async (token: string, userData) => {
+  const login = async (token: string) => {
     try {
       await AsyncStorage.setItem("token", token);
       //console.log("Token saved successfully.");
@@ -91,13 +93,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setState({ token: null, isLoggedIn: false });
   };
 
-  const register = (token: string, userData) => {
-    login(token, userData);
+  const register = (token: string) => {
+    login(token);
   };
 
   return (
     <AuthContext.Provider
-      value={{ state, login, logout, register, getUserLogin, getDecodedToken, getToken }}
+      value={{
+        state,
+        login,
+        logout,
+        register,
+        getUserLogin,
+        getDecodedToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

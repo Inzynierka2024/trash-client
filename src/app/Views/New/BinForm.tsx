@@ -12,6 +12,7 @@ import { BinTypes } from "../../Models/BinTypes";
 import { ElementCard } from "../Card/ElementCard";
 import { ElementColors } from "../../Models/ElementColors";
 import { BinStatusButtons } from "../Map/Buttons/BinStatusButtons";
+import { useAuth } from "../../Logic/AuthContext";
 
 export const BinForm = (props: {
   location: MapLibreGL.Location;
@@ -25,6 +26,15 @@ export const BinForm = (props: {
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<BinStatus>("medium");
+  const [username, setUsername] = useState<string | null>(null);
+
+  const { getUserLogin } = useAuth();
+
+  useEffect(() => {
+    getUserLogin().then((value) => {
+      setUsername(value);
+    });
+  }, []);
 
   function close() {
     setStatus("medium");
@@ -86,7 +96,7 @@ export const BinForm = (props: {
             imageEnabled={false}
             binStatus={status}
             timestamp={new Date()}
-            addedBy={"FIXME: tu dodać nazwe aktualnego użytkownika"}
+            addedBy={username}
           />
 
           <Text

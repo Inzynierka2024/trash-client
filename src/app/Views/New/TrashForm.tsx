@@ -1,5 +1,5 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View, Text, Image, Modal, StyleSheet } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
@@ -8,6 +8,7 @@ import create_new_trash from "../../Logic/API/create_new_trash";
 import { Loading } from "../../Utils/Loading";
 import { ElementColors } from "../../Models/ElementColors";
 import { ElementCard } from "../Card/ElementCard";
+import { useAuth } from "../../Logic/AuthContext";
 
 export const TrashForm = (props: {
   location: MapLibreGL.Location;
@@ -24,6 +25,15 @@ export const TrashForm = (props: {
   const [imageData, setImageData] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+
+  const { getUserLogin } = useAuth();
+
+  useEffect(() => {
+    getUserLogin().then((value) => {
+      setUsername(value);
+    });
+  }, []);
 
   function setData(imgData: string) {
     setImageData(imgData);
@@ -96,7 +106,7 @@ export const TrashForm = (props: {
               imageEnabled={true}
               imageData={imageData}
               timestamp={new Date()}
-              addedBy={"FIXME: tu dodać nazwe aktualnego użytkownika"}
+              addedBy={username}
             />
 
             <View

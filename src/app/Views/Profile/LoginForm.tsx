@@ -44,6 +44,8 @@ const LoginForm: React.FC = () => {
         password,
       });
 
+      console.log(response);
+
       switch (response.status) {
         case 200:
           if (response.data.token) {

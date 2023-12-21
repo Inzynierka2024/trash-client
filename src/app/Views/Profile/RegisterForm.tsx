@@ -58,7 +58,7 @@ const RegisterForm: React.FC = () => {
         password,
         email: email.toLowerCase(),
       });
-      console.log("####" + response.data);
+      console.log(response);
 
       switch (response.status) {
         case 200:

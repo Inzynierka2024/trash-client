@@ -24,7 +24,14 @@ export const ToggleHeatmapButton = (props: {
         <LinearGradient
           colors={
             props.state
-              ? ["rgb(96,166,206)", "rgb(171,12,31)"]
+              ? [
+                  "rgba(29,108,189,0)",
+                  "rgb(96,166,206)",
+                  "rgb(195,218,231)",
+                  "rgb(227,196,178)",
+                  "rgb(211,121,86)",
+                  "rgb(171,12,31)",
+                ]
               : [background, background]
           }
           style={[

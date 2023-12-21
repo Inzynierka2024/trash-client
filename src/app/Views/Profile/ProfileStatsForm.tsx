@@ -146,8 +146,8 @@ export const ProfileStatsForm = () => {
     },
     editIcon: {
       position: "absolute",
-      marginTop: 25,
-      top: 16,
+      marginTop: 10,
+      top: 10,
       right: 16,
       zIndex: 10,
       padding: 8,
@@ -175,6 +175,8 @@ export const ProfileStatsForm = () => {
       flexDirection: "row",
       alignItems: "center",
       marginBottom: 20,
+      margin:10,
+      padding:10
     },
     userIcon: {
       width: 100,
@@ -184,6 +186,7 @@ export const ProfileStatsForm = () => {
     },
     pointsContainer: {
       flex: 1,
+      paddingTop:10,
       justifyContent: "flex-start",
       flexDirection: "row",
       alignItems: "flex-start", // Align items to the start of the container
@@ -234,8 +237,7 @@ export const ProfileStatsForm = () => {
           <Icon name="edit" size={24} color="#000" />
         </TouchableOpacity>
         <View style={styles.headerContainer}>
-          <Image source={ll_icon} style={styles.userIcon} />
-
+          
           <View style={styles.pointsContainer}>
             <Image source={pointsIcon} style={styles.pointsIcon} />
             <Text style={styles.pointsText}>{user.points}</Text>
@@ -265,10 +267,6 @@ export const ProfileStatsForm = () => {
           <Text style={styles.readOnly}>{user.location}</Text>
         </View>
 
-        <View style={styles.element}>
-          <Image source={pointsIcon} style={styles.icon} />
-          <Text style={styles.readOnly}></Text>
-        </View>
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}

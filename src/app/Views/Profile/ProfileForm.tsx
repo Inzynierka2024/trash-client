@@ -76,7 +76,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
             color: themeFromContext.colors.primaryText,
           }}
         >
-          {userLogin}
+          {/* {userLogin} */}
         </Text>
         <View style={styles.buttonGrid}>
           <TouchableOpacity

@@ -15,10 +15,9 @@ import ProfileForm from "../../Views/Profile/ProfileForm";
 import ProfileEditForm from "../../Views/Profile/ProfileEditForm";
 import ProfileStatsForm from "../../Views/Profile/ProfileStatsForm";
 import ProfileTrashForm from "../../Views/Profile/ProfileTrashForm";
-import SettingsForm from "../../Views/Profile/SettingsForm";
+// import SettingsForm from "../../Views/Profile/SettingsForm";
 import RankingContainer from "../../Views/Ranking/RankingContainer";
 import { MapContainer } from "../../Views/Map/MapContainer";
-import ProfileContainer from "../../Views/Profile/ProfileContainer";
 import GuildsForm from "../../Views/Guilds/GuildsForm";
 import GuildDetailsForm from "../../Views/Guilds/GuildDetailsForm";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
@@ -32,13 +31,10 @@ const ProfileStackNavigator = () => {
 
   const [initialRoute, setInitialRoute] = React.useState(null);
   const { state } = useAuth();
-  console.log("navigation >>> state >>> "+state.isLoggedIn);
-  console.log("navigation >>> initialRoute -b >>> "+initialRoute);
   useEffect(() => {
     setInitialRoute(state.isLoggedIn ? 'Profile' : 'Login');
-}, [state.isLoggedIn]);
+  }, [state.isLoggedIn]);
 
-  console.log("navigation >>> initialRoute -a >>> "+initialRoute);
   if (!initialRoute) return null;
 
   return (
@@ -53,7 +49,7 @@ const ProfileStackNavigator = () => {
       <ProfileStack.Screen name="Register" component={RegisterForm} />
       <ProfileStack.Screen name="Profile" component={ProfileForm} />
       <ProfileStack.Screen name="CollectedTrash" component={ProfileTrashForm} />
-      <ProfileStack.Screen name="Settings" component={SettingsForm} />
+      {/* <ProfileStack.Screen name="Settings" component={SettingsForm} /> */}
       <ProfileStack.Screen name="ProfileStats" component={ProfileStatsForm} />
       <ProfileStack.Screen name="ProfileEdit" component={ProfileEditForm} />
       <ProfileStack.Screen name="Guilds" component={GuildsForm} />
@@ -65,62 +61,105 @@ const ProfileStackNavigator = () => {
 const AppNavigator = () => {
   const themeFromContext: CTheme = useContext(ThemeContext);
 
-  return (
-    <NavigationContainer
-      theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <Tab.Navigator
-        initialRouteName="Map"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let provider: "Ionicons" | "FontAwesome" = "Ionicons";
-            let iconColor = themeFromContext.colors.green;
-            let iconName = "trash";
+  // Render null if the user is not logged in
+  // if (!state.isLoggedIn) {
+  //   return <NavigationContainer theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}>
+  //     <Tab.Navigator initialRouteName="Profil"
+  //       screenOptions={({ route }) => ({
+  //         tabBarIcon: ({ focused, color, size }) => {
+  //           let provider: "Ionicons" | "FontAwesome" = "Ionicons";
+  //           let iconColor = themeFromContext.colors.green;
+  //           let iconName = "trash";
 
-            if (route.name === "Ranking") {
-              provider = "Ionicons";
-              iconColor = themeFromContext.colors.yellow;
-              iconName = "medal";
-            }
-            if (route.name === "Map") {
-              provider = "Ionicons";
-              iconColor = themeFromContext.colors.green;
-              iconName = "map";
-            }
-            if (route.name === "Profil") {
-              provider = "FontAwesome";
-              iconColor = themeFromContext.colors.blue;
-              iconName = "user";
-            }
+  //           if (route.name === "Profil") {
+  //             provider = "FontAwesome";
+  //             iconColor = themeFromContext.colors.blue;
+  //             iconName = "user";
+  //           }
 
-            if (provider === "FontAwesome") {
-              if (!focused) {
-                iconName += "-o";
-                iconColor = themeFromContext.colors.disabled;
-              }
-              return (
-                <FontAwesome name={iconName} size={size} color={iconColor} />
-              );
-            } else {
-              if (!focused) {
-                iconColor = themeFromContext.colors.disabled;
-                iconName += "-outline";
-              }
-              return <Ionicons name={iconName} size={size} color={iconColor} />;
-            }
-          },
-          headerShown: false,
-          tabBarShowLabel: false,
-          tabBarActiveTintColor: themeFromContext.colors.primary,
-          tabBarInactiveTintColor: themeFromContext.colors.disabled,
-        })}
+  //           if (provider === "FontAwesome") {
+  //             if (!focused) {
+  //               iconName += "-o";
+  //               iconColor = themeFromContext.colors.disabled;
+  //             }
+  //             return (
+  //               <FontAwesome name={iconName} size={size} color={iconColor} />
+  //             );
+  //           } else {
+  //             if (!focused) {
+  //               iconColor = themeFromContext.colors.disabled;
+  //               iconName += "-outline";
+  //             }
+  //             return <Ionicons name={iconName} size={size} color={iconColor} />;
+  //           }
+  //         },
+  //         headerShown: false,
+  //         tabBarShowLabel: false,
+  //         tabBarActiveTintColor: themeFromContext.colors.primary,
+  //         tabBarInactiveTintColor: themeFromContext.colors.disabled,
+  //       })}
+  //     >
+  //       <Tab.Screen name="Profil" component={ProfileStackNavigator} />
+  //     </Tab.Navigator>
+  //   </NavigationContainer>;
+  // }
+  // else
+    return (
+      <NavigationContainer
+        theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
       >
-        <Tab.Screen name="Ranking" component={RankingContainer} />
-        <Tab.Screen name="Map" component={MapContainer} />
-        <Tab.Screen name="Profil" component={ProfileStackNavigator} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
+        <Tab.Navigator
+          initialRouteName="Map"
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let provider: "Ionicons" | "FontAwesome" = "Ionicons";
+              let iconColor = themeFromContext.colors.green;
+              let iconName = "trash";
+
+              if (route.name === "Ranking") {
+                provider = "Ionicons";
+                iconColor = themeFromContext.colors.yellow;
+                iconName = "medal";
+              }
+              if (route.name === "Map") {
+                provider = "Ionicons";
+                iconColor = themeFromContext.colors.green;
+                iconName = "map";
+              }
+              if (route.name === "Profil") {
+                provider = "FontAwesome";
+                iconColor = themeFromContext.colors.blue;
+                iconName = "user";
+              }
+
+              if (provider === "FontAwesome") {
+                if (!focused) {
+                  iconName += "-o";
+                  iconColor = themeFromContext.colors.disabled;
+                }
+                return (
+                  <FontAwesome name={iconName} size={size} color={iconColor} />
+                );
+              } else {
+                if (!focused) {
+                  iconColor = themeFromContext.colors.disabled;
+                  iconName += "-outline";
+                }
+                return <Ionicons name={iconName} size={size} color={iconColor} />;
+              }
+            },
+            headerShown: false,
+            tabBarShowLabel: false,
+            tabBarActiveTintColor: themeFromContext.colors.primary,
+            tabBarInactiveTintColor: themeFromContext.colors.disabled,
+          })}
+        >
+          <Tab.Screen name="Ranking" component={RankingContainer} />
+          <Tab.Screen name="Map" component={MapContainer} />
+          <Tab.Screen name="Profil" component={ProfileStackNavigator} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    );
 };
 
 export default AppNavigator;

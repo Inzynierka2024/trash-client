@@ -1,131 +1,156 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ToastAndroid,
-} from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { ThemeContext } from "../../../theme/theme";
+import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../Logic/AuthContext';
+import get_user_data from '../../Logic/API/get_user_data';
+import ll_icon from "../../../../assets/litter-looter/adaptive.png";
+import gmailIcon from '../../../../assets/profile/gmail.png';
+import locationIcon from '../../../../assets/profile/home.png';
+import profileIcon from '../../../../assets/profile/profile.png';
+import Toast from 'react-native-toast-message';
+import { edit_user_data } from '../../Logic/API/edit_user_data';
 
-const ProfileEditForm: React.FC = () => {
-  const [profile, setProfile] = useState({
-    picture: null,  // assuming this will be a URI link to an image
-    username: '',
-    email: '',
-    fullname: '',
-    password: '',
-    location: {
-      city: '',
-      country: '',
-    },
-    stats: {
-      gatheredTrash: 0,
-      reportedTrash: 0,
-    },
-    points: 0,
-  });
+export const ProfileEditForm = () => {
+    const { state } = useAuth();
+    const themeFromContext = useContext(ThemeContext);
+    const navigation = useNavigation();
 
-  const handleInputChange = (field, value) => {
-    if (field in profile) {
-      setProfile(prevState => ({ ...prevState, [field]: value }));
-      ToastAndroid.show('Data updated successfully!', ToastAndroid.SHORT);
+    const [user, setUserData] = useState({
+        email: '',
+        location: '',
+        username: ''
+    });
+
+    async function getUser() {
+      console.log("token:: ", state.token);
+      const result = await get_user_data(state.token);
+      if (result.isOk) {
+          const user = result["data"];
+          return user;
+      } else {
+          console.error("Invalid user");
+          return [];
+      }
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      if (state.token) {
+        const tempUser = await getUser();
+        setUserData(tempUser);
+      }
     }
-  };
+    fetchData();
+  }, [state.token]);
+  
 
-  return (
-    <View style={styles.container}>
-      {/* <Image source={{ uri: profile.picture }} style={styles.profileImage} /> */}
-
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        onChangeText={value => handleInputChange('username', value)}
-        value={profile.username}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        onChangeText={value => handleInputChange('email', value)}
-        value={profile.email}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Full Name"
-        onChangeText={value => handleInputChange('fullname', value)}
-        value={profile.fullname}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        onChangeText={value => handleInputChange('password', value)}
-        value={profile.password}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="City"
-        onChangeText={value => handleInputChange('location.city', value)}
-        value={profile.location.city}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Country"
-        onChangeText={value => handleInputChange('location.country', value)}
-        value={profile.location.country}
-      />
-
-      <Text style={styles.readOnly}>
-        Gathered Trash: {profile.stats.gatheredTrash}
-      </Text>
-
-      <Text style={styles.readOnly}>
-        Reported Trash: {profile.stats.reportedTrash}
-      </Text>
-
-      <Text style={styles.readOnly}>Points: {profile.points}</Text>
-
-    </View>
-  );
+  const handleSave = async () => {
+    const result = await edit_user_data(user, state.token);
+    if (result) {
+        Toast.show({
+            type: 'success',
+            text1: 'Informacje o użytkowniku zostały pomyślnie zaktualizowane!'
+        });
+        setUserData(user);
+        navigation.goBack();
+    } else {
+        Toast.show({
+            type: 'error',
+            text1: 'Aktualizacja informacji o użytkowniku nie powiodła się'
+        });
+    }
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
-    borderColor: '#3d9970',
-    borderWidth: 3,
-  },
-  input: {
-    width: '90%',
-    height: 40,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    borderColor: '#3d9970',
-    borderWidth: 2,
-    borderRadius: 8,
-    color: '#333',
-    backgroundColor: '#ffffff',
-  },
-  readOnly: {
-    fontSize: 16,
-    marginVertical: 4,
-    color: '#3d9970',
-  },
-});
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            padding: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        element: {
+            flexDirection: 'row',
+            padding: 10,
+            margin: 2,
+            alignItems: 'center',
+        },
+        textInput: {
+            borderBottomWidth: 1,
+            borderBottomColor: '#CCCCCC',
+            flex: 1,
+            marginLeft: 10,
+            color: themeFromContext.colors.primaryText,
+        },
+        icon: {
+            width: 48,
+            height: 48,
+            resizeMode: 'contain',
+            marginLeft: 4,
+        },
+        userIcon: {
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            marginBottom: 20,
+            backgroundColor: '#fff'
+        },
+        saveButton: {
+            marginTop: 20,
+            padding: 10,
+            backgroundColor: themeFromContext.colors.green,
+            borderRadius: 5,
+        },
+        buttonText: {
+            color: 'white',
+            textAlign: 'center',
+        },
+    });
+
+    return (
+        <ThemeContext.Provider value={themeFromContext}>
+            <View style={styles.container}>
+                <Image source={ll_icon} style={styles.userIcon} />
+
+                <View style={styles.element}>
+                    <Image source={profileIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={user.username}
+                        onChangeText={(text) => setUserData({ ...user, username: text })}
+                        placeholder="Username"
+                    />
+                </View>
+
+                <View style={styles.element}>
+                    <Image source={gmailIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={user.email}
+                        onChangeText={(text) => setUserData({ ...user, email: text })}
+                        placeholder="Email"
+                        keyboardType="email-address"
+                    />
+                </View>
+
+                <View style={styles.element}>
+                    <Image source={locationIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={user.location}
+                        onChangeText={(text) => setUserData({ ...user, location: text })}
+                        placeholder="Location"
+                    />
+                </View>
+
+                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                    <Text style={styles.buttonText}>Save Changes</Text>
+                </TouchableOpacity>
+            </View>
+        </ThemeContext.Provider>
+    );
+};
 
 export default ProfileEditForm;

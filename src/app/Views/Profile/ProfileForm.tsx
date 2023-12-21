@@ -2,12 +2,15 @@ import { View, Text, Button, StyleSheet, Image, Alert, TouchableOpacity, Dimensi
 import { useAuth } from '../../Logic/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect, useContext } from 'react';
-import stats_icon from "../../../../assets/player-stats.png";
-import collected_trash_icon from "../../../../assets/collected-trash.png";
+import stats_icon from "../../../../assets/profile/profile-stats.png";
+import collected_trash_icon from "../../../../assets/profile/statistics.png";
+import logout_icon from "../../../../assets/profile/logout.png";
+import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import guilds_icon from "../../../../assets/guilds.png";
 import settings_icon from "../../../../assets/settings.png";
 import user_profile_icon from "../../../../assets/user-profile.png";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
+
 
 interface ProfileFormProps {
   navigateTo: (screen: string) => void;
@@ -27,7 +30,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
   const handleLogout = async () => {
     try {
       logout();
-      Alert.alert("You were successfully logged out");
+      Alert.alert("Zostałeś pomyślnie wylogowany!");
       navigation.navigate("Login");
     }
     catch (e) {
@@ -41,7 +44,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
   // Button width based on orientation: 2 in vertical and 3 in horizontal
   const buttonWidth = isPortrait ? (width * 0.4) : (width / 3) - 20;  // -20 accounts for margins and padding
 
-  const [userLogin, setUserLogin] = useState < string | null > (null);
+  const [userLogin, setUserLogin] = useState < any > (null);
 
   useEffect(() => {
     const fetchUserLogin = async () => {
@@ -63,31 +66,33 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
       <View style={styles.container}>
 
         <Image
-          source={user_profile_icon}
+          source={ll_icon}
           style={styles.userIcon}
         />
         <Text style={{ ...styles.loginText, color: themeFromContext.colors.primaryText }}>{userLogin}</Text>
         <View style={styles.buttonGrid}>
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileEdit')}>
+          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('ProfileStats')}>
             <Image source={stats_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>User Stats</Text>
+            <Text style={styles.buttonText}>Statystyka użytkownika</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('CollectedTrash')}>
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Collected trash</Text>
+            <Text style={styles.buttonText}>Statystyka odpadów</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
+          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
             <Image source={guilds_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Guilds</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
+            <Text style={styles.buttonText}>Gildie</Text>
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
             <Image source={settings_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Settings</Text>
-          </TouchableOpacity>
+            <Text style={styles.buttonText}>Ustawienia</Text>
+          </TouchableOpacity> */}
           <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={handleLogout}>
-            <Text style={styles.buttonText}>Log out</Text>
+            <Image source={logout_icon} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Wyloguj</Text>
           </TouchableOpacity>
         </View>
+
       </View>
     </ThemeContext.Provider>
   );
@@ -99,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f4f4f4', // Consider a light gray to contrast the green buttons
+
   },
   loginText: {
     fontSize: 18,
@@ -112,7 +117,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
-    backgroundColor: '#1dc'
+    backgroundColor: '#fff'
   },
   buttonContainer: {
     marginBottom: 10,
@@ -129,19 +134,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#3d9970', // Light Dark Green Color
     padding: 10,
     margin: 2,
-    borderRadius: 4,
+    borderRadius: 75, // Adjusted for round shape
     alignItems: 'center',
     justifyContent: 'center',
-    width: 150
-  },
-  buttonIcon: {
-    width: 50,
-    height: 50,
+    width: 150,
+    height: 150, // Set a fixed height
   },
 
   buttonText: {
     color: '#ffffff',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'center', // Ensure text is centered
+  },
+  buttonIcon: {
+    width: 50,
+    // color: '#fff',
+    height: 50,
   },
   text: {
     fontSize: 16,

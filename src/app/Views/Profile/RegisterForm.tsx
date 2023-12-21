@@ -18,7 +18,6 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import get_api_url from "../../Utils/get_api_url";
 import logo from "../../../../assets/litter-looter-high-resolution-logo-color-on-transparent-background.png";
-import { join } from "path";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -35,7 +34,7 @@ const RegisterForm: React.FC = () => {
   const { login } = useAuth();
   const navigation = useNavigation();
   const themeFromContext = useContext(ThemeContext);
-  
+
   // Animation state
   const animatePress = useRef(new Animated.Value(1)).current;
 
@@ -49,38 +48,30 @@ const RegisterForm: React.FC = () => {
     const base = await get_api_url();
     const SIGNUP_URL = `${base}/user/signup`;
 
-
     try {
       if (!username || !password || !validateEmail(email)) {
-        Alert.alert("Empty fields", "Please, fill all the fields");
+        Alert.alert("Puste pola", "Proszę wypełnić wszystkie pola");
         return;
       }
-      console.log("$$$$ "+base);
-      console.log("$$$$ "+SIGNUP_URL);
-      console.log("$$$$ "+username+" "+password+" "+email);
       // Modify this URL to match your API endpoint
       const response = await axios.post(SIGNUP_URL, {
         username,
         password,
-        email
+        email: email.toLowerCase()
       });
-      console.log("####"+response.data);
+      console.log("####" + response.data);
 
       switch (response.status) {
         case 200:
-          console.log("successfull registration");
+          console.log("udana rejestracja");
           const LOGIN_URL = `${base}/user/login`;
-          console.log("$$$$ "+LOGIN_URL);
-          console.log("$$$$ "+username+" "+password+" "+email);
           // Success
-          
-            const loginResponse = await axios.post(LOGIN_URL, {
-              password,
-              email
-            });
-                    
-          console.log("####"+loginResponse.data);
-          console.log("login attempt");
+          const loginResponse = await axios.post(LOGIN_URL, {
+            password,
+            email: email.toLowerCase()
+          });
+
+          console.log("próba logowania");
           if (loginResponse.status === 200) {
             const token = loginResponse.data.token;
             console.log("token: " + token);
@@ -88,9 +79,9 @@ const RegisterForm: React.FC = () => {
             if (!token) {
               throw new Error("Token: Token not found in response.");
             } else {
-              login(token, loginResponse.data);
-
+              login(token);
               navigation.navigate("Profile");
+              ToastAndroid.show("Pomyślnie zarejestrowano!", ToastAndroid.SHORT);
             }
           }
           break;
@@ -105,7 +96,7 @@ const RegisterForm: React.FC = () => {
           // Incorrect data
           console.log(response.data);
           console.log("500: " + response.data.message);
-          Alert.alert("Data is incorrect");
+          Alert.alert("Nieprawidłowe dane");
           break;
 
         default:
@@ -114,7 +105,7 @@ const RegisterForm: React.FC = () => {
     } catch (error) {
       console.log("catch: " + error.message);
       console.log("error: " + error.Trace);
-      Alert.alert("Error", error.message || "There was an error registering.");
+      Alert.alert("Błąd", error.message || "Wystąpił błąd podczas rejestracji.");
     }
   };
 
@@ -133,63 +124,62 @@ const RegisterForm: React.FC = () => {
       useNativeDriver: true,
     }).start(() => {
       handleRegister();
-      ToastAndroid.show("Successfully registered!", ToastAndroid.SHORT);
     });
   };
 
   const handleEmailEndEditing = () => {
     if (email) {
       if (!validateEmail(email)) {
-        Alert.alert("Invalid email", "Please enter a valid email.");
+        Alert.alert("Nieprawidłowy adres e-mail", "Proszę wprowadzić poprawny adres e-mail.");
         return;
       }
-      ToastAndroid.show("Email verified!", ToastAndroid.SHORT);
+      ToastAndroid.show("E-mail zweryfikowany!", ToastAndroid.SHORT);
     }
   };
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-    <View style={styles.container}>
-      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <View style={styles.container}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
 
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Username"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setUsername}
-        value={username}
-      />
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Email"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setEmail}
-        value={email}
-        keyboardType="email-address"
-        onEndEditing={handleEmailEndEditing}
-      />
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Password"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
-      <Animated.View style={{ transform: [{ scale: animatePress }] }}>
-        <TouchableOpacity
-          onPressIn={animateIn}
-          onPressOut={animateOut}
-          style={styles.button}
-        >
-          <Animated.Text style={styles.buttonText}>Register</Animated.Text>
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Nazwa użytkownika"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setUsername}
+          value={username}
+        />
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="E-mail"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setEmail}
+          value={email}
+          keyboardType="email-address"
+          onEndEditing={handleEmailEndEditing}
+        />
+        <TextInput
+          style={{ ...styles.input, color: themeFromContext.colors.primaryText }}
+          placeholder="Hasło"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry
+        />
+        <Animated.View style={{ transform: [{ scale: animatePress }] }}>
+          <TouchableOpacity
+            onPressIn={animateIn}
+            onPressOut={animateOut}
+            style={styles.button}
+          >
+            <Animated.Text style={styles.buttonText}>Zarejestruj</Animated.Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <Text style={{ ...styles.text, color: themeFromContext.colors.secondaryText }}>Masz już konto? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={[styles.text, styles.link]}>Zaloguj się tutaj</Text>
         </TouchableOpacity>
-      </Animated.View>
-      <Text style={{...styles.text, color: themeFromContext.colors.secondaryText}}>Already have an account? </Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={[styles.text, styles.link]}>Login here</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
     </ThemeContext.Provider>
   );
 };
@@ -216,7 +206,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   button: {
-    backgroundColor: "#3d9970", // Light Dark Green Color
+    backgroundColor: "#3d9970", // Jasnozielony kolor
     padding: 10,
     borderRadius: 4,
     alignItems: "center",

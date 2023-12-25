@@ -32,60 +32,9 @@ import MapLibreGL from "@maplibre/maplibre-react-native";
 import { UserTrashMetadata } from "../../Models/UserTrashMetadata";
 import get_user_garbage from "../../Logic/API/get_user_garbage";
 import get_garbage_metadata from "../../Utils/get_garbage_metadata";
+import { FlatList } from "react-native-gesture-handler";
 
 const initialLayout = { width: Dimensions.get("window").width };
-
-const Tile = ({ data }) => (
-  <View style={styles.tile}>
-    <Image source={{ uri: "data:image/jpg;base64," + data.picture }} style={styles.tileImage} />
-    <View style={styles.tileContent}>
-      <Text style={styles.tileText}>Zebrano: {data.collection_timestamp}</Text>
-      <Text style={styles.tileText}>Lokacja: {data.latitude} {data.longitude}</Text>
-    </View>
-  </View>
-);
-
-// const Tile = ({ data }) => (
-//   <View style={styles.tile}>
-//     <Text style={styles.tileText}>ID: {data.Id}</Text>
-//     <Text style={styles.tileText}>Collected By: {data.CollectionUsername}</Text>
-//     <Text style={styles.tileText}>Collected On: {data.CollectionTimestamp?.toDateString()}</Text>
-//     <Text style={styles.tileText}>Location: {data.Latitude}, {data.Longitude}</Text>
-//   </View>
-// );
-
-const renderCollectedItem = (item: UserTrashMetadata[], index: React.Key) => {
-  console.log("item: ", item);
-  return (
-    <Tile key={index} data={item} />
-  );
-};
-
-const CollectedTrashTab = ({ collected }) => {
-  console.log("collected: ", collected);
-  return (
-    <ScrollView>
-      {collected.map((item, index) => (
-        <Tile key={index} data={item} />
-      ))}
-    </ScrollView>
-  );
-};
-
-
-
-
-const ReportedTrashTab = ({ reported }) => {
-  // if (!reported) {
-  //   return <Text>Loading...</Text>;
-  // }
-  // return (
-  //   <ScrollView style={styles.tabScene}>
-  //     {reported.map((item, index) => (
-  //       <Tile key={index} data={item} />
-  //     ))}
-  //   </ScrollView>);
-}
 
 export const ProfileStatsForm = () => {
   const { state } = useAuth();
@@ -93,11 +42,8 @@ export const ProfileStatsForm = () => {
   const [userState, setUserState] = useState < MapLibreGL.Location > ({
     coords: { latitude: 0, longitude: 0 },
   });
-  const [collectedData, setCollectedData] = useState < UserTrashMetadata[] > ([]);
+  const [collectedData, setCollectedData] = useState <UserTrashMetadata[]>([]);
   const [reportedData, setReportedData] = useState < UserTrashMetadata[] > ([]);
-
-
-
 
   const [user, setUserData] = useState({
     email: "",
@@ -110,7 +56,7 @@ export const ProfileStatsForm = () => {
     useColorScheme() === "dark" ? true : false,
   );
   const themeFromContext = useContext(ThemeContext);
-  const navigation = useNavigation < any > ();
+  const navigation = useNavigation();
 
   const navigateToEditForm = () => {
     navigation.navigate("ProfileEdit");
@@ -153,13 +99,11 @@ export const ProfileStatsForm = () => {
       if (state.token) {
         const tempUser = await getUser();
         const tempGarbage = await getGarbage();
-
         setUserData(tempUser);
-
         const collectedParsed = tempGarbage.data.collected.map(item => get_garbage_metadata(item));
-        //setReportedData(tempGarbage.data.added);
-        setCollectedData(collectedParsed);
-        //console.log("collected: ", collectedData);
+        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
+        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
+        
       }
     }
     fetchData();
@@ -185,6 +129,39 @@ export const ProfileStatsForm = () => {
     { key: "reported", title: "Zgłoszone Odpady" },
   ]);
 
+  const renderItem = ({ item }: { item: any }) => (
+    <View style={{ padding: 10, margin: 10, backgroundColor: 'lightgrey' }}>
+      
+      {/* Assuming the picture is a base64 encoded image */}
+      <Image source={{ uri: `data:image/jpeg;base64,${item.picture}` }} style={{ width: 100, height: 100 }} />
+      <Text>Zgłoszono: {item.collection_timestamp}</Text>
+      <Text>Zgłoszono przez: {item.creation_username}</Text>
+      <Text>Zebrano: {item.created_timestamp}</Text>
+      <Text>Zebrano przez: {item.collection_username}</Text>
+      <Text>Lokacja: {item.latitude}, {item.longitude}</Text>
+      {/* Add more fields as necessary */}
+    </View>
+  );
+  const CollectedTab = () => (
+    <FlatList
+      data={collectedData}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.garbage_id.toString()}
+    />
+  );
+
+  const ReportedTab = () => (
+    <FlatList
+      data={reportedData}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.garbage_id.toString()}
+    />
+  );
+
+  const renderScene = SceneMap({
+    collected: CollectedTab,
+    reported: ReportedTab,
+  });
   const distance = calculate_distance(
     userState.coords.latitude,
     userState.coords.longitude,
@@ -192,26 +169,7 @@ export const ProfileStatsForm = () => {
     0,
   );
 
-  const renderScene = ({ route }) => {
-    switch (route.key) {
-      case 'collected':
-        return <CollectedTrashTab collected={collectedData} />;
-      case 'reported':
-      // return <ReportedTrashTab reported={reportedData} />;
-      default:
-        return null;
-    }
-  };
-
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: themeFromContext.colors.green }}
-      style={{ backgroundColor: themeFromContext.colors.green }}
-      labelStyle={{ color: themeFromContext.colors.primaryText }}
-    />
-  );
-
+  
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -323,7 +281,7 @@ export const ProfileStatsForm = () => {
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-      <ScrollView style={styles.container}>
+      {/* <ScrollView style={styles.container}> */}
         <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
           <Icon name="edit" size={24} color="#000" />
         </TouchableOpacity>
@@ -357,40 +315,21 @@ export const ProfileStatsForm = () => {
           <Image source={locationIcon} style={styles.icon} />
           <Text style={styles.readOnly}>{user.location}</Text>
         </View>
-
-        <ScrollView style={{
-          ...styles.tabView,
-          backgroundColor: themeFromContext.colors.contrastOverlay,
-        }}>
-          <CollectedTrashTab collected={collectedData} />
-        </ScrollView>
-
-        {/* <TabView
+        <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
-          renderTabBar={renderTabBar}
-          style={{
-            ...styles.tabView,
-            backgroundColor: themeFromContext.colors.background,
-          }}
-        /> */}
-
-        {/* <View>
-          {collectedData !== null && (
-            <ElementCard
-              type={collectedData.Type}
-              timestamp={collectedData.CreationTimestamp}
-              addedBy={collectedData.Username}
-              binStatus={collectedData.Status}
-              distance={distance}
-              imageEnabled={false}
+          renderTabBar={props => (
+            <TabBar
+              {...props}
+              indicatorStyle={{ backgroundColor: 'white' }}
+              style={{ backgroundColor: themeFromContext.colors.primary }}
             />
           )}
-        </View> */}
-        {/* <StickyTabView/> */}
-      </ScrollView>
+          style={styles.tabView}
+        />
+      {/* </ScrollView> */}
     </ThemeContext.Provider>
   );
 };

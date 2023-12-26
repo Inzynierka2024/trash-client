@@ -220,7 +220,7 @@ export const ProfileStatsForm = () => {
     },
     editIcon: {
       position: "absolute",
-      marginTop: 10,
+      marginTop: 25,
       top: 10,
       right: 16,
       zIndex: 10,

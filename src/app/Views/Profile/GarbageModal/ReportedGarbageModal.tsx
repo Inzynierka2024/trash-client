@@ -23,18 +23,18 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
         },
         modalView: {
             margin: 20,
-            backgroundColor: themeFromContext.colors.transparentBackground,
+            backgroundColor: themeFromContext.colors.green,
             borderRadius: 20,
             padding: 35,
             alignItems: "center",
-            shadowColor: themeFromContext.colors.contrastOverlay,
+            shadowColor: themeFromContext.colors.primaryText,
             shadowOffset: {
                 width: 4,
                 height: 2
             },
-            shadowOpacity: 0.3,
-            shadowRadius: 40,
-            elevation: 20
+            shadowOpacity: 0.1,
+            shadowRadius: 20,
+            elevation: 10
         },
         image: {
             width: 200,
@@ -80,9 +80,10 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
                                 source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
                                 style={{ width: 100, height: 100, borderRadius: 10 }}
                             />
+                            <View>
                             <View style={styles.tileRow}>
                                 <Text style={styles.textStyle}>Zgłoszono: {item.creation_username}</Text>
-                                <Text style={styles.textStyle}>{TimestampToDate(item.creation_timestamp)}</Text>
+                                <Text style={styles.textStyle}>({TimestampToDate(item.creation_timestamp)})</Text>
                             </View>
                             <Text style={styles.textStyle}>Rozmiar: {item.size}</Text>
                             <Text style={styles.textStyle}>Typ: {item.type}</Text>
@@ -97,6 +98,7 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
                                 } 
                                 km
                             </Text>
+                            </View>
                         </>
                     )}
                     <TouchableOpacity style={styles.buttonClose} onPress={onClose}>

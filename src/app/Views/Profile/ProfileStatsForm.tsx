@@ -67,9 +67,6 @@ export const ProfileStatsForm = () => {
   const [selectedCollectedItem, setSelectedCollectedItem] = useState(null);
   const [selectedReportedItem, setSelectedReportedItem] = useState(null);
 
-
-
-
   async function getUser() {
     const result = await get_user_data(state.token);
     if (result.isOk) {
@@ -108,7 +105,6 @@ export const ProfileStatsForm = () => {
         const tempUser = await getUser();
         const tempGarbage = await getGarbage();
         setUserData(tempUser);
-        const collectedParsed = tempGarbage.data.collected.map(item => get_garbage_metadata(item));
         setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
         setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
@@ -122,9 +118,10 @@ export const ProfileStatsForm = () => {
     async function fetchDataOnFocus() {
       if (isFocused) {
         const tempUser = await getUser();
-        const bins = await getBins();
-        const garbage = await getGarbage();
+        const tempGarbage = await getGarbage();
         setUserData(tempUser);
+        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
+        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchDataOnFocus();

@@ -23,8 +23,10 @@ const CollectedGarbageModal = ({ visible, onClose, item }) => {
         },
         modalView: {
             margin: 20,
-            backgroundColor: themeFromContext.colors.green,
+            backgroundColor: themeFromContext.colors.background,
             borderRadius: 20,
+            borderColor: themeFromContext.colors.green,
+            borderWidth: 4,
             padding: 35,
             alignItems: "center",
             shadowColor: themeFromContext.colors.primaryText,
@@ -108,7 +110,7 @@ const CollectedGarbageModal = ({ visible, onClose, item }) => {
                         </>
                     )}
                     <TouchableOpacity style={styles.buttonClose} onPress={onClose}>
-                        <Text style={styles.textStyle}>X</Text>
+                        <Text style={styles.textStyle}> X </Text>
                     </TouchableOpacity>
                 </View>
             </View>

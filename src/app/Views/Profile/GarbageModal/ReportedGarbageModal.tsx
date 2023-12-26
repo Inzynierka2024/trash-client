@@ -8,7 +8,14 @@ import MapLibreGL from "@maplibre/maplibre-react-native";
 const ReportedGarbageModal = ({ visible, onClose, item }) => {
     const [userState, setUserState] = useState < MapLibreGL.Location > ({
         coords: { latitude: 0, longitude: 0 },
-      });
+    });
+
+    function onUserLocationUpdate(location: MapLibreGL.Location) {
+        setUserState(location);
+    }
+
+    let UserLocationRef: MapLibreGL.UserLocation = undefined;
+    
     const themeFromContext = useContext(ThemeContext);
     const textColor = themeFromContext.colors.primaryText;
     const secondaryText = themeFromContext.colors.secondaryText;
@@ -83,23 +90,23 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
                                 style={{ width: 100, height: 100, borderRadius: 10 }}
                             />
                             <View>
-                            <View style={styles.tileRow}>
-                                <Text style={styles.textStyle}>Zgłoszono: {item.creation_username}</Text>
-                                <Text style={styles.textStyle}>({TimestampToDate(item.creation_timestamp)})</Text>
-                            </View>
-                            <Text style={styles.textStyle}>Rozmiar: {item.size}</Text>
-                            <Text style={styles.textStyle}>Typ: {item.type}</Text>
-                            <Text style={styles.textStyle}>
-                                Odległość: {
-                                    Math.round(
-                                        calculate_distance(
-                                            userState.coords.latitude,
-                                            userState.coords.longitude,
-                                            item.latitude,
-                                            item.longitude) * 100) / 100
-                                } 
-                                km
-                            </Text>
+                                <View style={styles.tileRow}>
+                                    <Text style={styles.textStyle}>Zgłoszono: {item.creation_username}</Text>
+                                    <Text style={styles.textStyle}>({TimestampToDate(item.creation_timestamp)})</Text>
+                                </View>
+                                <Text style={styles.textStyle}>Rozmiar: {item.size}</Text>
+                                <Text style={styles.textStyle}>Typ: {item.type}</Text>
+                                <Text style={styles.textStyle}>
+                                    Odległość: {
+                                        Math.round(
+                                            calculate_distance(
+                                                userState.coords.latitude,
+                                                userState.coords.longitude,
+                                                item.latitude,
+                                                item.longitude) * 100) / 100
+                                    }
+                                    km
+                                </Text>
                             </View>
                         </>
                     )}
@@ -108,6 +115,12 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <MapLibreGL.UserLocation
+                ref={(c) => (UserLocationRef = c)}
+                visible={true}
+                onUpdate={onUserLocationUpdate}
+                showsUserHeadingIndicator={true}
+            />
         </Modal>
     );
 };

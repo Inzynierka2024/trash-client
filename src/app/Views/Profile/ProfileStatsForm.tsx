@@ -34,10 +34,14 @@ const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
   const { state } = useAuth();
-
+  let UserLocationRef: MapLibreGL.UserLocation = undefined;
   const [userState, setUserState] = useState < MapLibreGL.Location > ({
     coords: { latitude: 0, longitude: 0 },
   });
+  
+  function onUserLocationUpdate(location: MapLibreGL.Location) {
+    setUserState(location);
+  }
   const [collectedData, setCollectedData] = useState < UserTrashMetadata[] > ([]);
   const [reportedData, setReportedData] = useState < UserTrashMetadata[] > ([]);
 
@@ -382,6 +386,13 @@ export const ProfileStatsForm = () => {
           item={selectedReportedItem}
         />
       </View>
+
+      <MapLibreGL.UserLocation
+          ref={(c) => (UserLocationRef = c)}
+          visible={true}
+          onUpdate={onUserLocationUpdate}
+          showsUserHeadingIndicator={true}
+        />
     </ThemeContext.Provider>
   );
 };

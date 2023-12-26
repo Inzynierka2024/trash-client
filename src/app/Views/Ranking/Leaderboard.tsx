@@ -70,7 +70,7 @@ export const Leaderboard = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Leaderboard</Text>
+      <Text style={styles.title}>Ranking</Text>
       {leaderboardData.map(renderLeaderboardItem)}
     </ScrollView>
   );
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    backgroundColor: theme.colors.secondary
+    backgroundColor: theme.colors.green
   },
   title: {
     fontSize: 24,
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     shadowOpacity: 0.1, 
     shadowRadius: 5, 
+    fontSize: 16,
   },
   iconContainer: {
     marginRight: theme.spacing.m,

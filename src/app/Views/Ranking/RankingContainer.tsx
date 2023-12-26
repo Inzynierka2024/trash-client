@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, useColorScheme } from 'react-native';
+import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 import _fetch from '../../Logic/API/_fetch';
 import { theme } from "../../../theme/theme";
 
@@ -14,13 +14,14 @@ const RankingContainer = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, paddingTop: StatusBar.currentHeight }}>
+      <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
       <Tab.Navigator
         initialRouteName="Scoreboard"
         screenOptions={{
           tabBarActiveTintColor: theme.colors.primary,
           tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
-          tabBarStyle: { backgroundColor: theme.colors.secondary },
+          tabBarStyle: { backgroundColor: theme.colors.background },
           tabBarIndicatorStyle: { backgroundColor: theme.colors.primary },
         }}
       >

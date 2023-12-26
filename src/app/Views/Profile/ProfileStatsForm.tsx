@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -34,14 +34,15 @@ const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
   const { state } = useAuth();
-  let UserLocationRef: MapLibreGL.UserLocation = undefined;
+  const userLocationRef = useRef({ latitude: 0, longitude: 0 });
   const [userState, setUserState] = useState < MapLibreGL.Location > ({
     coords: { latitude: 0, longitude: 0 },
   });
-  
+
   function onUserLocationUpdate(location: MapLibreGL.Location) {
-    setUserState(location);
+    userLocationRef.current = location.coords;
   }
+
   const [collectedData, setCollectedData] = useState < UserTrashMetadata[] > ([]);
   const [reportedData, setReportedData] = useState < UserTrashMetadata[] > ([]);
 
@@ -122,10 +123,10 @@ export const ProfileStatsForm = () => {
     async function fetchDataOnFocus() {
       if (isFocused) {
         const tempUser = await getUser();
-        //const tempGarbage = await getGarbage();
+        const tempGarbage = await getGarbage();
         setUserData(tempUser);
-        //setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
-        //setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
+        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
+        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchDataOnFocus();
@@ -144,21 +145,21 @@ export const ProfileStatsForm = () => {
         style={{ width: 100, height: 100, borderRadius: 10 }}
       />
       {/* <View style={styles.tileRow}> */}
-        {/* <Text style={styles.tileTextBold}> 
-          {
-            Math.round(
-              calculate_distance(
-                userState.coords.latitude,
-                userState.coords.longitude,
-                item.latitude,
-                item.longitude) * 100) / 100
-          } km
-        </Text> */}
-        <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
+      <Text style={styles.tileTextBold}>
+        {
+          Math.round(
+            calculate_distance(
+              userLocationRef.current.latitude,
+              userLocationRef.current.longitude,
+              item.latitude,
+              item.longitude) * 1000) / 1000
+        } km
+      </Text>
+      <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
       {/* </View> */}
     </View>
   );
-  
+
   const renderReportedItem = ({ item }) => (
     <TouchableOpacity onPress={() => {
       setSelectedReportedItem(item);
@@ -167,7 +168,7 @@ export const ProfileStatsForm = () => {
       {renderItemTemplate(item)}
     </TouchableOpacity>
   );
-  
+
   const renderCollectedItem = ({ item }) => (
     <TouchableOpacity onPress={() => {
       setSelectedCollectedItem(item);
@@ -176,7 +177,7 @@ export const ProfileStatsForm = () => {
       {renderItemTemplate(item)}
     </TouchableOpacity>
   );
-  
+
   const CollectedTab = () => (
     <FlatList
       data={collectedData}
@@ -387,12 +388,12 @@ export const ProfileStatsForm = () => {
         />
       </View>
 
-      {/* <MapLibreGL.UserLocation
-          ref={(c) => (UserLocationRef = c)}
-          visible={true}
-          onUpdate={onUserLocationUpdate}
-          showsUserHeadingIndicator={true}
-        /> */}
+      <MapLibreGL.UserLocation
+        ref={(c) => (UserLocationRef = c)}
+        visible={true}
+        onUpdate={onUserLocationUpdate}
+        showsUserHeadingIndicator={true}
+      />
     </ThemeContext.Provider>
   );
 };

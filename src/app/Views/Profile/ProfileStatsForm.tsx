@@ -27,7 +27,9 @@ import { UserTrashMetadata } from "../../Models/UserTrashMetadata";
 import get_user_garbage from "../../Logic/API/get_user_garbage";
 import get_garbage_metadata from "../../Utils/get_garbage_metadata";
 import { FlatList } from "react-native-gesture-handler";
-
+import ReportedGarbageModal from "./GarbageModal/ReportedGarbageModal";
+import CollectedGarbageModal from "./GarbageModal/CollectedGarbageModal";
+import { TimestampToDate } from "./../../Utils/convert_timestamp";
 const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
@@ -50,16 +52,23 @@ export const ProfileStatsForm = () => {
     useColorScheme() === "dark" ? true : false,
   );
   const themeFromContext = useContext(ThemeContext);
+  const textColor = themeFromContext.colors.primaryText;
+  const secondaryText = themeFromContext.colors.secondaryText;
+  const background = themeFromContext.colors.background;
+
   const navigation = useNavigation();
 
   const navigateToEditForm = () => {
     navigation.navigate("ProfileEdit");
   };
 
-  const TimestampToDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-  };
+  const [collectedModalVisible, setCollectedModalVisible] = useState(false);
+  const [reportedModalVisible, setReportedModalVisible] = useState(false);
+  const [selectedCollectedItem, setSelectedCollectedItem] = useState(null);
+  const [selectedReportedItem, setSelectedReportedItem] = useState(null);
+
+
+
 
   async function getUser() {
     const result = await get_user_data(state.token);
@@ -102,7 +111,6 @@ export const ProfileStatsForm = () => {
         const collectedParsed = tempGarbage.data.collected.map(item => get_garbage_metadata(item));
         setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
         setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
-
       }
     }
     fetchData();
@@ -128,35 +136,46 @@ export const ProfileStatsForm = () => {
     { key: "reported", title: "Zgłoszone Odpady" },
   ]);
 
-  const renderCollectedItem = ({ item }) => (
+  const renderItemTemplate = (item) => (
     <View style={styles.tile}>
       <Image
         source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
         style={{ width: 100, height: 100, borderRadius: 10 }}
       />
-      <View style={styles.tileRow}>
-        <Text style={styles.tileText}>Zgłoszono: {item.creation_username}</Text>
-        <Text style={styles.tileText}>{TimestampToDate(item.creation_timestamp)}</Text>
-      </View>
-      <View style={styles.tileRow}>
-        <Text style={styles.tileText}>Zebrano: {item.collection_username}</Text>
-        <Text style={styles.tileText}>{TimestampToDate(item.collection_timestamp)}</Text>
-      </View>
+      {/* <View style={styles.tileRow}> */}
+        <Text style={styles.tileTextBold}> 
+          {
+            Math.round(
+              calculate_distance(
+                userState.coords.latitude,
+                userState.coords.longitude,
+                item.latitude,
+                item.longitude) * 100) / 100
+          } km
+        </Text>
+        <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
+      {/* </View> */}
     </View>
   );
-
+  
   const renderReportedItem = ({ item }) => (
-    <View style={styles.tile}>
-      <Image
-        source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
-        style={{ width: 100, height: 100, borderRadius: 10 }}
-      />
-      <View style={styles.tileRow}>
-        <Text style={styles.tileText}>Zgłoszono: {item.creation_username}</Text>
-        <Text style={styles.tileText}>{TimestampToDate(item.creation_timestamp)}</Text>
-      </View>
-    </View>
+    <TouchableOpacity onPress={() => {
+      setSelectedReportedItem(item);
+      setReportedModalVisible(true);
+    }}>
+      {renderItemTemplate(item)}
+    </TouchableOpacity>
   );
+  
+  const renderCollectedItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {
+      setSelectedCollectedItem(item);
+      setCollectedModalVisible(true);
+    }}>
+      {renderItemTemplate(item)}
+    </TouchableOpacity>
+  );
+  
   const CollectedTab = () => (
     <FlatList
       data={collectedData}
@@ -177,12 +196,6 @@ export const ProfileStatsForm = () => {
     collected: CollectedTab,
     reported: ReportedTab,
   });
-  const distance = calculate_distance(
-    userState.coords.latitude,
-    userState.coords.longitude,
-    0,
-    0,
-  );
 
 
   const styles = StyleSheet.create({
@@ -206,7 +219,7 @@ export const ProfileStatsForm = () => {
 
     textCentered: {
       alignSelf: "center",
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
     },
     editIcon: {
       position: "absolute",
@@ -215,7 +228,7 @@ export const ProfileStatsForm = () => {
       right: 16,
       zIndex: 10,
       padding: 8,
-      backgroundColor: themeFromContext.colors.background,
+      backgroundColor: theme.colors.green,
       borderRadius: 20,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 1 },
@@ -229,11 +242,11 @@ export const ProfileStatsForm = () => {
       width: "100%",
       textAlign: "left",
       //borderBottomWidth: 0.5,
-      borderBottomColor: themeFromContext.colors.background,
+      borderBottomColor: background,
       paddingBottom: 4,
       fontWeight: "normal",
       marginLeft: 10,
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
     },
     headerContainer: {
       flexDirection: "row",
@@ -265,7 +278,7 @@ export const ProfileStatsForm = () => {
       marginTop: 5,
       marginLeft: 5,
       fontSize: 16,
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
     },
     icon: {
       width: 48,
@@ -283,7 +296,7 @@ export const ProfileStatsForm = () => {
       flex: 1,
     },
     tile: {
-      backgroundColor: themeFromContext.colors.background,
+      backgroundColor: themeFromContext.colors.transparentBackground,
       borderRadius: 10,
       padding: 10,
       marginVertical: 5,
@@ -297,15 +310,15 @@ export const ProfileStatsForm = () => {
       marginTop: 5,
     },
     tileText: {
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
       flex: 1,
       marginHorizontal: 2,
     },
     tileTextBold: {
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
       flex: 1,
       marginHorizontal: 2,
-      fontStyle: 'bold',
+      fontWeight: 'bold',
     },
   });
 
@@ -358,6 +371,18 @@ export const ProfileStatsForm = () => {
             />
           )}
           style={styles.tabView}
+        />
+
+        <CollectedGarbageModal
+          visible={collectedModalVisible}
+          onClose={() => setCollectedModalVisible(false)}
+          item={selectedCollectedItem}
+        />
+
+        <ReportedGarbageModal
+          visible={reportedModalVisible}
+          onClose={() => setReportedModalVisible(false)}
+          item={selectedReportedItem}
         />
       </View>
     </ThemeContext.Provider>

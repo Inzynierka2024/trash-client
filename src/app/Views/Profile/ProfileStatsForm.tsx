@@ -30,6 +30,8 @@ import { FlatList } from "react-native-gesture-handler";
 import ReportedGarbageModal from "./GarbageModal/ReportedGarbageModal";
 import CollectedGarbageModal from "./GarbageModal/CollectedGarbageModal";
 import { TimestampToDate } from "./../../Utils/convert_timestamp";
+import {formatDistance} from "./../../Utils/format_distance";
+
 const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
@@ -147,13 +149,12 @@ export const ProfileStatsForm = () => {
       {/* <View style={styles.tileRow}> */}
       <Text style={styles.tileTextBold}>
         {
-          Math.round(
-            calculate_distance(
+          formatDistance(calculate_distance(
               userLocationRef.current.latitude,
               userLocationRef.current.longitude,
               item.latitude,
-              item.longitude) * 1000) / 1000
-        } km
+              item.longitude))
+        }
       </Text>
       <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
       {/* </View> */}
@@ -327,53 +328,53 @@ export const ProfileStatsForm = () => {
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
-          <Icon name="edit" size={24} color="#000" />
-        </TouchableOpacity>
-        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
+            <Icon name="edit" size={24} color="#000" />
+          </TouchableOpacity>
 
-          <View style={styles.pointsContainer}>
-            <Image source={pointsIcon} style={styles.pointsIcon} />
-            <Text style={styles.pointsText}>{user.points}</Text>
+          <View style={styles.headerContainer}>
+            <View style={styles.pointsContainer}>
+              <Image source={pointsIcon} style={styles.pointsIcon} />
+              <Text style={styles.pointsText}>{user.points}</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.element}>
-          <Image source={profileIcon} style={styles.icon} />
-          <Text style={[styles.readOnly, styles.textCentered]}>
-            {" "}
-            {user.username}
-          </Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={profileIcon} style={styles.icon} />
+            <Text style={[styles.readOnly, styles.textCentered]}>
+              {" "}
+              {user.username}
+            </Text>
+          </View>
 
-        <View style={styles.element}>
-          <Image source={gmailIcon} style={styles.icon} resizeMode="contain" />
-          <Text style={styles.readOnly}> {user.email}</Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={gmailIcon} style={styles.icon} resizeMode="contain" />
+            <Text style={styles.readOnly}> {user.email}</Text>
+          </View>
 
-        <View style={styles.element}>
-          <Image source={passwordIcon} style={styles.icon} />
-          <Text style={styles.readOnly}>***</Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={passwordIcon} style={styles.icon} />
+            <Text style={styles.readOnly}>***</Text>
+          </View>
 
-        <View style={styles.element}>
-          <Image source={locationIcon} style={styles.icon} />
-          <Text style={styles.readOnly}>{user.location}</Text>
-        </View>
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={initialLayout}
-          renderTabBar={props => (
-            <TabBar
-              {...props}
-              indicatorStyle={{ backgroundColor: 'white' }}
-              style={{ backgroundColor: themeFromContext.colors.primary }}
-            />
-          )}
-          style={styles.tabView}
-        />
+          <View style={styles.element}>
+            <Image source={locationIcon} style={styles.icon} />
+            <Text style={styles.readOnly}>{user.location}</Text>
+          </View>
+          <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={initialLayout}
+            renderTabBar={props => (
+              <TabBar
+                {...props}
+                indicatorStyle={{ backgroundColor: 'white' }}
+                style={{ backgroundColor: themeFromContext.colors.primary }}
+              />
+            )}
+            style={styles.tabView}
+          />
 
         <CollectedGarbageModal
           visible={collectedModalVisible}

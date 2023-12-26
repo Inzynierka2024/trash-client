@@ -4,6 +4,7 @@ import { View, Text, Image, StyleSheet, Modal, TouchableOpacity } from 'react-na
 import { TimestampToDate } from "./../../../Utils/convert_timestamp";
 import calculate_distance from "../../../Utils/calculate_distance";
 import MapLibreGL from "@maplibre/maplibre-react-native";
+import {formatDistance} from "../../../Utils/format_distance";
 
 const CollectedGarbageModal = ({ visible, onClose, item }) => {
     const [userState, setUserState] = useState < MapLibreGL.Location > ({
@@ -104,14 +105,13 @@ const CollectedGarbageModal = ({ visible, onClose, item }) => {
                                 <Text style={styles.textStyle}>Typ: {item.type}</Text>
                                 <Text style={styles.textStyle}>
                                     Odległość: {
-                                        Math.round(
+                                        formatDistance(
                                             calculate_distance(
                                                 userState.coords.latitude,
                                                 userState.coords.longitude,
                                                 item.latitude,
-                                                item.longitude) * 100) / 100
+                                                item.longitude))
                                     }
-                                    km
                                 </Text>
                             </View>
                         </>

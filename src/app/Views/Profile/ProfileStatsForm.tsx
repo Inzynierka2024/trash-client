@@ -122,10 +122,10 @@ export const ProfileStatsForm = () => {
     async function fetchDataOnFocus() {
       if (isFocused) {
         const tempUser = await getUser();
-        const tempGarbage = await getGarbage();
+        //const tempGarbage = await getGarbage();
         setUserData(tempUser);
-        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
-        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
+        //setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
+        //setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchDataOnFocus();

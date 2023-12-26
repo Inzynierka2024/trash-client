@@ -144,7 +144,7 @@ export const ProfileStatsForm = () => {
         style={{ width: 100, height: 100, borderRadius: 10 }}
       />
       {/* <View style={styles.tileRow}> */}
-        <Text style={styles.tileTextBold}> 
+        {/* <Text style={styles.tileTextBold}> 
           {
             Math.round(
               calculate_distance(
@@ -153,7 +153,7 @@ export const ProfileStatsForm = () => {
                 item.latitude,
                 item.longitude) * 100) / 100
           } km
-        </Text>
+        </Text> */}
         <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
       {/* </View> */}
     </View>
@@ -387,12 +387,12 @@ export const ProfileStatsForm = () => {
         />
       </View>
 
-      <MapLibreGL.UserLocation
+      {/* <MapLibreGL.UserLocation
           ref={(c) => (UserLocationRef = c)}
           visible={true}
           onUpdate={onUserLocationUpdate}
           showsUserHeadingIndicator={true}
-        />
+        /> */}
     </ThemeContext.Provider>
   );
 };

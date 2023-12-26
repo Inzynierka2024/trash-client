@@ -60,7 +60,7 @@ export const ProfileStatsForm = () => {
     const date = new Date(timestamp);
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   };
-  
+
   async function getUser() {
     const result = await get_user_data(state.token);
     if (result.isOk) {
@@ -128,7 +128,7 @@ export const ProfileStatsForm = () => {
     { key: "reported", title: "Zgłoszone Odpady" },
   ]);
 
-  const renderItem = ({ item }) => (
+  const renderCollectedItem = ({ item }) => (
     <View style={styles.tile}>
       <Image
         source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
@@ -137,19 +137,30 @@ export const ProfileStatsForm = () => {
       <View style={styles.tileRow}>
         <Text style={styles.tileText}>Zgłoszono: {item.creation_username}</Text>
         <Text style={styles.tileText}>{TimestampToDate(item.creation_timestamp)}</Text>
-
       </View>
       <View style={styles.tileRow}>
-      <Text style={styles.tileText}>Zebrano: {item.collection_username}</Text>
+        <Text style={styles.tileText}>Zebrano: {item.collection_username}</Text>
         <Text style={styles.tileText}>{TimestampToDate(item.collection_timestamp)}</Text>
       </View>
     </View>
   );
-  
+
+  const renderReportedItem = ({ item }) => (
+    <View style={styles.tile}>
+      <Image
+        source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
+        style={{ width: 100, height: 100, borderRadius: 10 }}
+      />
+      <View style={styles.tileRow}>
+        <Text style={styles.tileText}>Zgłoszono: {item.creation_username}</Text>
+        <Text style={styles.tileText}>{TimestampToDate(item.creation_timestamp)}</Text>
+      </View>
+    </View>
+  );
   const CollectedTab = () => (
     <FlatList
       data={collectedData}
-      renderItem={renderItem}
+      renderItem={renderCollectedItem}
       keyExtractor={(item) => item.garbage_id.toString()}
     />
   );
@@ -157,7 +168,7 @@ export const ProfileStatsForm = () => {
   const ReportedTab = () => (
     <FlatList
       data={reportedData}
-      renderItem={renderItem}
+      renderItem={renderReportedItem}
       keyExtractor={(item) => item.garbage_id.toString()}
     />
   );
@@ -194,7 +205,7 @@ export const ProfileStatsForm = () => {
     },
 
     textCentered: {
-      alignSelf: "center", 
+      alignSelf: "center",
       color: themeFromContext.colors.primaryText,
     },
     editIcon: {
@@ -242,7 +253,7 @@ export const ProfileStatsForm = () => {
       paddingTop: 10,
       justifyContent: "flex-start",
       flexDirection: "row",
-      alignItems: "flex-start", 
+      alignItems: "flex-start",
     },
     pointsIcon: {
       width: 30,
@@ -265,8 +276,8 @@ export const ProfileStatsForm = () => {
     tabView: {
       flex: 1,
       width: "100%",
-      borderRadius: 15, 
-    //overflow: 'hidden',
+      borderRadius: 15,
+      //overflow: 'hidden',
     },
     tabScene: {
       flex: 1,
@@ -287,13 +298,13 @@ export const ProfileStatsForm = () => {
     },
     tileText: {
       color: themeFromContext.colors.primaryText,
-      flex: 1, 
-      marginHorizontal: 2, 
+      flex: 1,
+      marginHorizontal: 2,
     },
     tileTextBold: {
       color: themeFromContext.colors.primaryText,
-      flex: 1, 
-      marginHorizontal: 2, 
+      flex: 1,
+      marginHorizontal: 2,
       fontStyle: 'bold',
     },
   });

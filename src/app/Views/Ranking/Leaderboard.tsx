@@ -29,7 +29,7 @@ export const Leaderboard = () => {
     useEffect(() => {
       const fetchLeaderboard = async () => {
         try {
-          const response = await _fetch(`/leaderboard`, "GET", {});
+          const response = await _fetch(`/ranking/leaderboard`, "GET", {});
           console.log(response);
           if (response.data && Array.isArray(response.data)) {
             setLeaderboardData(response.data);
@@ -60,7 +60,6 @@ export const Leaderboard = () => {
             <Text style={styles.score}> {score.points} punktów</Text>
           </View>
             
-            <Text style={styles.period}>Okres: {score.period}</Text>
           </View>
         </View>
       );

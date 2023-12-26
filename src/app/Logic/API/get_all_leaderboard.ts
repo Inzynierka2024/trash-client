@@ -1,12 +1,12 @@
+import { useContext } from "react";
+import { UserModel } from "../../Models/UserMetadata";
 import _fetch from "./_fetch";
 
-export default async function () {
-    const URL = `/leaderboard`;
-    //console.log("Fetching:", URL);
+
+export default async function get_all_leaderboard(token: string): Promise<any> {
+    const URL = `/ranking/leaderboard`;  
+    const headers = { Authorization: `Bearer ${token}` };
+    const result = await _fetch(URL, "GET", headers);
     
-    const response = await _fetch(URL, "GET", {});
-  
-    //console.log("get_all_scoreboard: ",response);
-    return response;
+    return result;
   }
-  

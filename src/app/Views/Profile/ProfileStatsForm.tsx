@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
   Image,
   StyleSheet,
   TouchableOpacity,
-  ToastAndroid,
   useColorScheme,
-  Platform,
   Dimensions,
-  ScrollView,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Icon } from "react-native-elements";
@@ -17,40 +14,40 @@ import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../Logic/AuthContext";
 import get_user_data from "../../Logic/API/get_user_data";
-import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import gmailIcon from "../../../../assets/profile/gmail.png";
 import locationIcon from "../../../../assets/profile/home.png";
 import passwordIcon from "../../../../assets/profile/password.png";
 import profileIcon from "../../../../assets/profile/profile.png";
 import pointsIcon from "../../../../assets/profile/coin.png";
 import { useIsFocused } from "@react-navigation/native";
+import get_user_bins from "../../Logic/API/get_user_bins";
+import calculate_distance from "../../Utils/calculate_distance";
+import MapLibreGL from "@maplibre/maplibre-react-native";
+import { UserTrashMetadata } from "../../Models/UserTrashMetadata";
+import get_user_garbage from "../../Logic/API/get_user_garbage";
+import get_garbage_metadata from "../../Utils/get_garbage_metadata";
+import { FlatList } from "react-native-gesture-handler";
+import ReportedGarbageModal from "./GarbageModal/ReportedGarbageModal";
+import CollectedGarbageModal from "./GarbageModal/CollectedGarbageModal";
+import { TimestampToDate } from "./../../Utils/convert_timestamp";
+import {formatDistance} from "./../../Utils/format_distance";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
-const Tile = () => (
-  <View style={styles.tile}>
-    {/* Content of the tile */}
-    <Text style={styles.tileText}>Empty Tile</Text>
-  </View>
-);
-
-const CollectedTrashTab = () => (
-  <View style={styles.tabScene}>
-    {Array.from({ length: 6 }).map((_, index) => (
-      <Tile key={index} />
-    ))}
-  </View>
-);
-
-const ReportedTrashTab = () => (
-  <View style={styles.tabScene}>
-    {Array.from({ length: 6 }).map((_, index) => (
-      <Tile key={index} />
-    ))}
-  </View>
-);
 export const ProfileStatsForm = () => {
   const { state } = useAuth();
+  const userLocationRef = useRef({ latitude: 0, longitude: 0 });
+  const [userState, setUserState] = useState < MapLibreGL.Location > ({
+    coords: { latitude: 0, longitude: 0 },
+  });
+
+  function onUserLocationUpdate(location: MapLibreGL.Location) {
+    userLocationRef.current = location.coords;
+  }
+
+  const [collectedData, setCollectedData] = useState < UserTrashMetadata[] > ([]);
+  const [reportedData, setReportedData] = useState < UserTrashMetadata[] > ([]);
+
   const [user, setUserData] = useState({
     email: "",
     location: "",
@@ -62,11 +59,20 @@ export const ProfileStatsForm = () => {
     useColorScheme() === "dark" ? true : false,
   );
   const themeFromContext = useContext(ThemeContext);
-  const navigation = useNavigation<any>();
+  const textColor = themeFromContext.colors.primaryText;
+  const secondaryText = themeFromContext.colors.secondaryText;
+  const background = themeFromContext.colors.background;
+
+  const navigation = useNavigation();
 
   const navigateToEditForm = () => {
     navigation.navigate("ProfileEdit");
   };
+
+  const [collectedModalVisible, setCollectedModalVisible] = useState(false);
+  const [reportedModalVisible, setReportedModalVisible] = useState(false);
+  const [selectedCollectedItem, setSelectedCollectedItem] = useState(null);
+  const [selectedReportedItem, setSelectedReportedItem] = useState(null);
 
   async function getUser() {
     const result = await get_user_data(state.token);
@@ -79,11 +85,35 @@ export const ProfileStatsForm = () => {
     }
   }
 
+  async function getGarbage() {
+    const garbageResult = await get_user_garbage(state.token);
+    if (garbageResult.isOk) {
+      return garbageResult;
+    } else {
+      console.error("Invalid garbage");
+      return [];
+    }
+  }
+
+  async function getBins() {
+    const result = await get_user_bins(state.token);
+    if (result.isOk) {
+      const bins = result.data.added;
+      return bins;
+    } else {
+      console.error("Invalid user");
+      return [];
+    }
+  }
+
   useEffect(() => {
     async function fetchData() {
       if (state.token) {
         const tempUser = await getUser();
+        const tempGarbage = await getGarbage();
         setUserData(tempUser);
+        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
+        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchData();
@@ -95,7 +125,10 @@ export const ProfileStatsForm = () => {
     async function fetchDataOnFocus() {
       if (isFocused) {
         const tempUser = await getUser();
+        const tempGarbage = await getGarbage();
         setUserData(tempUser);
+        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
+        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchDataOnFocus();
@@ -107,19 +140,66 @@ export const ProfileStatsForm = () => {
     { key: "reported", title: "Zgłoszone Odpady" },
   ]);
 
-  const renderScene = SceneMap({
-    collected: CollectedTrashTab,
-    reported: ReportedTrashTab,
-  });
+  const renderItemTemplate = (item) => (
+    <View style={styles.tile}>
+      <Image
+        source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
+        style={{ width: 100, height: 100, borderRadius: 10 }}
+      />
+      {/* <View style={styles.tileRow}> */}
+      <Text style={styles.tileTextBold}>
+        {
+          formatDistance(calculate_distance(
+              userLocationRef.current.latitude,
+              userLocationRef.current.longitude,
+              item.latitude,
+              item.longitude))
+        }
+      </Text>
+      <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
+      {/* </View> */}
+    </View>
+  );
 
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: themeFromContext.colors.green }}
-      style={{ backgroundColor: themeFromContext.colors.green }}
-      labelStyle={{ color: themeFromContext.colors.primaryText }}
+  const renderReportedItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {
+      setSelectedReportedItem(item);
+      setReportedModalVisible(true);
+    }}>
+      {renderItemTemplate(item)}
+    </TouchableOpacity>
+  );
+
+  const renderCollectedItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {
+      setSelectedCollectedItem(item);
+      setCollectedModalVisible(true);
+    }}>
+      {renderItemTemplate(item)}
+    </TouchableOpacity>
+  );
+
+  const CollectedTab = () => (
+    <FlatList
+      data={collectedData}
+      renderItem={renderCollectedItem}
+      keyExtractor={(item) => item.garbage_id.toString()}
     />
   );
+
+  const ReportedTab = () => (
+    <FlatList
+      data={reportedData}
+      renderItem={renderReportedItem}
+      keyExtractor={(item) => item.garbage_id.toString()}
+    />
+  );
+
+  const renderScene = SceneMap({
+    collected: CollectedTab,
+    reported: ReportedTab,
+  });
+
 
   const styles = StyleSheet.create({
     container: {
@@ -129,7 +209,7 @@ export const ProfileStatsForm = () => {
     element: {
       flexDirection: "row",
       padding: 10,
-      margin: 2,
+      //margin: 2,
       alignItems: "center",
     },
     emailContainer: {
@@ -141,17 +221,17 @@ export const ProfileStatsForm = () => {
     },
 
     textCentered: {
-      alignSelf: "center", // Center the text vertically within its parent
-      color: themeFromContext.colors.primaryText,
+      alignSelf: "center",
+      color: textColor,
     },
     editIcon: {
       position: "absolute",
-      marginTop: 10,
+      marginTop: 25,
       top: 10,
       right: 16,
       zIndex: 10,
       padding: 8,
-      backgroundColor: themeFromContext.colors.background,
+      backgroundColor: theme.colors.green,
       borderRadius: 20,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 1 },
@@ -160,23 +240,23 @@ export const ProfileStatsForm = () => {
       elevation: 3,
     },
     readOnly: {
-      fontSize: 20,
+      fontSize: 16,
       marginVertical: 8,
       width: "100%",
       textAlign: "left",
-      borderBottomWidth: 1,
-      borderBottomColor: "#CCCCCC",
+      //borderBottomWidth: 0.5,
+      borderBottomColor: background,
       paddingBottom: 4,
       fontWeight: "normal",
       marginLeft: 10,
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
     },
     headerContainer: {
       flexDirection: "row",
       alignItems: "center",
       marginBottom: 20,
-      margin:10,
-      padding:10
+      margin: 10,
+      padding: 10
     },
     userIcon: {
       width: 100,
@@ -186,10 +266,10 @@ export const ProfileStatsForm = () => {
     },
     pointsContainer: {
       flex: 1,
-      paddingTop:10,
+      paddingTop: 10,
       justifyContent: "flex-start",
       flexDirection: "row",
-      alignItems: "flex-start", // Align items to the start of the container
+      alignItems: "flex-start",
     },
     pointsIcon: {
       width: 30,
@@ -201,7 +281,7 @@ export const ProfileStatsForm = () => {
       marginTop: 5,
       marginLeft: 5,
       fontSize: 16,
-      color: themeFromContext.colors.primaryText,
+      color: textColor,
     },
     icon: {
       width: 48,
@@ -212,100 +292,111 @@ export const ProfileStatsForm = () => {
     tabView: {
       flex: 1,
       width: "100%",
+      borderRadius: 15,
+      //overflow: 'hidden',
     },
     tabScene: {
       flex: 1,
     },
     tile: {
-      height: 100, // Adjust height as needed
-      backgroundColor: "#e0e0e0", // Example background color
+      backgroundColor: themeFromContext.colors.transparentBackground,
       borderRadius: 10,
-      justifyContent: "center",
-      alignItems: "center",
+      padding: 10,
       marginVertical: 5,
       marginHorizontal: 10,
+      alignItems: 'center',
+    },
+    tileRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      marginTop: 5,
     },
     tileText: {
-      color: "black", // Adjust text color as needed
+      color: textColor,
+      flex: 1,
+      marginHorizontal: 2,
+    },
+    tileTextBold: {
+      color: textColor,
+      flex: 1,
+      marginHorizontal: 2,
+      fontWeight: 'bold',
     },
   });
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-      <ScrollView style={styles.container}>
-        <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
-          <Icon name="edit" size={24} color="#000" />
-        </TouchableOpacity>
-        <View style={styles.headerContainer}>
-          
-          <View style={styles.pointsContainer}>
-            <Image source={pointsIcon} style={styles.pointsIcon} />
-            <Text style={styles.pointsText}>{user.points}</Text>
+      <View style={styles.container}>
+          <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
+            <Icon name="edit" size={24} color="#000" />
+          </TouchableOpacity>
+
+          <View style={styles.headerContainer}>
+            <View style={styles.pointsContainer}>
+              <Image source={pointsIcon} style={styles.pointsIcon} />
+              <Text style={styles.pointsText}>{user.points}</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.element}>
-          <Image source={profileIcon} style={styles.icon} />
-          <Text style={[styles.readOnly, styles.textCentered]}>
-            {" "}
-            {user.username}
-          </Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={profileIcon} style={styles.icon} />
+            <Text style={[styles.readOnly, styles.textCentered]}>
+              {" "}
+              {user.username}
+            </Text>
+          </View>
 
-        <View style={styles.element}>
-          <Image source={gmailIcon} style={styles.icon} resizeMode="contain" />
-          <Text style={styles.readOnly}> {user.email}</Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={gmailIcon} style={styles.icon} resizeMode="contain" />
+            <Text style={styles.readOnly}> {user.email}</Text>
+          </View>
 
-        <View style={styles.element}>
-          <Image source={passwordIcon} style={styles.icon} />
-          <Text style={styles.readOnly}>***</Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={passwordIcon} style={styles.icon} />
+            <Text style={styles.readOnly}>***</Text>
+          </View>
 
-        <View style={styles.element}>
-          <Image source={locationIcon} style={styles.icon} />
-          <Text style={styles.readOnly}>{user.location}</Text>
-        </View>
+          <View style={styles.element}>
+            <Image source={locationIcon} style={styles.icon} />
+            <Text style={styles.readOnly}>{user.location}</Text>
+          </View>
+          <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={initialLayout}
+            renderTabBar={props => (
+              <TabBar
+                {...props}
+                indicatorStyle={{ backgroundColor: 'white' }}
+                style={{ backgroundColor: themeFromContext.colors.primary }}
+              />
+            )}
+            style={styles.tabView}
+          />
 
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={initialLayout}
-          renderTabBar={renderTabBar}
-          style={{
-            ...styles.tabView,
-            backgroundColor: themeFromContext.colors.background,
-          }}
+        <CollectedGarbageModal
+          visible={collectedModalVisible}
+          onClose={() => setCollectedModalVisible(false)}
+          item={selectedCollectedItem}
         />
-        {/* <StickyTabView/> */}
-      </ScrollView>
+
+        <ReportedGarbageModal
+          visible={reportedModalVisible}
+          onClose={() => setReportedModalVisible(false)}
+          item={selectedReportedItem}
+        />
+      </View>
+
+      <MapLibreGL.UserLocation
+        ref={(c) => (UserLocationRef = c)}
+        visible={true}
+        onUpdate={onUserLocationUpdate}
+        showsUserHeadingIndicator={true}
+      />
     </ThemeContext.Provider>
   );
 };
 
-const styles = StyleSheet.create({
-  // ... existing styles ...
-  tabView: {
-    flex: 1,
-    width: "100%",
-    marginTop: 5,
-  },
-  tabScene: {
-    flex: 1,
-  },
-  tile: {
-    height: 100, // Adjust height as needed
-    backgroundColor: "#e0e0e0", // Example background color
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginVertical: 5,
-    marginHorizontal: 10,
-  },
-  tileText: {
-    color: "black", // Adjust text color as needed
-  },
-  // ... other styles ...
-});
 export default ProfileStatsForm;

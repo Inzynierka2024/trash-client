@@ -23,6 +23,7 @@ import GuildDetailsForm from "../../Views/Guilds/GuildDetailsForm";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { CTheme, ThemeContext } from "../../../theme/theme";
 import { useAuth } from "../AuthContext";
+import { RecyclingScreen } from "../../Views/Recycling/RecyclingScreen";
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
@@ -130,10 +131,15 @@ const AppNavigator = () => {
               iconColor = themeFromContext.colors.blue;
               iconName = "user";
             }
+            if (route.name === "Recycling") {
+              provider = "FontAwesome";
+              iconColor = themeFromContext.colors.danger;
+              iconName = "recycle";
+            }
 
             if (provider === "FontAwesome") {
               if (!focused) {
-                iconName += "-o";
+                if (iconName !== "recycle") iconName += "-o";
                 iconColor = themeFromContext.colors.disabled;
               }
               return (
@@ -155,6 +161,7 @@ const AppNavigator = () => {
       >
         <Tab.Screen name="Ranking" component={RankingContainer} />
         <Tab.Screen name="Map" component={MapContainer} />
+        <Tab.Screen name="Recycling" component={RecyclingScreen} />
         <Tab.Screen name="Profil" component={ProfileStackNavigator} />
       </Tab.Navigator>
     </NavigationContainer>

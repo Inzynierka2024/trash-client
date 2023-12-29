@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { palette, ThemeContext } from "../../../../theme/theme";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { MarkerData } from "../MapComponent";
@@ -242,12 +242,26 @@ export const BinModal = (props: {
                     onPress={() => {
                       update_bin_status(props.currentBin.id, newStatus).then(
                         (result) => {
-                          const added_points = result["added_points"];
-                          const user_points = result["user_points"];
-                          console.log("FIXME: handle points here");
+                          if (result.isOk) {
+                            const added_points = result["added_points"];
+                            const user_points = result["user_points"];
+                            console.log("FIXME: handle points here");
 
-                          setBinData({ ...binData, Status: newStatus });
-                          setStatusOptionsVisible(false);
+                            setBinData({ ...binData, Status: newStatus });
+                            setStatusOptionsVisible(false);
+                          } else {
+                            if (result.error.code === 400)
+                              Alert.alert(
+                                "Błąd",
+                                "Osiągnałeś limit zmian stanu na dziś",
+                                [],
+                                { cancelable: true },
+                              );
+                            else
+                              Alert.alert("Wystąpił błąd podczas zmiany stanu");
+
+                            setStatusOptionsVisible(false);
+                          }
                         },
                       );
                     }}

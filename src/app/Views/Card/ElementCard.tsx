@@ -77,7 +77,7 @@ export const ElementCard = (props: {
               }}
             >
               {address !== undefined &&
-                `${address.address.road}, ${
+                `ul. ${address.address.road}, ${
                   address.address.town ?? address.address.city
                 }`}
               {address === undefined && "..."}

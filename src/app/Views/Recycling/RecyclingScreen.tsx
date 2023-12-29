@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { RecyclingInfo } from "./RecyclingInfo";
 import { ElementColors } from "../../Models/ElementColors";
 import { ElementTypes } from "../../Models/ElementTypes";
+import { FontAwesome } from "@expo/vector-icons";
 
 export const RecyclingScreen = () => {
   const themeFromContext = useContext(ThemeContext);
@@ -23,6 +24,13 @@ export const RecyclingScreen = () => {
         },
       ]}
     >
+      <FontAwesome
+        style={[styles.titleicon]}
+        name="recycle"
+        size={64}
+        color={textColor}
+      />
+
       <Text
         style={[
           styles.title,
@@ -32,6 +40,17 @@ export const RecyclingScreen = () => {
         ]}
       >
         Segregacja odpadów
+      </Text>
+
+      <Text
+        style={[
+          styles.subtitle,
+          {
+            color: textColor,
+          },
+        ]}
+      >
+        co gdzie możesz wyrzucać
       </Text>
       <RecyclingInfo
         name="Metale i tworzywa sztuczne"
@@ -193,10 +212,19 @@ const styles = StyleSheet.create({
     paddingBottom: 128,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
     textAlign: "center",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: "normal",
+    textAlign: "center",
     marginBottom: 32,
-    marginTop: 8,
+  },
+  titleicon: {
+    textAlign: "center",
+    marginVertical: 16,
   },
 });

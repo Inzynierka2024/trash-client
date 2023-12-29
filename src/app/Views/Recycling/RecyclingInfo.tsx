@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   button: {
-    height: 64,
+    height: 56,
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 16,
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: palette.darken,
     paddingVertical: 8,
+    paddingHorizontal: 4,
   },
   text: {
     alignItems: "center",

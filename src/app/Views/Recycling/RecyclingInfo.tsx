@@ -7,23 +7,34 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import { palette } from "../../../theme/theme";
+import { FontAwesome } from "@expo/vector-icons";
 
 export const RecyclingInfo = (props: {
   name: string;
   color: string;
   content: [string[], string[]] | string;
+  active: boolean;
+  setActive: Function;
+  close: Function;
   height: number;
 }) => {
   const [height] = useState(new Animated.Value(0));
-  const [expanded, setExpanded] = useState(false);
+  const [opacity] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    Animated.timing(height, {
-      toValue: expanded ? props.height : 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  }, [expanded, height]);
+    Animated.parallel([
+      Animated.timing(height, {
+        toValue: props.active ? props.height : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacity, {
+        toValue: props.active ? 1 : 0,
+        duration: 150,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, [props.active, height]);
 
   return (
     <View
@@ -36,13 +47,17 @@ export const RecyclingInfo = (props: {
     >
       <TouchableOpacity
         style={[styles.button]}
+        activeOpacity={0.2}
         onPress={() => {
-          setExpanded(!expanded);
+          if (props.active) props.close();
+          else props.setActive();
         }}
       >
         <Text style={[styles.title]}>{props.name}</Text>
       </TouchableOpacity>
-      <Animated.View style={[{ height, backgroundColor: palette.darken }]}>
+      <Animated.View
+        style={[{ opacity, height, backgroundColor: palette.whiten }]}
+      >
         {typeof props.content === "string" ? (
           <Text style={[styles.content]}>{props.content}</Text>
         ) : (
@@ -56,7 +71,7 @@ export const RecyclingInfo = (props: {
                   },
                 ]}
               >
-                Należy wyrzucać
+                <FontAwesome name="check" size={24} color="black" />
               </Text>
               {props.content[0].map((item, idx) => (
                 <Text key={idx} style={[styles.text]}>
@@ -73,7 +88,7 @@ export const RecyclingInfo = (props: {
                   },
                 ]}
               >
-                Nie należy wyrzucać
+                <FontAwesome name="times" size={24} color="black" />
               </Text>
               {props.content[1].map((item, idx) => (
                 <Text key={idx} style={[styles.text]}>
@@ -99,18 +114,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 16,
+    backgroundColor: palette.whiten,
   },
   content: {
     padding: 8,
   },
   columns: {
     flexDirection: "row",
+    gap: 8,
   },
   column: {
     flex: 1,
     flexDirection: "column",
     gap: 8,
+    borderRadius: 8,
     alignItems: "center",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: palette.darken,
+    paddingVertical: 8,
   },
   text: {
     alignItems: "center",

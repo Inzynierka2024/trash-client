@@ -1,14 +1,18 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import round from "../../Utils/round";
 import { ElementTypes } from "../../Models/ElementTypes";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { palette, ThemeContext } from "../../../theme/theme";
 import { ElementNames } from "../../Models/ElementNames";
 import { ElementIcons } from "../../Models/ElementIcons";
 import { ElementColors } from "../../Models/ElementColors";
 import { BinStatus, BinStatusNames } from "../../Models/BinStatus";
+import get_address from "../../Logic/API/get_address";
+import { Address } from "../../Models/Address";
 
 export const ElementCard = (props: {
+  lat: number;
+  lng: number;
   type: ElementTypes;
   imageEnabled: boolean;
   imageData?: string;
@@ -20,6 +24,19 @@ export const ElementCard = (props: {
   const themeFromContext = useContext(ThemeContext);
   const textColor = themeFromContext.colors.primaryText;
   const backgroundColor = themeFromContext.colors.background;
+
+  const [address, setAddress] = useState<Address | null | undefined>(undefined);
+
+  useEffect(() => {
+    get_address(props.lat, props.lng)
+      .then((result) => {
+        setAddress(result);
+      })
+      .catch((err) => {
+        console.error(err);
+        setAddress(null);
+      });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -52,6 +69,21 @@ export const ElementCard = (props: {
           >
             {ElementNames[props.type]}
           </Text>
+
+          {address !== null && (
+            <Text
+              style={{
+                color: textColor,
+              }}
+              numberOfLines={1}
+            >
+              {address !== undefined &&
+                `${address.address.road}, ${
+                  address.address.town ?? address.address.city
+                }`}
+              {address === undefined && "..."}
+            </Text>
+          )}
 
           {props.distance && (
             <Text

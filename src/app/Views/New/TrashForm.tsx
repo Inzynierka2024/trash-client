@@ -102,6 +102,8 @@ export const TrashForm = (props: {
             </Text>
 
             <ElementCard
+              lat={locationData.coords.latitude}
+              lng={locationData.coords.longitude}
               type="garbage"
               imageEnabled={true}
               imageData={imageData}

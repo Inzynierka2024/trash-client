@@ -8,7 +8,15 @@ export default async function (
   method: "GET" | "POST" | "DELETE" | "PUT",
   headers: { [key: string]: string },
   body?: { [key: string]: string },
-): Promise<{ isOk: boolean; data: any; error?: string }> {
+): Promise<{
+  isOk: boolean;
+  data: any;
+  error?: {
+    message: string;
+    details: string;
+    code: number;
+  };
+}> {
   const base = await get_api_url();
   const token = await get_jwt_token();
 
@@ -47,6 +55,14 @@ export default async function (
       ...body,
       image: json.image ? "!image data here!" : undefined,
     });
-    return { isOk: false, data: {}, error: json.message };
+    return {
+      isOk: false,
+      data: {},
+      error: {
+        message: json.message,
+        details: json.details,
+        code: code,
+      },
+    };
   }
 }

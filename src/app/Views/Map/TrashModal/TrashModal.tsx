@@ -139,6 +139,8 @@ export const TrashModal = (props: {
         >
           {currentTrashData !== null && (
             <ElementCard
+              lat={currentTrashData.Latitude}
+              lng={currentTrashData.Longitude}
               type={"garbage"}
               timestamp={currentTrashData.CreationTimestamp}
               imageEnabled={true}

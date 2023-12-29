@@ -134,6 +134,8 @@ export const BinModal = (props: {
         >
           {binData !== null && (
             <ElementCard
+              lat={binData.Latitude}
+              lng={binData.Longitude}
               type={binData.Type}
               timestamp={binData.CreationTimestamp}
               addedBy={binData.Username}

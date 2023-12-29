@@ -92,6 +92,8 @@ export const BinForm = (props: {
           </Text>
 
           <ElementCard
+            lat={props.location.coords.latitude}
+            lng={props.location.coords.longitude}
             type={props.type}
             imageEnabled={false}
             binStatus={status}

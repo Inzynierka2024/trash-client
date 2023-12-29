@@ -51,10 +51,9 @@ export default async function (
   if (isOk === true) return { isOk: true, data: json };
   else {
     console.error(`${url} | ${code}: ${json.message}: ${json.details}`);
-    console.log("Request that triggered error:", url, {
-      ...body,
-      image: json.image ? "!image data here!" : undefined,
-    });
+    let obj = Object.create(json);
+    if (obj.image) obj.image = "!image data here!";
+    console.log("Request that triggered error:", url, obj);
     return {
       isOk: false,
       data: {},

@@ -22,7 +22,7 @@ export default async function (
 
   const url = join(base, api_path);
 
-  console.log(`[${method}] ${url}`);
+  console.info(`[${method}] ${url}`);
 
   const response = await fetch(url, {
     method,

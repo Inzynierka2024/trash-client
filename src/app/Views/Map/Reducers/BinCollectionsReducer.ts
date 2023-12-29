@@ -8,7 +8,8 @@ export default function binCollectionsReducer(
   switch (action.type) {
     case "SET_BIN_COLLECTION":
       const type = action.payload.type as BinTypes;
-      console.log(`(Bin) ${action.payload.markers.length}x - ${type}`);
+      if (action.payload.markers.length > 0)
+        console.log(`(Bin) ${action.payload.markers.length}x - ${type}`);
 
       const mapped = (action.payload.markers as MarkerData[]).map((feature) => {
         return {

@@ -258,7 +258,12 @@ export const BinModal = (props: {
                                 { cancelable: true },
                               );
                             else
-                              Alert.alert("Wystąpił błąd podczas zmiany stanu");
+                              Alert.alert(
+                                "Błąd",
+                                "Wystąpił błąd podczas zmiany stanu",
+                                [],
+                                { cancelable: true },
+                              );
 
                             setStatusOptionsVisible(false);
                           }

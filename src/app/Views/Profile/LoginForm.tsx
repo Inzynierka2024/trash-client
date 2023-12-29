@@ -57,15 +57,16 @@ const LoginForm: React.FC = () => {
           break;
         default:
           console.log(response.status + ": " + response.data.message);
-          Alert.alert(response.data.message);
+          Alert.alert("Błąd", "Wystąpił błąd podczas logowania", [], {
+            cancelable: true,
+          });
       }
     } catch (error) {
       console.log(error);
 
-      Alert.alert(
-        "Error",
-        error.message + error || "There was an error logging in.",
-      );
+      Alert.alert("Błąd", "Wystąpił błąd podczas logowania", [], {
+        cancelable: true,
+      });
     }
   };
 

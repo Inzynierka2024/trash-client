@@ -64,7 +64,9 @@ export const TrashModal = (props: {
           console.log("Removed trash");
           props.updateMapMarkers();
         } else {
-          Alert.alert("Failed to remove trash");
+          Alert.alert("Błąd", "Nie udało się usunąć odpadu", [], {
+            cancelable: true,
+          });
         }
       })
       .finally(() => {

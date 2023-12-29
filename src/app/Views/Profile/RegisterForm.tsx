@@ -49,7 +49,10 @@ const RegisterForm: React.FC = () => {
 
     try {
       if (!username || !password || !validateEmail(email)) {
-        Alert.alert("Puste pola", "Proszę wypełnić wszystkie pola");
+        Alert.alert("Błąd", "Należy wypełnić wszystkie pola", [], {
+          cancelable: true,
+        });
+
         return;
       }
       // Modify this URL to match your API endpoint
@@ -91,14 +94,16 @@ const RegisterForm: React.FC = () => {
         case 202:
           // User already exists
           console.log("202: " + response.data.message);
-          Alert.alert(response.data.message);
+          Alert.alert("Błąd", "Użytkownik już istnieje", [], {
+            cancelable: true,
+          });
           break;
 
         case 500:
           // Incorrect data
           console.log(response.data);
           console.log("500: " + response.data.message);
-          Alert.alert("Nieprawidłowe dane");
+          Alert.alert("Błąd", "Nieprawidłowe dane", [], { cancelable: true });
           break;
 
         default:
@@ -107,10 +112,9 @@ const RegisterForm: React.FC = () => {
     } catch (error) {
       console.log("catch: " + error.message);
       console.log("error: " + error.Trace);
-      Alert.alert(
-        "Błąd",
-        error.message || "Wystąpił błąd podczas rejestracji.",
-      );
+      Alert.alert("Błąd", "Wystąpił błąd podczas rejestracji", [], {
+        cancelable: true,
+      });
     }
   };
 

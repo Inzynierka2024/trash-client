@@ -174,6 +174,10 @@ export const MapComponent = () => {
 
     triggerUpdate("camera");
     setIsCentered(true);
+
+    setTimeout(() => {
+      fetchAndShowPoints();
+    }, 500);
   }
 
   const [newTrashModalVisible, setNewTrashModalVisible] = useState(false);

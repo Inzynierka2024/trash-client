@@ -12,13 +12,13 @@ import {
 import { useAuth } from "../../Logic/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
-import stats_icon from "../../../../assets/profile/profile-stats.png";
+import stats_icon from "../../../../assets/profile/user-stats.png";
 import collected_trash_icon from "../../../../assets/profile/statistics.png";
 import logout_icon from "../../../../assets/profile/logout.png";
 import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import guilds_icon from "../../../../assets/guilds.png";
 import settings_icon from "../../../../assets/settings.png";
-import user_profile_icon from "../../../../assets/user-profile.png";
+import user_profile_icon from "../../../../assets/profile/profile-data.png";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 
 interface ProfileFormProps {
@@ -32,7 +32,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
   const themeFromContext = useContext(ThemeContext);
 
   const { logout } = useAuth();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation < any > ();
   const { getUserLogin } = useAuth();
 
   const handleLogout = async () => {
@@ -51,7 +51,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
   // Button width based on orientation: 2 in vertical and 3 in horizontal
   const buttonWidth = isPortrait ? width * 0.4 : width / 3 - 20; // -20 accounts for margins and padding
 
-  const [userLogin, setUserLogin] = useState<any>(null);
+  const [userLogin, setUserLogin] = useState < any > (null);
 
   useEffect(() => {
     const fetchUserLogin = async () => {
@@ -82,6 +82,13 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
           <TouchableOpacity
             style={[styles.button, { width: buttonWidth }]}
             onPress={() => navigation.navigate("ProfileStats")}
+          >
+            <Image source={user_profile_icon} style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Dane użytkownika</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { width: buttonWidth }]}
+            onPress={() => navigation.navigate("ProfileGarbageStats")}
           >
             <Image source={stats_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Statystyka użytkownika</Text>

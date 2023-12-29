@@ -20,34 +20,12 @@ import passwordIcon from "../../../../assets/profile/password.png";
 import profileIcon from "../../../../assets/profile/profile.png";
 import pointsIcon from "../../../../assets/profile/coin.png";
 import { useIsFocused } from "@react-navigation/native";
-import get_user_bins from "../../Logic/API/get_user_bins";
-import calculate_distance from "../../Utils/calculate_distance";
-import MapLibreGL from "@maplibre/maplibre-react-native";
-import { UserTrashMetadata } from "../../Models/UserTrashMetadata";
-import get_user_garbage from "../../Logic/API/get_user_garbage";
-import get_garbage_metadata from "../../Utils/get_garbage_metadata";
-import { FlatList } from "react-native-gesture-handler";
-import ReportedGarbageModal from "./GarbageModal/ReportedGarbageModal";
-import CollectedGarbageModal from "./GarbageModal/CollectedGarbageModal";
-import { TimestampToDate } from "./../../Utils/convert_timestamp";
-import {formatDistance} from "./../../Utils/format_distance";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
   const { state } = useAuth();
-  const userLocationRef = useRef({ latitude: 0, longitude: 0 });
-  const [userState, setUserState] = useState < MapLibreGL.Location > ({
-    coords: { latitude: 0, longitude: 0 },
-  });
-
-  function onUserLocationUpdate(location: MapLibreGL.Location) {
-    userLocationRef.current = location.coords;
-  }
-
-  const [collectedData, setCollectedData] = useState < UserTrashMetadata[] > ([]);
-  const [reportedData, setReportedData] = useState < UserTrashMetadata[] > ([]);
-
+ 
   const [user, setUserData] = useState({
     email: "",
     location: "",
@@ -69,11 +47,6 @@ export const ProfileStatsForm = () => {
     navigation.navigate("ProfileEdit");
   };
 
-  const [collectedModalVisible, setCollectedModalVisible] = useState(false);
-  const [reportedModalVisible, setReportedModalVisible] = useState(false);
-  const [selectedCollectedItem, setSelectedCollectedItem] = useState(null);
-  const [selectedReportedItem, setSelectedReportedItem] = useState(null);
-
   async function getUser() {
     const result = await get_user_data(state.token);
     if (result.isOk) {
@@ -85,35 +58,11 @@ export const ProfileStatsForm = () => {
     }
   }
 
-  async function getGarbage() {
-    const garbageResult = await get_user_garbage(state.token);
-    if (garbageResult.isOk) {
-      return garbageResult;
-    } else {
-      console.error("Invalid garbage");
-      return [];
-    }
-  }
-
-  async function getBins() {
-    const result = await get_user_bins(state.token);
-    if (result.isOk) {
-      const bins = result.data.added;
-      return bins;
-    } else {
-      console.error("Invalid user");
-      return [];
-    }
-  }
-
   useEffect(() => {
     async function fetchData() {
       if (state.token) {
         const tempUser = await getUser();
-        const tempGarbage = await getGarbage();
         setUserData(tempUser);
-        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
-        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchData();
@@ -125,81 +74,11 @@ export const ProfileStatsForm = () => {
     async function fetchDataOnFocus() {
       if (isFocused) {
         const tempUser = await getUser();
-        const tempGarbage = await getGarbage();
         setUserData(tempUser);
-        setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
-        setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
     fetchDataOnFocus();
   }, [isFocused]);
-
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    { key: "collected", title: "Zebrane Odpady" },
-    { key: "reported", title: "Zgłoszone Odpady" },
-  ]);
-
-  const renderItemTemplate = (item) => (
-    <View style={styles.tile}>
-      <Image
-        source={{ uri: `data:image/jpeg;base64,${item.picture}` }}
-        style={{ width: 100, height: 100, borderRadius: 10 }}
-      />
-      {/* <View style={styles.tileRow}> */}
-      <Text style={styles.tileTextBold}>
-        {
-          formatDistance(calculate_distance(
-              userLocationRef.current.latitude,
-              userLocationRef.current.longitude,
-              item.latitude,
-              item.longitude))
-        }
-      </Text>
-      <Text style={styles.tileTextBold}>{TimestampToDate(item.creation_timestamp)}</Text>
-      {/* </View> */}
-    </View>
-  );
-
-  const renderReportedItem = ({ item }) => (
-    <TouchableOpacity onPress={() => {
-      setSelectedReportedItem(item);
-      setReportedModalVisible(true);
-    }}>
-      {renderItemTemplate(item)}
-    </TouchableOpacity>
-  );
-
-  const renderCollectedItem = ({ item }) => (
-    <TouchableOpacity onPress={() => {
-      setSelectedCollectedItem(item);
-      setCollectedModalVisible(true);
-    }}>
-      {renderItemTemplate(item)}
-    </TouchableOpacity>
-  );
-
-  const CollectedTab = () => (
-    <FlatList
-      data={collectedData}
-      renderItem={renderCollectedItem}
-      keyExtractor={(item) => item.garbage_id.toString()}
-    />
-  );
-
-  const ReportedTab = () => (
-    <FlatList
-      data={reportedData}
-      renderItem={renderReportedItem}
-      keyExtractor={(item) => item.garbage_id.toString()}
-    />
-  );
-
-  const renderScene = SceneMap({
-    collected: CollectedTab,
-    reported: ReportedTab,
-  });
-
 
   const styles = StyleSheet.create({
     container: {
@@ -361,40 +240,9 @@ export const ProfileStatsForm = () => {
             <Image source={locationIcon} style={styles.icon} />
             <Text style={styles.readOnly}>{user.location}</Text>
           </View>
-          <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={initialLayout}
-            renderTabBar={props => (
-              <TabBar
-                {...props}
-                indicatorStyle={{ backgroundColor: 'white' }}
-                style={{ backgroundColor: themeFromContext.colors.primary }}
-              />
-            )}
-            style={styles.tabView}
-          />
-
-        <CollectedGarbageModal
-          visible={collectedModalVisible}
-          onClose={() => setCollectedModalVisible(false)}
-          item={selectedCollectedItem}
-        />
-
-        <ReportedGarbageModal
-          visible={reportedModalVisible}
-          onClose={() => setReportedModalVisible(false)}
-          item={selectedReportedItem}
-        />
+              
       </View>
 
-      <MapLibreGL.UserLocation
-        ref={(c) => (UserLocationRef = c)}
-        visible={true}
-        onUpdate={onUserLocationUpdate}
-        showsUserHeadingIndicator={true}
-      />
     </ThemeContext.Provider>
   );
 };

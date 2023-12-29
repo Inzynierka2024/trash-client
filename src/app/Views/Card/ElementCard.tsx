@@ -75,7 +75,6 @@ export const ElementCard = (props: {
               style={{
                 color: textColor,
               }}
-              numberOfLines={1}
             >
               {address !== undefined &&
                 `${address.address.road}, ${

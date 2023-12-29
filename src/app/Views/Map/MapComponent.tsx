@@ -241,7 +241,7 @@ export const MapComponent = () => {
     if (heatmapOpen) return;
     if (MapRef == null) return;
 
-    console.log("Fetching points");
+    console.log("(Map) Fetching points");
     MapRef.getVisibleBounds().then((bounds) => {
       // Trash
       get_trash_in_area(bounds).then((result) => {

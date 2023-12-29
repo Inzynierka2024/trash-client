@@ -22,7 +22,7 @@ export default async function (bounds) {
   const result = await _fetch(URL, "GET", {});
 
   if (result.isOk && result.data["map_points"]) {
-    console.log(`Fetched ${result.data["map_points"].length} garbage points`);
+    console.log(`(Garbage) ${result.data["map_points"].length}x points`);
   }
 
   return result;

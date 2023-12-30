@@ -51,23 +51,22 @@ export const Leaderboard = () => {
   const renderLeaderboardItem = (score, index) => {
     return (
       <View key={index} style={styles.item}>
-
-        <View style={styles.scoreDetails}>
-          <View style={styles.iconContainer}>
-            <Image source={rankingIcon} style={styles.pointsIcon} />
-            <Text style={styles.username}> <Text style={styles.period}>{score.rank}. </Text>{score.username}</Text>
-          </View>
-
-          <View style={styles.iconContainer}>
-            <Image source={pointsIcon} style={styles.pointsIcon} />
-            <Text style={styles.score}> {score.points} punktów</Text>
-          </View>
-
+  
+        <View style={styles.iconContainer}>
+          <Image source={rankingIcon} style={styles.pointsIcon} />
+          <Text style={styles.score}>{score.rank}</Text>
         </View>
+  
+        <Text style={styles.username}>{score.username}</Text>
+  
+        <View style={styles.iconContainer}>
+          <Image source={pointsIcon} style={styles.pointsIcon} />
+          <Text style={styles.score}>{score.points} punktów</Text>
+        </View>
+  
       </View>
     );
   };
-
 
   return (
     <ScrollView style={styles.container}>
@@ -91,35 +90,36 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
-    padding: 20,
-    marginVertical: 16,
-    marginHorizontal: 16,
-    borderRadius: 10,
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    fontSize: 16,
-  },
-  scoreDetails: {
-    flex: 1,
-  },
-  username: {
-    fontWeight: 'bold',
-    fontSize: theme.textVariants.body.fontSize,
-  },
-  score: {
-    color: theme.colors.secondaryText,
-    marginTop: 3,
-    marginLeft: 5,
-  },
-  period: {
-    fontWeight: 'bold',
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    margin: 5,
   },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin:5,
+  },
+  scoreDetails: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  username: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  score: {
+    color: theme.colors.primaryText,
+    marginTop: 3,
+    marginLeft: 5,
+    fontWeight: 'bold',
+  },
+  period: {
+    fontWeight: 'bold',
   },
   pointsContainer: {
     flex: 1,

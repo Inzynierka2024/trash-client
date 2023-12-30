@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   score: {
-    color: theme.colors.secondaryText,
+    color: theme.colors.primaryText,
+    fontWeight: 'bold',
     marginLeft: 5,
   },
   ranking: {

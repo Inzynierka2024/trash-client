@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView, useColorScheme } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, useColorScheme, Image } from 'react-native';
 import get_api_url from "../../Utils/get_api_url";
 import _fetch from '../../Logic/API/_fetch';
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
-import { FontAwesome5 } from '@expo/vector-icons';
 import { useAuth } from "../../Logic/AuthContext";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import pointsIcon from "../../../../assets/profile/coin.png";
+import rankingIcon from "../../../../assets/trophy.png";
 import get_all_leaderboard from '../../Logic/API/get_all_leaderboard';
 
 export const Leaderboard = () => {
@@ -53,12 +53,13 @@ export const Leaderboard = () => {
       <View key={index} style={styles.item}>
 
         <View style={styles.scoreDetails}>
-          <Text style={styles.username}>
-            <Text style={styles.period}>#{score.rank}. </Text>
-            {score.username}</Text>
+          <View style={styles.iconContainer}>
+            <Image source={rankingIcon} style={styles.pointsIcon} />
+            <Text style={styles.username}> <Text style={styles.period}>{score.rank}. </Text>{score.username}</Text>
+          </View>
 
           <View style={styles.iconContainer}>
-            <FontAwesome5 name="coins" size={theme.spacing.m} color={theme.colors.primary} />
+            <Image source={pointsIcon} style={styles.pointsIcon} />
             <Text style={styles.score}> {score.points} punktów</Text>
           </View>
 
@@ -95,16 +96,10 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 16,
     marginHorizontal: 16,
-    borderRadius: 10, 
-    shadowOpacity: 0.1, 
-    shadowRadius: 5, 
+    borderRadius: 10,
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
     fontSize: 16,
-  },
-  iconContainer: {
-    marginRight: theme.spacing.m,
-    marginTop: theme.spacing.s,
-    marginBottom: theme.spacing.s,
-    flexDirection: 'row',
   },
   scoreDetails: {
     flex: 1,
@@ -115,8 +110,28 @@ const styles = StyleSheet.create({
   },
   score: {
     color: theme.colors.secondaryText,
+    marginTop: 3,
+    marginLeft: 5,
   },
   period: {
-    fontStyle: 'italic',
+    fontWeight: 'bold',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin:5,
+  },
+  pointsContainer: {
+    flex: 1,
+    paddingTop: 10,
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  pointsIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 5,
+    resizeMode: "contain",
   },
 });

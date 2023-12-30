@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, useColorScheme, Image } from 'react-native';
 import get_api_url from "../../Utils/get_api_url";
 import _fetch from '../../Logic/API/_fetch';
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
-import { FontAwesome5 } from '@expo/vector-icons';
+import pointsIcon from "../../../../assets/profile/coin.png";
+import rankingIcon from "../../../../assets/trophy.png";
+import periodIcon from "../../../../assets/period.png";
 import get_all_scoreboard from '../../Logic/API/get_all_scoreboard';
 
 export interface RankingData {
@@ -60,14 +62,18 @@ export const Scoreboard = () => {
     return (
       <View key={index} style={styles.item}>
         <View style={styles.scoreDetails}>
-          <Text style={styles.username}>
-            <Text style={styles.period}>#{user.rank}. </Text>
-            {user.username}</Text>
           <View style={styles.iconContainer}>
-            <FontAwesome5 name="coins" size={theme.spacing.m} color={theme.colors.primary} />
+            <Image source={rankingIcon} style={styles.pointsIcon} />
+            <Text style={styles.username}> <Text style={styles.ranking}>{user.rank}. </Text>{user.username}</Text>
+          </View>
+          <View style={styles.iconContainer}>
+            <Image source={pointsIcon} style={styles.pointsIcon} />
             <Text style={styles.score}> {user.points} punktów</Text>
           </View>
-          <Text style={styles.period}>Okres: {user.period}</Text>
+          <View style={styles.iconContainer}>
+          <Image source={periodIcon} style={styles.pointsIcon} />
+            <Text style={styles.period}>{user.period}</Text>
+          </View>
         </View>
       </View>
     );
@@ -106,10 +112,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   iconContainer: {
-    marginRight: theme.spacing.m,
-    marginTop: theme.spacing.s,
-    marginBottom: theme.spacing.s,
     flexDirection: 'row',
+    alignItems: 'center',
+    margin: 5,
+  },
+  pointsContainer: {
+    flex: 1,
+    paddingTop: 10,
+    justifyContent: "flex-start",
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  pointsIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 5,
+    resizeMode: "contain",
   },
   scoreDetails: {
     flex: 1,
@@ -117,11 +135,17 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: theme.textVariants.body.fontSize,
+    marginLeft: 5,
   },
   score: {
     color: theme.colors.secondaryText,
+    marginLeft: 5,
+  },
+  ranking: {
+    fontWeight: 'bold',
   },
   period: {
-    fontStyle: 'italic',
+    fontWeight: 'bold',
+    marginLeft: 5,
   },
 });

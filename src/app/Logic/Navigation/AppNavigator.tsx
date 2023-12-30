@@ -24,6 +24,7 @@ import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { CTheme, ThemeContext } from "../../../theme/theme";
 import { useAuth } from "../AuthContext";
 import { RecyclingScreen } from "../../Views/Recycling/RecyclingScreen";
+import ProfileGarbageStatsForm from "../../Views/Profile/ProfileGarbageStatsForm";
 
 const Tab = createBottomTabNavigator();
 const ProfileStack = createStackNavigator();
@@ -51,6 +52,7 @@ const ProfileStackNavigator = () => {
       <ProfileStack.Screen name="CollectedTrash" component={ProfileTrashForm} />
       {/* <ProfileStack.Screen name="Settings" component={SettingsForm} /> */}
       <ProfileStack.Screen name="ProfileStats" component={ProfileStatsForm} />
+      <ProfileStack.Screen name="ProfileGarbageStats" component={ProfileGarbageStatsForm} />
       <ProfileStack.Screen name="ProfileEdit" component={ProfileEditForm} />
       <ProfileStack.Screen name="Guilds" component={GuildsForm} />
       <ProfileStack.Screen name="Guild" component={GuildDetailsForm} />

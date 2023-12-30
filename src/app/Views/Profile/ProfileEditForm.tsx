@@ -9,6 +9,7 @@ import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 import gmailIcon from '../../../../assets/profile/gmail.png';
 import locationIcon from '../../../../assets/profile/home.png';
 import profileIcon from '../../../../assets/profile/profile.png';
+import passwordIcon from '../../../../assets/profile/password.png';
 import Toast from 'react-native-toast-message';
 import { edit_user_data } from '../../Logic/API/edit_user_data';
 
@@ -29,11 +30,12 @@ export const ProfileEditForm = () => {
     const { state } = useAuth();
     const themeFromContext = useContext(ThemeContext);
     const navigation = useNavigation();
-
+    const [password, setPassword] = useState('');
     const [user, setUserData] = useState({
         email: '',
         location: '',
         username: '',
+        password: '',
         street: '',
         streetNumber: '',
         houseNumber: '',
@@ -66,8 +68,10 @@ export const ProfileEditForm = () => {
 
 
     const handleSave = async () => {
+        if (password.length > 0) {
+            user.password = password;
+        }
         const updatedUser = { ...user, location: buildAddressString(user) };
-
         const result = await edit_user_data(updatedUser, state.token);
         if (result) {
             Toast.show({
@@ -157,7 +161,17 @@ export const ProfileEditForm = () => {
                         placeholderTextColor={themeFromContext.colors.secondaryText}
                     />
                 </View>
-
+                <View style={styles.element}>
+                    <Image source={passwordIcon} style={styles.icon} />
+                    <TextInput
+                        style={styles.textInput}
+                        value={password}
+                        onChangeText={setPassword}
+                        placeholder="Hasło"
+                        secureTextEntry={true}
+                        placeholderTextColor={themeFromContext.colors.secondaryText}
+                    />
+                </View>
                 <View style={styles.element}>
                     <Image source={locationIcon} style={styles.icon} />
                     <TextInput

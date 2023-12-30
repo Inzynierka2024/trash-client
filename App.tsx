@@ -24,7 +24,7 @@ Logger.setLogLevel("error");
 
 export default function App() {
   const [darkMode, _setDarkMode] = useState(
-    useColorScheme() === "dark" ? true : false
+    useColorScheme() === "dark" ? true : false,
   );
 
   useEffect(() => {
@@ -59,7 +59,6 @@ export default function App() {
         <View style={styles.debugButtonContainer}>
           <Button
             color="#000"
-            style={styles.debugButton}
             title="Debug"
             onPress={() => setDebug(!debugEnabled)}
           />
@@ -96,10 +95,12 @@ export default function App() {
 const styles = StyleSheet.create({
   debugButtonContainer: {
     position: "absolute",
-    height: 128,
     zIndex: 9999,
     width: 80,
-    paddingTop: 32,
+    bottom: 0,
+    left: 0,
+    marginBottom: 48,
+    opacity: 0.6,
   },
   debugButton: {
     width: "100%",

@@ -11,6 +11,7 @@ export default function (lat1, lon1, lat2, lon2) {
       Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c; // Distance in km
+  if (d <= 0) d = 0;
   return d;
 }
 

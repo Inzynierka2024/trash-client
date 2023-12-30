@@ -1,11 +1,14 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
-import { useContext, useState } from "react";
-import { View, Text, Image, Modal, Button } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { View, Text, Image, Modal, StyleSheet } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
 import create_new_trash from "../../Logic/API/create_new_trash";
 import { Loading } from "../../Utils/Loading";
+import { ElementColors } from "../../Models/ElementColors";
+import { ElementCard } from "../Card/ElementCard";
+import { useAuth } from "../../Logic/AuthContext";
 
 export const TrashForm = (props: {
   location: MapLibreGL.Location;
@@ -13,6 +16,8 @@ export const TrashForm = (props: {
   updateMap: Function;
 }) => {
   const themeFromContext = useContext(ThemeContext);
+  const background = themeFromContext.colors.background;
+  const textColor = themeFromContext.colors.primaryText;
 
   const [locationData, setLocationData] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
@@ -20,6 +25,15 @@ export const TrashForm = (props: {
   const [imageData, setImageData] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+
+  const { getUserLogin } = useAuth();
+
+  useEffect(() => {
+    getUserLogin().then((value) => {
+      setUsername(value);
+    });
+  }, []);
 
   function setData(imgData: string) {
     setImageData(imgData);
@@ -74,34 +88,32 @@ export const TrashForm = (props: {
           <View
             style={{
               margin: 20,
-              backgroundColor: "white",
-              borderRadius: 20,
-              padding: 35,
+              borderColor: ElementColors.garbage,
+              borderWidth: 4,
+              backgroundColor: background,
+              borderRadius: 4,
               alignItems: "center",
               shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 5,
+              paddingVertical: 16,
             }}
           >
-            <Text>{locationData.coords.latitude}</Text>
-            <Text>{locationData.coords.longitude}</Text>
-            <Image
-              source={{
-                uri: "data:image/jpg;base64," + imageData,
-              }}
-              style={{
-                aspectRatio: "9 / 16",
-                height: 300,
-                resizeMode: "contain",
-              }}
+            <Text style={[styles.intentTitle, { color: textColor }]}>
+              Zostanie dodany element:
+            </Text>
+
+            <ElementCard
+              lat={locationData.coords.latitude}
+              lng={locationData.coords.longitude}
+              type="garbage"
+              imageEnabled={true}
+              imageData={imageData}
+              timestamp={new Date()}
+              addedBy={username}
             />
+
             <View
               style={{
+                marginTop: 36,
                 flexDirection: "row",
                 width: "100%",
                 gap: 32,
@@ -124,9 +136,45 @@ export const TrashForm = (props: {
                 }}
               />
             </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                width: 250,
+                justifyContent: "center",
+                gap: 16,
+                marginTop: 12,
+              }}
+            >
+              <Text
+                style={{ color: textColor, width: 64, textAlign: "center" }}
+                numberOfLines={1}
+              >
+                Anuluj
+              </Text>
+              <Text
+                style={{ color: textColor, width: 64, textAlign: "center" }}
+                numberOfLines={1}
+              >
+                Dodaj
+              </Text>
+            </View>
           </View>
         </View>
       </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  intentTitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 12,
+  },
+  statusTitle: {
+    fontSize: 14,
+    fontWeight: "400",
+    marginVertical: 12,
+  },
+});

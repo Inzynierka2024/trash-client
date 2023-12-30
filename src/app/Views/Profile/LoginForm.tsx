@@ -1,4 +1,4 @@
-import React, { useState, useRef , useContext} from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   Animated,
   Alert,
@@ -23,15 +23,14 @@ import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 const { width: screenWidth } = Dimensions.get("window");
 
 const LoginForm: React.FC = () => {
-  
   const [darkMode, _setDarkMode] = useState(
-    useColorScheme() === "dark" ? true : false
+    useColorScheme() === "dark" ? true : false,
   );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const themeFromContext = useContext(ThemeContext);
 
   const animatePress = useRef(new Animated.Value(1)).current;
@@ -41,14 +40,16 @@ const LoginForm: React.FC = () => {
       const base = await get_api_url();
       const URL = join(base, `user/login`);
       const response = await axios.post(URL, {
-        email,
+        email: email.toLowerCase(),
         password,
       });
+
+      console.log(response);
 
       switch (response.status) {
         case 200:
           if (response.data.token) {
-            login(response.data.token, response.data);
+            login(response.data.token);
             navigation.navigate("Profile");
           } else {
             throw new Error("Token: Token not found in response.");
@@ -56,15 +57,16 @@ const LoginForm: React.FC = () => {
           break;
         default:
           console.log(response.status + ": " + response.data.message);
-          Alert.alert(response.data.message);
+          Alert.alert("Błąd", "Wystąpił błąd podczas logowania", [], {
+            cancelable: true,
+          });
       }
     } catch (error) {
       console.log(error);
 
-      Alert.alert(
-        "Error",
-        error.message + error || "There was an error logging in."
-      );
+      Alert.alert("Błąd", "Wystąpił błąd podczas logowania", [], {
+        cancelable: true,
+      });
     }
   };
 
@@ -86,38 +88,51 @@ const LoginForm: React.FC = () => {
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-    <View style={styles.container}>
-      <Image source={logo} style={styles.logo} resizeMode="contain" />
+      <View style={styles.container}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" />
 
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}        
-        placeholder="Email"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TextInput
-        style={{...styles.input, color: themeFromContext.colors.primaryText}}
-        placeholder="Password"
-        placeholderTextColor={themeFromContext.colors.secondaryText}
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry
-      />
-      <Animated.View style={{ transform: [{ scale: animatePress }] }}>
-        <TouchableOpacity
-          onPressIn={animateIn}
-          onPressOut={animateOut}
-          style={styles.button}
+        <TextInput
+          style={{
+            ...styles.input,
+            color: themeFromContext.colors.primaryText,
+          }}
+          placeholder="Email"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setEmail}
+          value={email}
+        />
+        <TextInput
+          style={{
+            ...styles.input,
+            color: themeFromContext.colors.primaryText,
+          }}
+          placeholder="Password"
+          placeholderTextColor={themeFromContext.colors.secondaryText}
+          onChangeText={setPassword}
+          value={password}
+          secureTextEntry
+        />
+        <Animated.View style={{ transform: [{ scale: animatePress }] }}>
+          <TouchableOpacity
+            onPressIn={animateIn}
+            onPressOut={animateOut}
+            style={styles.button}
+          >
+            <Animated.Text style={styles.buttonText}>Login</Animated.Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <Text
+          style={{
+            ...styles.text,
+            color: themeFromContext.colors.secondaryText,
+          }}
         >
-          <Animated.Text style={styles.buttonText}>Login</Animated.Text>
+          Don't have an account?{" "}
+        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+          <Text style={[styles.text, styles.link]}>Register here</Text>
         </TouchableOpacity>
-      </Animated.View>
-      <Text style={{...styles.text, color: themeFromContext.colors.secondaryText}}>Don't have an account? </Text>
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={[styles.text, styles.link]}>Register here</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
     </ThemeContext.Provider>
   );
 };

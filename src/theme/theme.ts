@@ -12,6 +12,12 @@ export const palette = {
   darkyellow: "#C9B13B",
   darkred: "#FF6666",
 
+  gray: "#999999",
+
+  brown: "#690d0d",
+
+  dimmedBackground: "#00000099",
+
   navbar: "rgb(255, 255, 255)",
   navbardark: "rgb(18, 18, 18)",
 
@@ -22,11 +28,17 @@ export const palette = {
 
   white: "#FFFFFF",
   whitelighter: "#BEBEBE",
+
+  whiten: "#FFFFFF20",
+  whiten2: "#FFFFFF60",
+  darken: "#00000020",
+  darken2: "#00000060",
 };
 
 export const theme = {
   colors: {
     background: palette.lightgray,
+
     foreground: palette.darkgray,
     primary: palette.lightgreen,
     secondary: palette.lightyellow,
@@ -41,6 +53,10 @@ export const theme = {
 
     disabled: palette.disabled,
     navbar: palette.navbar,
+
+    contrastOverlay: palette.darken,
+
+    transparentBackground: palette.lightgray + "A0",
   },
   spacing: {
     s: 8,
@@ -80,6 +96,10 @@ export const darkTheme = {
 
     disabled: palette.disabled,
     navbar: palette.navbardark,
+
+    contrastOverlay: palette.whiten,
+
+    transparentBackground: palette.darkgray + "A0",
   },
 };
 

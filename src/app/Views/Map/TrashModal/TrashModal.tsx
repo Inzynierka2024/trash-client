@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Modal, View, Image, Text } from "react-native";
+import { Button, View, Image, Text } from "react-native";
 import remove_trash from "../../../Logic/API/remove_trash";
 import { ThemeContext } from "../../../../theme/theme";
 import { ActionButton } from "./ActionButton";
@@ -11,6 +11,9 @@ import { Alert } from "react-native";
 import calculate_distance from "../../../Utils/calculate_distance";
 import round from "../../../Utils/round";
 import { Loading } from "../../../Utils/Loading";
+import { ElementCard } from "../../Card/ElementCard";
+import { ElementColors } from "../../../Models/ElementColors";
+import Modal from "react-native-modal";
 
 export const TrashModal = (props: {
   currentTrash: MarkerData;
@@ -20,6 +23,7 @@ export const TrashModal = (props: {
   userState: MapLibreGL.Location;
 }) => {
   const themeFromContext = useContext(ThemeContext);
+  const textColor = themeFromContext.colors.primaryText;
 
   const [currentTrashData, setCurrentTrashData] =
     useState<TrashMetadata | null>(null);
@@ -40,12 +44,12 @@ export const TrashModal = (props: {
     if (currentTrashData) setCanRemove(isTrashInRange());
   }, [props.userState]);
 
-  async function loadTrashMetadata() {
-    const result = await get_trash_metadata(props.currentTrash.id);
-    setCurrentTrashData(result);
-    setCanRemove(isTrashInRange());
-
-    setLoading(false);
+  function loadTrashMetadata() {
+    get_trash_metadata(props.currentTrash.id).then((result) => {
+      setCurrentTrashData(result);
+      setCanRemove(isTrashInRange());
+      setLoading(false);
+    });
   }
 
   function clearData() {
@@ -60,7 +64,9 @@ export const TrashModal = (props: {
           console.log("Removed trash");
           props.updateMapMarkers();
         } else {
-          Alert.alert("Failed to remove trash");
+          Alert.alert("Błąd", "Nie udało się usunąć odpadu", [], {
+            cancelable: true,
+          });
         }
       })
       .finally(() => {
@@ -74,14 +80,14 @@ export const TrashModal = (props: {
 
   function isTrashInRange(): boolean {
     if (!props.userState || currentTrashData === null) {
-      return true;
+      return false;
     }
 
     const distance = calculate_distance(
       props.userState.coords.latitude,
       props.userState.coords.longitude,
       currentTrashData.Latitude,
-      currentTrashData.Longitude
+      currentTrashData.Longitude,
     );
 
     setDistance(distance);
@@ -96,12 +102,19 @@ export const TrashModal = (props: {
 
   return (
     <Modal
-      animationType="slide"
-      visible={props.trashModalVisible}
-      onRequestClose={() => {
+      animationIn="slideInUp"
+      isVisible={props.trashModalVisible}
+      onBackButtonPress={() => {
         closeTrashModal();
       }}
-      transparent={true}
+      onBackdropPress={() => {
+        closeTrashModal();
+      }}
+      backdropOpacity={0}
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       <View
         style={{
@@ -115,41 +128,54 @@ export const TrashModal = (props: {
         <View
           style={{
             backgroundColor: themeFromContext.colors.background,
-            borderColor: themeFromContext.colors.primary,
             borderWidth: 4,
-            borderRadius: 20,
+            borderColor: ElementColors.garbage,
+            borderRadius: 4,
             alignSelf: "center",
             alignItems: "center",
             justifyContent: "center",
-            padding: 24,
-            gap: 32,
+            gap: 16,
+            paddingBottom: 12,
+            marginBottom: 48,
           }}
         >
-          <Image
-            source={{
-              uri: "data:image/jpg;base64," + currentTrashData?.Picture,
-            }}
-            style={{
-              aspectRatio: "9 / 16",
-              height: 300,
-              resizeMode: "contain",
-            }}
-          />
+          {currentTrashData !== null && (
+            <ElementCard
+              lat={currentTrashData.Latitude}
+              lng={currentTrashData.Longitude}
+              type={"garbage"}
+              timestamp={currentTrashData.CreationTimestamp}
+              imageEnabled={true}
+              imageData={currentTrashData.Picture}
+              addedBy={currentTrashData.CreationUsername}
+              distance={distance}
+            />
+          )}
 
-          <Text
-            style={{
-              color: themeFromContext.colors.secondaryText,
-            }}
-          >
-            Odległość:
-            {distance !== -1 ? round(distance, 2) : "-"}km
-          </Text>
-
-          <ActionButton
-            disabled={!canRemove}
-            iconName={"delete"}
-            onPress={removeTrash}
-          />
+          {!canRemove && (
+            <Text style={{ color: textColor }}>
+              Jesteś za daleko by usunąć element z mapy
+            </Text>
+          )}
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            <ActionButton
+              disabled={!canRemove}
+              width={236}
+              iconName={"delete"}
+              onPress={removeTrash}
+            />
+          </View>
+          <View style={{ flexDirection: "row", gap: 12 }}>
+            <Text
+              style={{
+                color: textColor,
+                textAlign: "center",
+              }}
+              numberOfLines={1}
+            >
+              Zbierz śmiecia
+            </Text>
+          </View>
         </View>
       </View>
     </Modal>

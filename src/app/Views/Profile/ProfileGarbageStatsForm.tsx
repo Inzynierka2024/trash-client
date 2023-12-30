@@ -11,23 +11,16 @@ import {
   StatusBar,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
-import { Icon } from "react-native-elements";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../Logic/AuthContext";
 import get_user_data from "../../Logic/API/get_user_data";
-import gmailIcon from "../../../../assets/profile/gmail.png";
-import locationIcon from "../../../../assets/profile/home.png";
-import passwordIcon from "../../../../assets/profile/password.png";
-import profileIcon from "../../../../assets/profile/profile.png";
-import pointsIcon from "../../../../assets/profile/coin.png";
 import { useIsFocused } from "@react-navigation/native";
 import get_user_bins from "../../Logic/API/get_user_bins";
 import calculate_distance from "../../Utils/calculate_distance";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { UserTrashMetadata } from "../../Models/UserTrashMetadata";
 import get_user_garbage from "../../Logic/API/get_user_garbage";
-import get_garbage_metadata from "../../Utils/get_garbage_metadata";
 import { FlatList } from "react-native-gesture-handler";
 import ReportedGarbageModal from "./GarbageModal/ReportedGarbageModal";
 import CollectedGarbageModal from "./GarbageModal/CollectedGarbageModal";
@@ -39,9 +32,6 @@ const initialLayout = { width: Dimensions.get("window").width };
 export const ProfileGarbageStatsForm = () => {
   const { state } = useAuth();
   const userLocationRef = useRef({ latitude: 0, longitude: 0 });
-  const [userState, setUserState] = useState < MapLibreGL.Location > ({
-    coords: { latitude: 0, longitude: 0 },
-  });
 
   function onUserLocationUpdate(location: MapLibreGL.Location) {
     userLocationRef.current = location.coords;
@@ -64,12 +54,6 @@ export const ProfileGarbageStatsForm = () => {
   const textColor = themeFromContext.colors.primaryText;
   const secondaryText = themeFromContext.colors.secondaryText;
   const background = themeFromContext.colors.background;
-
-  const navigation = useNavigation();
-
-  const navigateToEditForm = () => {
-    navigation.navigate("ProfileEdit");
-  };
 
   const [collectedModalVisible, setCollectedModalVisible] = useState(false);
   const [reportedModalVisible, setReportedModalVisible] = useState(false);

@@ -8,7 +8,6 @@ import {
   useColorScheme,
   Dimensions,
 } from "react-native";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { Icon } from "react-native-elements";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
 import { useNavigation } from "@react-navigation/native";
@@ -19,18 +18,24 @@ import locationIcon from "../../../../assets/profile/home.png";
 import passwordIcon from "../../../../assets/profile/password.png";
 import profileIcon from "../../../../assets/profile/profile.png";
 import pointsIcon from "../../../../assets/profile/coin.png";
+import rankingIcon from "../../../../assets/ranking.png";
 import { useIsFocused } from "@react-navigation/native";
+import get_all_scoreboard from "../../Logic/API/get_all_scoreboard";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
   const { state } = useAuth();
- 
+  const [randomStars, setRandomStars] = useState('');
   const [user, setUserData] = useState({
     email: "",
     location: "",
     username: "",
+  });
+
+  const [ranking, setRanking] = useState({
     points: 0,
+    rank: 0,
   });
 
   const [darkMode, _setDarkMode] = useState(
@@ -47,6 +52,15 @@ export const ProfileStatsForm = () => {
     navigation.navigate("ProfileEdit");
   };
 
+  const generateRandomStars = () => {
+    const length = Math.floor(Math.random() * 5) + 6;
+    return '*'.repeat(length);
+  };
+
+  useEffect(() => {
+    setRandomStars(generateRandomStars());
+  }, []);
+
   async function getUser() {
     const result = await get_user_data(state.token);
     if (result.isOk) {
@@ -58,10 +72,24 @@ export const ProfileStatsForm = () => {
     }
   }
 
+  async function getUserPoints() {
+    const result = await get_all_scoreboard();
+    if (result.isOk) {
+      setRanking({
+        points: result.data[0].points,
+        rank: result.data[0].rank,
+      });
+    } else {
+      console.error("Invalid points");
+    }
+  }
+
   useEffect(() => {
     async function fetchData() {
       if (state.token) {
         const tempUser = await getUser();
+        const tempPoints = await getUserPoints();
+        console.log(tempPoints);
         setUserData(tempUser);
       }
     }
@@ -74,6 +102,7 @@ export const ProfileStatsForm = () => {
     async function fetchDataOnFocus() {
       if (isFocused) {
         const tempUser = await getUser();
+        const tempPoints = await getUserPoints();
         setUserData(tempUser);
       }
     }
@@ -207,40 +236,43 @@ export const ProfileStatsForm = () => {
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
       <View style={styles.container}>
-          <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
-            <Icon name="edit" size={24} color="#000" />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
+          <Icon name="edit" size={24} color="#000" />
+        </TouchableOpacity>
 
-          <View style={styles.headerContainer}>
-            <View style={styles.pointsContainer}>
-              <Image source={pointsIcon} style={styles.pointsIcon} />
-              <Text style={styles.pointsText}>{user.points}</Text>
-            </View>
+        <View style={styles.headerContainer}>
+        <View style={styles.pointsContainer}>
+            <Image source={rankingIcon} style={styles.pointsIcon} />
+            <Text style={styles.readOnly}>{ranking.rank}</Text>
           </View>
+          <View style={styles.pointsContainer}>
+            <Image source={pointsIcon} style={styles.pointsIcon} />
+            <Text style={styles.readOnly}>{ranking.points}</Text>
+          </View>
+        </View>
 
-          <View style={styles.element}>
-            <Image source={profileIcon} style={styles.icon} />
-            <Text style={[styles.readOnly, styles.textCentered]}>
-              {" "}
-              {user.username}
-            </Text>
-          </View>
+        <View style={styles.element}>
+          <Image source={profileIcon} style={styles.icon} />
+          <Text style={[styles.readOnly, styles.textCentered]}>
+            {user.username}
+          </Text>
+        </View>
 
-          <View style={styles.element}>
-            <Image source={gmailIcon} style={styles.icon} resizeMode="contain" />
-            <Text style={styles.readOnly}> {user.email}</Text>
-          </View>
+        <View style={styles.element}>
+          <Image source={gmailIcon} style={styles.icon} resizeMode="contain" />
+          <Text style={styles.readOnly}> {user.email}</Text>
+        </View>
 
-          <View style={styles.element}>
-            <Image source={passwordIcon} style={styles.icon} />
-            <Text style={styles.readOnly}>***</Text>
-          </View>
+        <View style={styles.element}>
+          <Image source={passwordIcon} style={styles.icon} />
+          <Text style={styles.readOnly}>{randomStars}</Text>
+        </View>
 
-          <View style={styles.element}>
-            <Image source={locationIcon} style={styles.icon} />
-            <Text style={styles.readOnly}>{user.location}</Text>
-          </View>
-              
+        <View style={styles.element}>
+          <Image source={locationIcon} style={styles.icon} />
+          <Text style={styles.readOnly}>{user.location}</Text>
+        </View>
+
       </View>
 
     </ThemeContext.Provider>

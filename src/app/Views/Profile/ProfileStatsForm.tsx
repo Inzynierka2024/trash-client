@@ -241,7 +241,7 @@ export const ProfileStatsForm = () => {
         </TouchableOpacity>
 
         <View style={styles.headerContainer}>
-        <View style={styles.pointsContainer}>
+          <View style={styles.pointsContainer}>
             <Image source={rankingIcon} style={styles.pointsIcon} />
             <Text style={styles.readOnly}>{ranking.rank}</Text>
           </View>

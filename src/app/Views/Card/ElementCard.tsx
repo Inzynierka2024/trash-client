@@ -28,6 +28,8 @@ export const ElementCard = (props: {
   const [address, setAddress] = useState<Address | null | undefined>(undefined);
 
   useEffect(() => {
+    if (!props.lat || !props.lng) return;
+
     get_address(props.lat, props.lng)
       .then((result) => {
         setAddress(result);
@@ -36,7 +38,7 @@ export const ElementCard = (props: {
         console.error(err);
         setAddress(null);
       });
-  }, []);
+  }, [props.lat]);
 
   return (
     <View style={styles.container}>

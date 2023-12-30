@@ -36,8 +36,9 @@ export const TrashForm = (props: {
   }, []);
 
   function setData(imgData: string) {
-    setImageData(imgData);
     setLocationData(props.location);
+
+    setImageData(imgData);
   }
 
   function close() {

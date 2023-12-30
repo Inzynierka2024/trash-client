@@ -63,49 +63,6 @@ const ProfileStackNavigator = () => {
 const AppNavigator = () => {
   const themeFromContext: CTheme = useContext(ThemeContext);
 
-  // Render null if the user is not logged in
-  // if (!state.isLoggedIn) {
-  //   return <NavigationContainer theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}>
-  //     <Tab.Navigator initialRouteName="Profil"
-  //       screenOptions={({ route }) => ({
-  //         tabBarIcon: ({ focused, color, size }) => {
-  //           let provider: "Ionicons" | "FontAwesome" = "Ionicons";
-  //           let iconColor = themeFromContext.colors.green;
-  //           let iconName = "trash";
-
-  //           if (route.name === "Profil") {
-  //             provider = "FontAwesome";
-  //             iconColor = themeFromContext.colors.blue;
-  //             iconName = "user";
-  //           }
-
-  //           if (provider === "FontAwesome") {
-  //             if (!focused) {
-  //               iconName += "-o";
-  //               iconColor = themeFromContext.colors.disabled;
-  //             }
-  //             return (
-  //               <FontAwesome name={iconName} size={size} color={iconColor} />
-  //             );
-  //           } else {
-  //             if (!focused) {
-  //               iconColor = themeFromContext.colors.disabled;
-  //               iconName += "-outline";
-  //             }
-  //             return <Ionicons name={iconName} size={size} color={iconColor} />;
-  //           }
-  //         },
-  //         headerShown: false,
-  //         tabBarShowLabel: false,
-  //         tabBarActiveTintColor: themeFromContext.colors.primary,
-  //         tabBarInactiveTintColor: themeFromContext.colors.disabled,
-  //       })}
-  //     >
-  //       <Tab.Screen name="Profil" component={ProfileStackNavigator} />
-  //     </Tab.Navigator>
-  //   </NavigationContainer>;
-  // }
-  // else
   return (
     <NavigationContainer
       theme={useColorScheme() === "dark" ? DarkTheme : DefaultTheme}
@@ -164,7 +121,13 @@ const AppNavigator = () => {
         <Tab.Screen name="Ranking" component={RankingContainer} />
         <Tab.Screen name="Map" component={MapContainer} />
         <Tab.Screen name="Recycling" component={RecyclingScreen} />
-        <Tab.Screen name="Profil" component={ProfileStackNavigator} />
+        <Tab.Screen name="Profil" component={ProfileStackNavigator} listeners={({ navigation, route }) => ({
+            tabPress: e => {
+              if (route.state && route.state.index > 0) {
+                e.preventDefault();
+              }
+            },
+          })} />
       </Tab.Navigator>
     </NavigationContainer>
   );

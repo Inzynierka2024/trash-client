@@ -121,13 +121,7 @@ const AppNavigator = () => {
         <Tab.Screen name="Ranking" component={RankingContainer} />
         <Tab.Screen name="Map" component={MapContainer} />
         <Tab.Screen name="Recycling" component={RecyclingScreen} />
-        <Tab.Screen name="Profil" component={ProfileStackNavigator} listeners={({ navigation, route }) => ({
-            tabPress: e => {
-              if (route.state && route.state.index > 0) {
-                e.preventDefault();
-              }
-            },
-          })} />
+        <Tab.Screen name="Profil" component={ProfileStackNavigator}  />
       </Tab.Navigator>
     </NavigationContainer>
   );

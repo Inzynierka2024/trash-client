@@ -11,7 +11,7 @@ import get_user_data from "./API/get_user_data";
 
 interface AuthState {
   token: string | null;
-  isLoggedIn: boolean;
+  isLoggedIn: boolean | null;
 }
 
 interface AuthContextProps {
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [state, setState] = useState<AuthState>({
     token: null,
-    isLoggedIn: false,
+    isLoggedIn: null,
   });
 
   const getToken = async () => {
@@ -73,6 +73,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       const token = await AsyncStorage.getItem("token");
       if (token) {
         setState({ token, isLoggedIn: true });
+      } else {
+        setState({ token: null, isLoggedIn: false });
       }
     };
     fetchToken();

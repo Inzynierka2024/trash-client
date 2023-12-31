@@ -12,15 +12,17 @@ import {
   Text,
 } from "react-native";
 import AppNavigator from "./src/app/Logic/Navigation/AppNavigator";
-import { AuthProvider } from "./src/app/Logic/AuthContext";
+import { AuthProvider, useAuth } from "./src/app/Logic/AuthContext";
 import * as NavigationBar from "expo-navigation-bar";
 import get_api_url from "./src/app/Utils/get_api_url";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SplashScreen from "expo-splash-screen";
 
 // Will be null for most users (only Mapbox authenticates this way).
 // Required on Android. See Android installation notes.
 MapLibreGL.setAccessToken(null);
 Logger.setLogLevel("error");
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [darkMode, _setDarkMode] = useState(
@@ -86,7 +88,7 @@ export default function App() {
           </View>
         </Modal>
 
-        <AppNavigator></AppNavigator>
+        <AppNavigator darkMode={darkMode}></AppNavigator>
       </ThemeContext.Provider>
     </AuthProvider>
   );

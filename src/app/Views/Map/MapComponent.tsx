@@ -149,7 +149,7 @@ export const MapComponent = () => {
     "e-waste": false,
     bio: true,
     cloth: false,
-    debris: false,
+    // debris: false,
     general: true,
     glass: true,
     paper: true,
@@ -226,7 +226,7 @@ export const MapComponent = () => {
       // Fetch new markers every minute
       markerInv = setInterval(() => {
         fetchAndShowPoints();
-      }, 60000);
+      }, 15000);
 
       // Fetch new heatmap data every 5 minutes
       heatmapInv = setInterval(() => {
@@ -283,7 +283,7 @@ export const MapComponent = () => {
             glass: [],
             "e-waste": [],
             pszok: [],
-            debris: [],
+            // debris: [],
             cloth: [],
             battery: [],
           };
@@ -604,10 +604,10 @@ const pinLayerStyles: { [key in ElementTypes]: StyleProp<SymbolLayerStyle> } = {
     ...commonPinLayerStyle,
     iconImage: ElementMapMarkers.pszok,
   },
-  debris: {
-    ...commonPinLayerStyle,
-    iconImage: ElementMapMarkers.debris,
-  },
+  // debris: {
+  //   ...commonPinLayerStyle,
+  //   iconImage: ElementMapMarkers.debris,
+  // },
   cloth: {
     ...commonPinLayerStyle,
     iconImage: ElementMapMarkers.cloth,

@@ -41,13 +41,13 @@ export const TrashModal = (props: {
   }, [props.trashModalVisible]);
 
   useEffect(() => {
-    if (currentTrashData) setCanRemove(isTrashInRange());
+    if (currentTrashData) setCanRemove(isTrashInRange(currentTrashData));
   }, [props.userState]);
 
   function loadTrashMetadata() {
     get_trash_metadata(props.currentTrash.id).then((result) => {
       setCurrentTrashData(result);
-      setCanRemove(isTrashInRange());
+      setCanRemove(isTrashInRange(result));
       setLoading(false);
     });
   }
@@ -78,7 +78,7 @@ export const TrashModal = (props: {
     props.onClose();
   }
 
-  function isTrashInRange(): boolean {
+  function isTrashInRange(currentTrashData : TrashMetadata | null): boolean {
     if (!props.userState || currentTrashData === null) {
       return false;
     }

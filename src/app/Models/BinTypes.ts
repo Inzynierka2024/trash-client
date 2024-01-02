@@ -6,6 +6,6 @@ export type BinTypes =
   | "glass"
   | "e-waste"
   | "pszok"
-  | "debris"
+  // | "debris"
   | "cloth"
   | "battery";

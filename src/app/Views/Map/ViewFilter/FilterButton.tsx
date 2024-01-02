@@ -17,7 +17,7 @@ export const FilterButton = (props: {
 
   // Animation of background color
   const opacity = useRef(
-    new Animated.Value(props.state === true ? 1 : 0),
+    new Animated.Value(props.state === true ? 1 : 0)
   ).current;
 
   function toggleOnAnim() {

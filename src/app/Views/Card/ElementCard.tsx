@@ -75,13 +75,11 @@ export const ElementCard = (props: {
           {address !== null && (
             <Text
               style={{
-                color: textColor,
+                color: textColor + "c0",
               }}
             >
               {address !== undefined &&
-                `ul. ${address.address.road}, ${
-                  address.address.town ?? address.address.city
-                }`}
+                (address.display_name.split(",").slice(0, address.display_name.split(",").length - 3).join(","))}
               {address === undefined && "..."}
             </Text>
           )}

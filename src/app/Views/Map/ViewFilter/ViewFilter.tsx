@@ -14,6 +14,8 @@ import { ElementTypes } from "../../../Models/ElementTypes";
 import { ElementNames } from "../../../Models/ElementNames";
 import { ElementColors } from "../../../Models/ElementColors";
 import { MaterialIcons } from "@expo/vector-icons";
+import { GarbageTypes } from "../../../Models/GarbageTypes";
+import capitalize from "../../../Utils/capitalize";
 
 export const ViewFilter = (props: {
   toggleElementVisibility: Function;
@@ -69,14 +71,37 @@ export const ViewFilter = (props: {
           >
             Pokaż na mapie:
           </Text>
+
+          <FilterButton
+            key={"garbage"}
+            elementKey={"garbage"}
+            toggleState={props.toggleElementVisibility}
+            state={props.elementVisibilites["garbage"]}
+            name={ElementNames["garbage"]}
+            color={ElementColors["garbage"]}
+          />
+
+          <Text
+            style={[
+              styles.subtitle,
+              {
+                color: textColor,
+                backgroundColor: themeFromContext.colors.background,
+              },
+            ]}
+          >
+            pojemniki na:
+          </Text>
+
           {Object.keys(ElementMapMarkers).map((key: ElementTypes) => {
+            if (key === "garbage") return null;
             return (
               <FilterButton
                 key={key}
                 elementKey={key}
                 toggleState={props.toggleElementVisibility}
                 state={props.elementVisibilites[key]}
-                name={ElementNames[key]}
+                name={capitalize(GarbageTypes[key])}
                 color={ElementColors[key]}
               />
             );
@@ -116,5 +141,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  subtitle: {
+    padding: 8,
+    textAlign: "center",
+    fontSize: 16,
   },
 });

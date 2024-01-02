@@ -47,10 +47,10 @@ export const BinModal = (props: {
   }, [props.binModalVisible]);
 
   useEffect(() => {
-    if (binData) setCanChangeStatus(isBinInRange());
+    if (binData) setCanChangeStatus(isBinInRange(binData));
   }, [props.userState]);
 
-  function isBinInRange(): boolean {
+  function isBinInRange(binData: BinMetadata | null): boolean {
     if (!props.userState || binData === null) {
       return false;
     }
@@ -72,7 +72,7 @@ export const BinModal = (props: {
       get_bin_metadata(props.currentBin.id, props.currentBin.type).then(
         (result) => {
           setBinData(result);
-          setCanChangeStatus(isBinInRange());
+          setCanChangeStatus(isBinInRange(result));
           setIsStatic(is_static_bin(result.Type));
           setLoading(false);
           setNewStatus(result.Status);

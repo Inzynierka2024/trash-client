@@ -19,9 +19,10 @@ export const ElementMapMarkers: { [key in ElementTypes]: any } = {
   plastic: plasticMarker,
   paper: paperMarker,
   glass: glassMarker,
-  "e-waste": ewasteMarker,
-  pszok: pszokMarker,
-  debris: debrisMarker,
-  cloth: clothMarker,
   battery: batteryMarker,
+  cloth: clothMarker,
+
+  "e-waste": ewasteMarker,
+  // debris: debrisMarker,
+  pszok: pszokMarker,
 };

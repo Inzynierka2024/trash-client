@@ -554,6 +554,9 @@ export const MapComponent = () => {
                   id={`bin${key}PinsSource`}
                   shape={binCollection}
                   onPress={onBinPinPress}
+                  cluster={true}
+                  clusterRadius={16}
+                  clusterMaxZoomLevel={10}
                 >
                   <MapLibreGL.SymbolLayer
                     id={`bin${key}PinsLayer`}
@@ -573,6 +576,13 @@ const commonPinLayerStyle: StyleProp<SymbolLayerStyle> = {
   iconAllowOverlap: true,
   iconAnchor: "bottom",
   iconSize: 0.06,
+  textField: ["get", "point_count"],
+  textAnchor: "bottom",
+  textColor: "white",
+  textFont: ["Open Sans Bold"],
+  textSize: 18,
+  textHaloColor: "black",
+  textHaloWidth: 1,
 };
 
 const pinLayerStyles: { [key in ElementTypes]: StyleProp<SymbolLayerStyle> } = {

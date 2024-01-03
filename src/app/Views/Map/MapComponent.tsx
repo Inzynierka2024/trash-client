@@ -537,6 +537,9 @@ export const MapComponent = () => {
                 id="pinsSource"
                 shape={trashCollection}
                 onPress={onTrashPinPress}
+                cluster={true}
+                clusterRadius={16}
+                clusterMaxZoomLevel={10}
               >
                 <MapLibreGL.SymbolLayer
                   id="pinsLayer"

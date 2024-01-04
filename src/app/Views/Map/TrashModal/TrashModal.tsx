@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, View, Image, Text } from "react-native";
+import { Button, View, Image, Text, ToastAndroid } from "react-native";
 import remove_trash from "../../../Logic/API/remove_trash";
 import { ThemeContext } from "../../../../theme/theme";
 import { ActionButton } from "./ActionButton";
@@ -62,6 +62,7 @@ export const TrashModal = (props: {
       .then((result) => {
         if (result.isOk) {
           console.log("Removed trash");
+          ToastAndroid.show(`Super! Otrzymałeś +${result.data.added_points} punktów.`, ToastAndroid.SHORT);
           props.updateMapMarkers();
         } else {
           Alert.alert("Błąd", "Nie udało się usunąć odpadu", [], {

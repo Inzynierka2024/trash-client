@@ -592,11 +592,11 @@ export const MapComponent = () => {
 const commonPinLayerStyle: StyleProp<SymbolLayerStyle> = {
   iconAllowOverlap: true,
   iconAnchor: "bottom",
-  iconSize: 0.06,
+  iconSize: 0.06, // 767px * 0.06 = 46px
   textField: ["get", "point_count"],
   textAnchor: "center",
   textPadding: 0,
-  textOffset: [0, 0],
+  textOffset: [0, -1.3],
   textColor: "white",
   textFont: ["Open Sans Bold"],
   textSize: 18,

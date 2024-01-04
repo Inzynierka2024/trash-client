@@ -7,6 +7,7 @@ import pointsIcon from "../../../../assets/profile/coin.png";
 import rankingIcon from "../../../../assets/trophy.png";
 import periodIcon from "../../../../assets/period.png";
 import get_all_scoreboard from '../../Logic/API/get_all_scoreboard';
+import { Loading } from '../../Utils/Loading';
 
 export interface RankingData {
   rank: number;
@@ -16,6 +17,7 @@ export interface RankingData {
 }
 
 export const Scoreboard = () => {
+  const [loading, setLoading] = useState(false);
   const theme = useContext(ThemeContext);
   const [base, setBase] = useState < string > ('');
   const [scoreboardData, setScoreboardData] = useState < any[] > ([]);
@@ -54,13 +56,16 @@ export const Scoreboard = () => {
 
   useEffect(() => {
     if (base) {
+      setLoading(true);
       updateScoreboard();
+      setLoading(false);
     }
   }, [base]);
 
   const renderScoreboardItem = (user, index) => {
     return (
       <View key={index} style={styles.item}>
+        <Loading visible={loading} />
         <View style={styles.scoreDetails}>
           <View style={styles.iconContainer}>
             <Image source={rankingIcon} style={styles.pointsIcon} />

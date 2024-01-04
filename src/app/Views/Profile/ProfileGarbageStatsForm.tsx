@@ -26,10 +26,12 @@ import ReportedGarbageModal from "./GarbageModal/ReportedGarbageModal";
 import CollectedGarbageModal from "./GarbageModal/CollectedGarbageModal";
 import { TimestampToDate } from "./../../Utils/convert_timestamp";
 import {formatDistance} from "./../../Utils/format_distance";
+import { Loading } from "../../Utils/Loading";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileGarbageStatsForm = () => {
+  const [loading, setLoading] = useState(false);
   const { state } = useAuth();
   const userLocationRef = useRef({ latitude: 0, longitude: 0 });
 
@@ -93,6 +95,7 @@ export const ProfileGarbageStatsForm = () => {
   }
 
   useEffect(() => {
+    setLoading(true);
     async function fetchData() {
       if (state.token) {
         const tempUser = await getUser();
@@ -102,7 +105,7 @@ export const ProfileGarbageStatsForm = () => {
         setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
     }
-    fetchData();
+    fetchData().then(()=>{setLoading(false);});
   }, [state.token]);
 
   const isFocused = useIsFocused();
@@ -313,7 +316,7 @@ export const ProfileGarbageStatsForm = () => {
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
-      {/* <View style={styles.container}> */}
+      <Loading visible={loading} />
       <SafeAreaView style={{ flex: 1, paddingTop: StatusBar.currentHeight }}>
       <StatusBar barStyle={darkMode ? 'light-content' : 'dark-content'} />
           <TabView

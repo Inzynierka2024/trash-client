@@ -47,7 +47,7 @@ export const initialBinCollections: {
   glass: { type: "FeatureCollection", features: [] },
   "e-waste": { type: "FeatureCollection", features: [] },
   pszok: { type: "FeatureCollection", features: [] },
-  debris: { type: "FeatureCollection", features: [] },
+  // debris: { type: "FeatureCollection", features: [] },
   cloth: { type: "FeatureCollection", features: [] },
   battery: { type: "FeatureCollection", features: [] },
 };

@@ -337,23 +337,37 @@ export const MapComponent = () => {
     setTrashModalVisible(true);
   }
 
-  async function showBinData(id: number) {
+  function showBinData(id: number) {
     let bin = undefined;
     for (const key in binMarkers) {
       bin = binMarkers[key].find((e) => e["id"] == id);
       if (bin) break;
     }
+
+    if (!bin) return;
+
     setCurrentBin(bin);
     setBinModalVisible(true);
   }
 
   function onTrashPinPress(event: any) {
+    const isCluster = event["features"][0]["properties"]["cluster"];
+    if (isCluster) return;
+
     const id = event["features"][0]["id"];
+    if (id === undefined || id === null) return;
+
+    console.log("Showing ", id);
     showTrashData(id);
   }
 
   function onBinPinPress(event: any) {
+    const isCluster = event["features"][0]["properties"]["cluster"];
+    if (isCluster) return;
+
     const id = event["features"][0]["id"];
+    if (id === undefined || id === null) return;
+
     console.log("Showing ", id);
     showBinData(id);
   }
@@ -580,7 +594,9 @@ const commonPinLayerStyle: StyleProp<SymbolLayerStyle> = {
   iconAnchor: "bottom",
   iconSize: 0.06,
   textField: ["get", "point_count"],
-  textAnchor: "bottom",
+  textAnchor: "center",
+  textPadding: 0,
+  textOffset: [0, 0],
   textColor: "white",
   textFont: ["Open Sans Bold"],
   textSize: 18,

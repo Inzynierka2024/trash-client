@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ThemeContext, darkTheme, palette, theme } from "../../../../theme/theme";
-import { View, Text, Image, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { TimestampToDate } from "../../../Utils/convert_timestamp";
 import calculate_distance from "../../../Utils/calculate_distance";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { formatDistance } from "./../../../Utils/format_distance";
+import Modal from "react-native-modal";
 
 const ReportedGarbageModal = ({ visible, onClose, item }) => {
     const [userState, setUserState] = useState < MapLibreGL.Location > ({
@@ -77,10 +78,15 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
 
     return (
         <Modal
-            animationType="slide"
-            transparent={true}
-            visible={visible}
-            onRequestClose={onClose}
+            animationIn="slideInUp"
+            isVisible={visible}
+            onBackButtonPress={() => {
+                onClose();
+            }}
+            onBackdropPress={() => {
+                onClose();
+            }}
+            backdropOpacity={0}
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>

@@ -61,6 +61,7 @@ export const TrashModal = (props: {
     remove_trash(props.currentTrash.id)
       .then((result) => {
         if (result.isOk) {
+          ToastAndroid.show(`Super! Otrzymujesz +${result.added_points} punktów!`, ToastAndroid.SHORT);
           console.log("Removed trash");
           ToastAndroid.show(`Super! Otrzymałeś +${result.data.added_points} punktów.`, ToastAndroid.SHORT);
           props.updateMapMarkers();

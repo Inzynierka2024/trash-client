@@ -95,7 +95,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, { width: buttonWidth }]}
-            onPress={() => navigation.navigate("CollectedTrash")}
+            onPress={() => navigation.navigate("GarbageStatistics")}
           >
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Statystyka odpadów</Text>

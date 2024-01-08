@@ -21,10 +21,12 @@ import pointsIcon from "../../../../assets/profile/coin.png";
 import rankingIcon from "../../../../assets/ranking.png";
 import { useIsFocused } from "@react-navigation/native";
 import get_all_scoreboard from "../../Logic/API/get_all_scoreboard";
+import { Loading } from "../../Utils/Loading";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
 export const ProfileStatsForm = () => {
+  const [loading, setLoading] = useState(false);
   const { state } = useAuth();
   const [randomStars, setRandomStars] = useState('');
   const [user, setUserData] = useState({
@@ -85,6 +87,7 @@ export const ProfileStatsForm = () => {
   }
 
   useEffect(() => {
+    setLoading(true);
     async function fetchData() {
       if (state.token) {
         const tempUser = await getUser();
@@ -93,7 +96,8 @@ export const ProfileStatsForm = () => {
         setUserData(tempUser);
       }
     }
-    fetchData();
+    fetchData().then(()=>{setLoading(false);});
+    
   }, [state.token]);
 
   const isFocused = useIsFocused();
@@ -235,6 +239,8 @@ export const ProfileStatsForm = () => {
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
+      <Loading visible={loading} />
+      
       <View style={styles.container}>
         <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
           <Icon name="edit" size={24} color="#000" />

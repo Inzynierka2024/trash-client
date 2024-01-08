@@ -12,6 +12,7 @@ import profileIcon from '../../../../assets/profile/profile.png';
 import passwordIcon from '../../../../assets/profile/password.png';
 import Toast from 'react-native-toast-message';
 import { edit_user_data } from '../../Logic/API/edit_user_data';
+import { Loading } from '../../Utils/Loading';
 
 const parseAddress = (address) => {
     let [streetAndNumber, postCode, city] = address.split(',').map(part => part.trim());
@@ -27,6 +28,7 @@ const buildAddressString = ({ street, streetNumber, houseNumber, postCode, city 
 
 
 export const ProfileEditForm = () => {
+    const [loading, setLoading] = useState(false);
     const { state } = useAuth();
     const themeFromContext = useContext(ThemeContext);
     const navigation = useNavigation();
@@ -56,6 +58,7 @@ export const ProfileEditForm = () => {
     }
 
     useEffect(() => {
+        setLoading(true);
         async function fetchData() {
             if (state.token) {
                 const tempUser = await getUser();
@@ -63,7 +66,7 @@ export const ProfileEditForm = () => {
                 setUserData({ ...tempUser, ...addressComponents });
             }
         }
-        fetchData();
+        fetchData().then(()=>{setLoading(false);});
     }, [state.token]);
 
 
@@ -136,6 +139,7 @@ export const ProfileEditForm = () => {
 
     return (
         <ThemeContext.Provider value={themeFromContext}>
+            <Loading visible={loading} />
             <View style={styles.container}>
                 <Image source={ll_icon} style={styles.userIcon} />
 

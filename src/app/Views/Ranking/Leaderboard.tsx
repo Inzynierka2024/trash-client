@@ -7,8 +7,10 @@ import { useAuth } from "../../Logic/AuthContext";
 import pointsIcon from "../../../../assets/profile/coin.png";
 import rankingIcon from "../../../../assets/trophy.png";
 import get_all_leaderboard from '../../Logic/API/get_all_leaderboard';
+import { Loading } from '../../Utils/Loading';
 
 export const Leaderboard = () => {
+  const [loading, setLoading] = useState(false);
   const theme = useContext(ThemeContext);
   const [base, setBase] = useState < string > ('');
   const { state } = useAuth();
@@ -39,10 +41,12 @@ export const Leaderboard = () => {
   }
 
   useEffect(() => {
+    setLoading(true);
     async function fetchData() {
       if (state.token) {
         const leaderboard = await getLeaderboard();
         setLeaderboardData(leaderboard);
+        setLoading(false);
       }
     }
     fetchData();
@@ -71,6 +75,7 @@ export const Leaderboard = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <Loading visible={loading} />
       <Text style={styles.title}>Ranking</Text>
       {leaderboardData.map(renderLeaderboardItem)}
     </ScrollView>

@@ -25,14 +25,22 @@ export default async function (begdate, enddate, bounds = [[180, 90], [-180, -90
     }
 
     let typeCountMap = {};
-    for (const point of historyResult.data["map_points"]) {
-        const detailResult = await _fetch(`/garbage/${point.id}`, "GET", {});
+
+    const fetchPromises = historyResult.data["map_points"].map(point => 
+        _fetch(`/garbage/${point.id}`, "GET", {})
+    );
+    
+    const results = await Promise.all(fetchPromises);
+    
+    results.forEach(detailResult => {
         if (detailResult.isOk) {
-            const metadata = (detailResult.data) ;
+            const metadata = detailResult.data;
             const type = metadata.type || 'Unknown';
             typeCountMap[type] = (typeCountMap[type] || 0) + 1;
         }
-    }
+    });
+    
     console.log("(History) ", typeCountMap);
     return typeCountMap;
+    
 }

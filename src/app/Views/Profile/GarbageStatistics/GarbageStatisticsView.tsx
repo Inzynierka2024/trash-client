@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions, useColorScheme } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Dimensions, useColorScheme, Button, TouchableOpacity } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
-import get_heatmap_data from "../../../Logic/API/get_heatmap_data";
-import get_trash_metadata from "../../../Logic/API/get_trash_metadata";
 import get_garbage_statistics from '../../../Logic/API/get_garbage_statistics';
 import { useAuth } from "../../../Logic/AuthContext";
-import Geolocation from 'react-native-geolocation-service';
 import { Loading } from '../../../Utils/Loading';
 import { ThemeContext, darkTheme, theme } from '../../../../theme/theme';
+import DatePicker from 'react-native-date-picker';
 
 const GarbageStatisticsView = () => {
     const { state } = useAuth();
@@ -15,16 +13,39 @@ const GarbageStatisticsView = () => {
     const [darkMode, _setDarkMode] = useState(
         useColorScheme() === "dark" ? true : false,
     );
-    const themeFromContext = useContext(ThemeContext);
-  const textColor = themeFromContext.colors.primaryText;
-  const secondaryText = themeFromContext.colors.secondaryText;
-  const background = themeFromContext.colors.background;
+
+    const [startDate, setStartDate] = useState(new Date(2023, 10, 10));
+    const [endDate, setEndDate] = useState(new Date());
+    const [openStart, setOpenStart] = useState(false);
+    const [openEnd, setOpenEnd] = useState(false);
+
+    const formatDate = (date) => {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    };
+
+    const handleStartConfirm = (newDate) => {
+        setOpenStart(false);
+        setStartDate(newDate);
+
+        if (endDate < newDate) {
+            setEndDate(newDate);
+            getHistoryData();
+        }
+    };
+
+    const handleEndConfirm = (newDate) => {
+        setOpenEnd(false);
+        if (newDate >= startDate) {
+            setEndDate(newDate);
+            getHistoryData();
+        }
+    };
+
     async function getHistoryData() {
         try {
-            const garbageResult = await get_garbage_statistics(new Date("2022-12-30").toISOString(), new Date("2024-01-30").toISOString());
+            const garbageResult = await get_garbage_statistics(startDate.toISOString(), endDate.toISOString());
             console.log(garbageResult);
 
-            // Assuming garbageResult is a map of {label: value}
             const labels = Object.keys(garbageResult);
             const values = Object.values(garbageResult);
 
@@ -42,6 +63,7 @@ const GarbageStatisticsView = () => {
         }
     }
 
+
     useEffect(() => {
         setLoading(true);
         if (state.token) {
@@ -51,10 +73,10 @@ const GarbageStatisticsView = () => {
 
 
     const [data, setData] = useState({
-        labels: [],
+        labels: ['0', '0', '0'],
         datasets: [
             {
-                data: [],
+                data: ['0', '0', '0'],
             },
         ],
     });
@@ -66,13 +88,41 @@ const GarbageStatisticsView = () => {
         <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
             <View style={styles.container}>
                 <Loading visible={loading} />
+
                 <Text style={styles.title}>Histogram odpadów</Text>
+
+                <View style={styles.datePickerRow}>
+                    <TouchableOpacity onPress={() => setOpenStart(true)} style={styles.dateDisplay}>
+                        <Text style={styles.dateText}>Od: {formatDate(startDate)}</Text>
+                    </TouchableOpacity>
+                    <DatePicker
+                        modal
+                        open={openStart}
+                        date={startDate}
+                        onConfirm={handleStartConfirm}
+                        onCancel={() => setOpenStart(false)}
+                        mode="date"
+                    />
+
+                    <TouchableOpacity onPress={() => setOpenEnd(true)} style={styles.dateDisplay}>
+                        <Text style={styles.dateText}>Do: {formatDate(endDate)}</Text>
+                    </TouchableOpacity>
+                    <DatePicker
+                        modal
+                        open={openEnd}
+                        date={endDate}
+                        onConfirm={handleEndConfirm}
+                        onCancel={() => setOpenEnd(false)}
+                        minimumDate={startDate}
+                        mode="date"
+                    />
+                </View>
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
                     <BarChart
                         data={data}
                         width={chartWidth}
-                        height={300}
+                        height={350}
                         yAxisLabel=""
                         chartConfig={{
                             backgroundColor: 'white',
@@ -84,10 +134,12 @@ const GarbageStatisticsView = () => {
                             style: {
                                 borderRadius: 20,
                             },
+
                         }}
                         verticalLabelRotation={30}
                     />
                 </ScrollView>
+
 
             </View>
         </ThemeContext.Provider>
@@ -106,6 +158,37 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+    },
+    dateDisplay: {
+        padding: 10,
+        backgroundColor: theme.colors.contrastOverlay,
+        borderRadius: 5,
+        margin: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowRadius: 3.84,
+
+        elevation: 5,
+    },
+    datePickerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dateText: {
+        fontSize: 17,
+        fontWeight: 'bold',
+    },
+    heatmapActionsContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 20,
+        // gap: 24,
+        width: 192,
+        height: 40,
     },
 });
 

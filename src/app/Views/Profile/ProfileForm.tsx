@@ -58,7 +58,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
       return [];
     }
   }
-  
+
   async function getUserPoints() {
     const result = await get_all_scoreboard();
     if (result.isOk) {
@@ -87,7 +87,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
 
   const { width, height } = Dimensions.get("window");
   const isPortrait = height > width;
-  const buttonWidth = isPortrait ? width * 0.4 : width / 3 - 20; 
+  const buttonWidth = isPortrait ? width * 0.4 : width / 3 - 20;
 
   useEffect(() => {
     async function fetchData() {
@@ -217,7 +217,8 @@ const styles = StyleSheet.create({
   },
   rank: {
     fontWeight: 'bold',
-    padding:5
+    padding: 5,
+    color: theme.colors.primaryText,
   },
   buttonText: {
     color: "#ffffff",

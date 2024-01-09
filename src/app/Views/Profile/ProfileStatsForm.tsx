@@ -18,7 +18,7 @@ import locationIcon from "../../../../assets/profile/home.png";
 import passwordIcon from "../../../../assets/profile/password.png";
 import profileIcon from "../../../../assets/profile/profile.png";
 import pointsIcon from "../../../../assets/profile/coin.png";
-import rankingIcon from "../../../../assets/ranking.png";
+import rankingIcon from "../../../../assets/trophy.png";
 import { useIsFocused } from "@react-navigation/native";
 import get_all_scoreboard from "../../Logic/API/get_all_scoreboard";
 import { Loading } from "../../Utils/Loading";

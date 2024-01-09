@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView, useColorScheme, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, SafeAreaView, useColorScheme, Image, RefreshControl } from 'react-native';
 import get_api_url from "../../Utils/get_api_url";
 import _fetch from '../../Logic/API/_fetch';
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
@@ -8,6 +8,7 @@ import pointsIcon from "../../../../assets/profile/coin.png";
 import rankingIcon from "../../../../assets/trophy.png";
 import get_all_leaderboard from '../../Logic/API/get_all_leaderboard';
 import { Loading } from '../../Utils/Loading';
+import { useIsFocused } from '@react-navigation/native';
 
 export const Leaderboard = () => {
   const [loading, setLoading] = useState(false);
@@ -33,40 +34,59 @@ export const Leaderboard = () => {
     const result = await get_all_leaderboard(state.token);
     if (result.isOk) {
       const user = result["data"];
-      return user;
+      setLeaderboardData(user);
     } else {
       console.error("Invalid user");
-      return [];
     }
   }
 
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    async function fetchDataOnFocus() {
+      if (isFocused) {
+        await getLeaderboard();
+      }
+    }
+    fetchDataOnFocus();
+  }, [isFocused]);
+  
   useEffect(() => {
     setLoading(true);
     async function fetchData() {
       if (state.token) {
-        const leaderboard = await getLeaderboard();
-        setLeaderboardData(leaderboard);
+        await getLeaderboard();
         setLoading(false);
       }
     }
     fetchData();
   }, [state.token]);
 
+  const onRefresh = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      await getLeaderboard();
+    } catch (error) {
+      console.error("Error refreshing scoreboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const renderLeaderboardItem = (score, index) => {
     return (
       <View key={index} style={styles.item}>
 
-        <View style={styles.scoreDetails}>
-          <View style={styles.iconContainer}>
-            <Image source={rankingIcon} style={styles.pointsIcon} />
-            <Text style={styles.username}> <Text style={styles.period}>{score.rank}. </Text>{score.username}</Text>
-          </View>
+<View style={styles.iconContainer}>
+          <Image source={rankingIcon} style={styles.pointsIcon} />
+          <Text style={styles.score}>{score.rank}</Text>
+        </View>
 
-          <View style={styles.iconContainer}>
-            <Image source={pointsIcon} style={styles.pointsIcon} />
-            <Text style={styles.score}> {score.points} punktów</Text>
-          </View>
+        <Text style={styles.username}>{score.username}</Text>
 
+        <View style={styles.iconContainer}>
+          <Image source={pointsIcon} style={styles.pointsIcon} />
+          <Text style={styles.score}>{score.points} punktów</Text>
         </View>
       </View>
     );
@@ -74,7 +94,15 @@ export const Leaderboard = () => {
 
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={loading}
+          onRefresh={onRefresh}
+        />
+      }
+    >
       <Loading visible={loading} />
       <Text style={styles.title}>Ranking</Text>
       {leaderboardData.map(renderLeaderboardItem)}
@@ -98,33 +126,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: theme.colors.background,
-    padding: 20,
-    marginVertical: 16,
-    marginHorizontal: 16,
-    borderRadius: 10,
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    fontSize: 16,
-  },
-  scoreDetails: {
-    flex: 1,
-  },
-  username: {
-    fontWeight: 'bold',
-    fontSize: theme.textVariants.body.fontSize,
-  },
-  score: {
-    color: theme.colors.secondaryText,
-    marginTop: 3,
-    marginLeft: 5,
-  },
-  period: {
-    fontWeight: 'bold',
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+    margin: 5,
+    justifyContent: 'space-between',
   },
   iconContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin:5,
+  },
+  scoreDetails: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  username: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: theme.textVariants.body.fontSize,
+  },
+  score: {
+    color: theme.colors.primaryText,
+    marginTop: 3,
+    marginLeft: 5,
+    fontWeight: 'bold',
+  },
+  period: {
+    fontWeight: 'bold',
   },
   pointsContainer: {
     flex: 1,

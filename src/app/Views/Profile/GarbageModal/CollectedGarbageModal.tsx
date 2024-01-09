@@ -107,7 +107,6 @@ const CollectedGarbageModal = ({ visible, onClose, item }) => {
                                         <Text style={styles.textStyle}>({TimestampToDate(item.collection_timestamp)})</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.textStyle}>Rozmiar: {item.size}</Text>
                                 <Text style={styles.textStyle}>Typ: {item.type}</Text>
                                 <Text style={styles.textStyle}>
                                     Odległość: {

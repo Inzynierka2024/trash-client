@@ -14,19 +14,6 @@ import Toast from 'react-native-toast-message';
 import { edit_user_data } from '../../Logic/API/edit_user_data';
 import { Loading } from '../../Utils/Loading';
 
-const parseAddress = (address) => {
-    let [streetAndNumber, postCode, city] = address.split(',').map(part => part.trim());
-    let [street, streetNumberAndHouseNumber] = (streetAndNumber || '').split(' ').map(part => part.trim());
-    let [streetNumber, houseNumber] = (streetNumberAndHouseNumber || '').split('/').map(part => part.trim());
-
-    return { street, streetNumber, houseNumber, postCode, city };
-};
-
-const buildAddressString = ({ street, streetNumber, houseNumber, postCode, city }) => {
-    return `${street} ${streetNumber}/${houseNumber}, ${postCode}, ${city}`;
-};
-
-
 export const ProfileEditForm = () => {
     const [loading, setLoading] = useState(false);
     const { state } = useAuth();
@@ -35,14 +22,8 @@ export const ProfileEditForm = () => {
     const [password, setPassword] = useState('');
     const [user, setUserData] = useState({
         email: '',
-        location: '',
         username: '',
         password: '',
-        street: '',
-        streetNumber: '',
-        houseNumber: '',
-        postCode: '',
-        city: ''
     });
 
     async function getUser() {
@@ -62,8 +43,7 @@ export const ProfileEditForm = () => {
         async function fetchData() {
             if (state.token) {
                 const tempUser = await getUser();
-                const addressComponents = parseAddress(tempUser.location);
-                setUserData({ ...tempUser, ...addressComponents });
+                setUserData({ ...tempUser });
             }
         }
         fetchData().then(()=>{setLoading(false);});
@@ -74,7 +54,7 @@ export const ProfileEditForm = () => {
         if (password.length > 0) {
             user.password = password;
         }
-        const updatedUser = { ...user, location: buildAddressString(user) };
+        const updatedUser = { ...user };
         const result = await edit_user_data(updatedUser, state.token);
         if (result) {
             Toast.show({
@@ -111,6 +91,7 @@ export const ProfileEditForm = () => {
             flex: 1,
             marginLeft: 10,
             color: themeFromContext.colors.primaryText,
+            fontWeight: 'bold',
         },
         icon: {
             width: 48,
@@ -134,6 +115,7 @@ export const ProfileEditForm = () => {
         buttonText: {
             color: 'white',
             textAlign: 'center',
+            fontWeight: 'bold',
         },
     });
 
@@ -176,53 +158,7 @@ export const ProfileEditForm = () => {
                         placeholderTextColor={themeFromContext.colors.secondaryText}
                     />
                 </View>
-                <View style={styles.element}>
-                    <Image source={locationIcon} style={styles.icon} />
-                    <TextInput
-                        style={styles.textInput}
-                        value={user.street}
-                        onChangeText={(text) => setUserData({ ...user, street: text })}
-                        placeholder="Ulica"
-                        placeholderTextColor={themeFromContext.colors.secondaryText}
-                    />
-                </View>
-
-                <View style={styles.element}>
-                    <TextInput
-                        style={styles.textInput}
-                        value={user.streetNumber}
-                        onChangeText={(text) => setUserData({ ...user, streetNumber: text })}
-                        placeholder="Numer ulicy"
-                        placeholderTextColor={themeFromContext.colors.secondaryText}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        value={user.houseNumber}
-                        onChangeText={(text) => setUserData({ ...user, houseNumber: text })}
-                        placeholder="Numer domu"
-                        placeholderTextColor={themeFromContext.colors.secondaryText}
-                    />
-                </View>
-
-                <View style={styles.element}>
-                    <TextInput
-                        style={styles.textInput}
-                        value={user.postCode}
-                        onChangeText={(text) => setUserData({ ...user, postCode: text })}
-                        placeholder="Kod pocztowy"
-                        placeholderTextColor={themeFromContext.colors.secondaryText}
-                    />
-                    <TextInput
-                        style={styles.textInput}
-                        value={user.city}
-                        onChangeText={(text) => setUserData({ ...user, city: text })}
-                        placeholder="Miasto"
-                        placeholderTextColor={themeFromContext.colors.secondaryText}
-                    />
-                </View>
-
-
-
+                
                 <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                     <Text style={styles.buttonText}>Zapisz zmiany</Text>
                 </TouchableOpacity>

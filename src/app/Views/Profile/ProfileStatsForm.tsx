@@ -22,6 +22,7 @@ import rankingIcon from "../../../../assets/trophy.png";
 import { useIsFocused } from "@react-navigation/native";
 import get_all_scoreboard from "../../Logic/API/get_all_scoreboard";
 import { Loading } from "../../Utils/Loading";
+import ll_icon from "../../../../assets/litter-looter/adaptive.png";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
@@ -96,8 +97,8 @@ export const ProfileStatsForm = () => {
         setUserData(tempUser);
       }
     }
-    fetchData().then(()=>{setLoading(false);});
-    
+    fetchData().then(() => { setLoading(false); });
+
   }, [state.token]);
 
   const isFocused = useIsFocused();
@@ -117,12 +118,14 @@ export const ProfileStatsForm = () => {
     container: {
       flex: 1,
       padding: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     element: {
-      flexDirection: "row",
+      flexDirection: 'row',
       padding: 10,
-      //margin: 2,
-      alignItems: "center",
+      margin: 2,
+      alignItems: 'center',
     },
     emailContainer: {
       flexDirection: "row",
@@ -152,16 +155,11 @@ export const ProfileStatsForm = () => {
       elevation: 3,
     },
     readOnly: {
-      fontSize: 16,
-      marginVertical: 8,
-      width: "100%",
-      textAlign: "left",
-      //borderBottomWidth: 0.5,
-      borderBottomColor: background,
-      paddingBottom: 4,
-      fontWeight: "normal",
+      flex: 1,
       marginLeft: 10,
       color: textColor,
+      fontWeight: 'bold',
+      fontSize: 16, // Ensure this matches the text size in ProfileEditForm
     },
     headerContainer: {
       flexDirection: "row",
@@ -174,7 +172,8 @@ export const ProfileStatsForm = () => {
       width: 100,
       height: 100,
       borderRadius: 50,
-      backgroundColor: "#fff",
+      marginBottom: 20,
+      backgroundColor: '#fff'
     },
     pointsContainer: {
       flex: 1,
@@ -186,7 +185,8 @@ export const ProfileStatsForm = () => {
     pointsIcon: {
       width: 30,
       height: 30,
-      marginLeft: 5,
+      justifyContent: "center",
+      marginLeft: 40,
       resizeMode: "contain",
     },
     pointsText: {
@@ -194,12 +194,13 @@ export const ProfileStatsForm = () => {
       marginLeft: 5,
       fontSize: 16,
       color: textColor,
+      fontWeight: 'bold',
     },
     icon: {
       width: 48,
       height: 48,
-      resizeMode: "contain",
-      marginLeft: 4,
+      resizeMode: 'contain',
+      marginLeft: 10,
     },
     tabView: {
       flex: 1,
@@ -223,11 +224,13 @@ export const ProfileStatsForm = () => {
       justifyContent: 'space-between',
       width: '100%',
       marginTop: 5,
+      fontWeight: 'bold',
     },
     tileText: {
       color: textColor,
       flex: 1,
       marginHorizontal: 2,
+      fontWeight: 'bold',
     },
     tileTextBold: {
       color: textColor,
@@ -240,20 +243,24 @@ export const ProfileStatsForm = () => {
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
       <Loading visible={loading} />
-      
+
       <View style={styles.container}>
+        <Image source={ll_icon} style={styles.userIcon} />
+
         <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
           <Icon name="edit" size={24} color="#000" />
         </TouchableOpacity>
 
-        <View style={styles.headerContainer}>
-          <View style={styles.pointsContainer}>
-            <Image source={rankingIcon} style={styles.pointsIcon} />
-            <Text style={styles.readOnly}>{ranking.rank}</Text>
-          </View>
-          <View style={styles.pointsContainer}>
-            <Image source={pointsIcon} style={styles.pointsIcon} />
-            <Text style={styles.readOnly}>{ranking.points}</Text>
+        <View style={styles.element}>
+          <View style={styles.headerContainer}>
+            <View style={styles.pointsContainer}>
+              <Image source={rankingIcon} style={styles.pointsIcon} />
+              <Text style={styles.readOnly}>{ranking.rank}</Text>
+            </View>
+            <View style={styles.pointsContainer}>
+              <Image source={pointsIcon} style={styles.pointsIcon} />
+              <Text style={styles.readOnly}>{ranking.points}</Text>
+            </View>
           </View>
         </View>
 
@@ -272,11 +279,6 @@ export const ProfileStatsForm = () => {
         <View style={styles.element}>
           <Image source={passwordIcon} style={styles.icon} />
           <Text style={styles.readOnly}>{randomStars}</Text>
-        </View>
-
-        <View style={styles.element}>
-          <Image source={locationIcon} style={styles.icon} />
-          <Text style={styles.readOnly}>{user.location}</Text>
         </View>
 
       </View>

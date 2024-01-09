@@ -52,14 +52,14 @@ export const Scoreboard = () => {
 
   async function updateScoreboard() {
     const markers = await fetchNewMapMarkers();
-    setScoreboardData(markers);
+    await setScoreboardData(markers);
   }
 
   const onRefresh = React.useCallback(async () => {
     setLoading(true);
     try {
       const newScoreboardData = await fetchNewMapMarkers();
-      setScoreboardData(newScoreboardData);
+      await setScoreboardData(newScoreboardData);
     } catch (error) {
       console.error("Error refreshing scoreboard data:", error);
     } finally {
@@ -68,11 +68,13 @@ export const Scoreboard = () => {
   }, []);
 
   useEffect(() => {
-    if (base) {
-      setLoading(true);
-      updateScoreboard();
-      setLoading(false);
+    async function fetchData() {
+      if (base) {
+        setLoading(true);
+        updateScoreboard();
+      }
     }
+    fetchData().then(()=>{setLoading(false);});
   }, [base]);
 
   const isFocused = useIsFocused();
@@ -85,7 +87,7 @@ export const Scoreboard = () => {
     }
     fetchDataOnFocus();
   }, [isFocused]);
-  
+
   const renderScoreboardItem = (user, index) => {
     return (
       <View key={index} style={styles.item}>
@@ -100,7 +102,7 @@ export const Scoreboard = () => {
             <Text style={styles.score}> {user.points} punktów</Text>
           </View>
           <View style={styles.iconContainer}>
-          <Image source={periodIcon} style={styles.pointsIcon} />
+            <Image source={periodIcon} style={styles.pointsIcon} />
             <Text style={styles.period}>{user.period}</Text>
           </View>
         </View>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, useColorScheme, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, useColorScheme, Image, RefreshControl } from 'react-native';
 import get_api_url from "../../Utils/get_api_url";
 import _fetch from '../../Logic/API/_fetch';
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
@@ -8,6 +8,7 @@ import rankingIcon from "../../../../assets/trophy.png";
 import periodIcon from "../../../../assets/period.png";
 import get_all_scoreboard from '../../Logic/API/get_all_scoreboard';
 import { Loading } from '../../Utils/Loading';
+import { useIsFocused } from '@react-navigation/native';
 
 export interface RankingData {
   rank: number;
@@ -54,6 +55,18 @@ export const Scoreboard = () => {
     setScoreboardData(markers);
   }
 
+  const onRefresh = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const newScoreboardData = await fetchNewMapMarkers();
+      setScoreboardData(newScoreboardData);
+    } catch (error) {
+      console.error("Error refreshing scoreboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (base) {
       setLoading(true);
@@ -62,6 +75,17 @@ export const Scoreboard = () => {
     }
   }, [base]);
 
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    async function fetchDataOnFocus() {
+      if (isFocused) {
+        await updateScoreboard();
+      }
+    }
+    fetchDataOnFocus();
+  }, [isFocused]);
+  
   const renderScoreboardItem = (user, index) => {
     return (
       <View key={index} style={styles.item}>
@@ -85,7 +109,15 @@ export const Scoreboard = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={loading}
+          onRefresh={onRefresh}
+        />
+      }
+    >
       <Text style={styles.title}>Wyniki gracza</Text>
       {scoreboardData.map(renderScoreboardItem)}
     </ScrollView>
@@ -143,7 +175,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   score: {
-    color: theme.colors.secondaryText,
+    color: theme.colors.primaryText,
+    fontWeight: 'bold',
     marginLeft: 5,
   },
   ranking: {

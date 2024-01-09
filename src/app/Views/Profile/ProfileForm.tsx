@@ -10,7 +10,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { useAuth } from "../../Logic/AuthContext";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
 import stats_icon from "../../../../assets/profile/user-stats.png";
 import collected_trash_icon from "../../../../assets/profile/statistics.png";
@@ -20,20 +20,60 @@ import guilds_icon from "../../../../assets/guilds.png";
 import settings_icon from "../../../../assets/settings.png";
 import user_profile_icon from "../../../../assets/profile/profile-data.png";
 import { ThemeContext, darkTheme, palette, theme } from "../../../theme/theme";
+import pointsIcon from "../../../../assets/profile/coin.png";
+import rankingIcon from "../../../../assets/trophy.png";
+import get_all_scoreboard from "../../Logic/API/get_all_scoreboard";
+import get_user_data from "../../Logic/API/get_user_data";
 
 interface ProfileFormProps {
   navigateTo: (screen: string) => void;
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = () => {
-  const [darkMode, _setDarkMode] = useState(
-    useColorScheme() === "dark" ? true : false,
-  );
-  const themeFromContext = useContext(ThemeContext);
 
+  const { state } = useAuth();
+  const themeFromContext = useContext(ThemeContext);
   const { logout } = useAuth();
   const navigation = useNavigation < any > ();
   const { getUserLogin } = useAuth();
+
+  const [ranking, setRanking] = useState({
+    points: 0,
+    rank: 0,
+  });
+
+  const [user, setUserData] = useState({
+    email: "",
+    location: "",
+    username: "",
+  });
+
+  async function getUser() {
+    const result = await get_user_data(state.token);
+    if (result.isOk) {
+      const user = result["data"];
+      return user;
+    } else {
+      console.error("Invalid user");
+      return [];
+    }
+  }
+  
+  async function getUserPoints() {
+    const result = await get_all_scoreboard();
+    if (result.isOk) {
+      setRanking({
+        points: result.data[0].points,
+        rank: result.data[0].rank,
+      });
+    } else {
+      console.error("Invalid points");
+    }
+  }
+
+  const [darkMode, _setDarkMode] = useState(
+    useColorScheme() === "dark" ? true : false,
+  );
 
   const handleLogout = async () => {
     try {
@@ -47,28 +87,49 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
 
   const { width, height } = Dimensions.get("window");
   const isPortrait = height > width;
-
-  // Button width based on orientation: 2 in vertical and 3 in horizontal
-  const buttonWidth = isPortrait ? width * 0.4 : width / 3 - 20; // -20 accounts for margins and padding
-
-  const [userLogin, setUserLogin] = useState < any > (null);
+  const buttonWidth = isPortrait ? width * 0.4 : width / 3 - 20; 
 
   useEffect(() => {
-    const fetchUserLogin = async () => {
-      try {
-        const login = await getUserLogin();
-        setUserLogin(login);
-      } catch (e) {
-        console.error(e.message);
+    async function fetchData() {
+      if (state.token) {
+        const tempUser = await getUser();
+        const tempPoints = await getUserPoints();
+        console.log(tempPoints);
+        setUserData(tempUser);
       }
-    };
+    }
+    fetchData().then(() => {});
 
-    fetchUserLogin();
-  }, []); // The empty dependency array means this useEffect runs once when the component mounts
+  }, [state.token]);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    async function fetchDataOnFocus() {
+      if (isFocused) {
+        const tempUser = await getUser();
+        const tempPoints = await getUserPoints();
+        setUserData(tempUser);
+      }
+    }
+    fetchDataOnFocus();
+  }, [isFocused]);
 
   return (
     <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
       <View style={styles.container}>
+
+        <View style={styles.headerContainer}>
+          <View style={styles.pointsContainer}>
+            <Image source={rankingIcon} style={styles.pointsIcon} />
+            <Text style={styles.rank}>{ranking.rank}</Text>
+          </View>
+          <View style={styles.pointsContainer}>
+            <Image source={pointsIcon} style={styles.pointsIcon} />
+            <Text style={styles.rank}>{ranking.points}</Text>
+          </View>
+        </View>
+
         <Image source={ll_icon} style={styles.userIcon} />
         <Text
           style={{
@@ -76,7 +137,7 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
             color: themeFromContext.colors.primaryText,
           }}
         >
-          {/*{userLogin}*/}
+          {user.username}
         </Text>
         <View style={styles.buttonGrid}>
           <TouchableOpacity
@@ -100,14 +161,6 @@ const ProfileForm: React.FC<ProfileFormProps> = () => {
             <Image source={collected_trash_icon} style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Statystyka odpadów</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate("Guilds")}>
-            <Image source={guilds_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Gildie</Text>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity style={[styles.button, { width: buttonWidth }]} onPress={() => navigation.navigate('Settings')}>
-            <Image source={settings_icon} style={styles.buttonIcon} />
-            <Text style={styles.buttonText}>Ustawienia</Text>
-          </TouchableOpacity> */}
           <TouchableOpacity
             style={[styles.button, { width: buttonWidth }]}
             onPress={handleLogout}
@@ -129,23 +182,23 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   loginText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#333", // choose a suitable color
+    color: theme.colors.primaryText
   },
   userIcon: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 20,
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.background,
   },
   buttonContainer: {
     marginBottom: 10,
     width: "80%",
     borderRadius: 5,
-    overflow: "hidden", // Keep the rounded corners for the buttons
+    overflow: "hidden",
   },
   buttonGrid: {
     flexDirection: "row",
@@ -153,29 +206,54 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   button: {
-    backgroundColor: "#3d9970", // Light Dark Green Color
+    backgroundColor: theme.colors.green,
     padding: 10,
     margin: 2,
-    borderRadius: 75, // Adjusted for round shape
+    borderRadius: 75,
     alignItems: "center",
     justifyContent: "center",
     width: 150,
-    height: 150, // Set a fixed height
+    height: 150,
   },
-
+  rank: {
+    fontWeight: 'bold',
+    padding:5
+  },
   buttonText: {
     color: "#ffffff",
     fontWeight: "bold",
-    textAlign: "center", // Ensure text is centered
+    textAlign: "center",
   },
   buttonIcon: {
     width: 50,
-    // color: '#fff',
     height: 50,
   },
   text: {
     fontSize: 16,
     marginBottom: 8,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  pointsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  pointsIcon: {
+    width: 30,
+    height: 30,
+    marginLeft: 5,
+    resizeMode: "contain",
+  },
+  pointsText: {
+    marginTop: 5,
+    marginLeft: 10,
+    fontSize: 16,
+    color: theme.colors.primaryText,
   },
 });
 

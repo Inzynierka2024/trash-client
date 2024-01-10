@@ -128,14 +128,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 8,
     borderRadius: 8,
-    alignItems: "center",
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: palette.darken,
     paddingVertical: 8,
     paddingHorizontal: 4,
+    textAlign: "center",
   },
   text: {
-    alignItems: "center",
+    textAlign: "center",
   },
 });

@@ -62,7 +62,10 @@ export const TrashModal = (props: {
       .then((result) => {
         if (result.isOk) {
           console.log("Removed trash");
-          ToastAndroid.show(`Super! Otrzymałeś +${result.data.added_points} punktów.`, ToastAndroid.SHORT);
+          ToastAndroid.show(
+            `Super! Otrzymałeś +${result.data.added_points} punktów.`,
+            ToastAndroid.SHORT,
+          );
           props.updateMapMarkers();
         } else {
           Alert.alert("Błąd", "Nie udało się usunąć odpadu", [], {
@@ -79,7 +82,7 @@ export const TrashModal = (props: {
     props.onClose();
   }
 
-  function isTrashInRange(currentTrashData : TrashMetadata | null): boolean {
+  function isTrashInRange(currentTrashData: TrashMetadata | null): boolean {
     if (!props.userState || currentTrashData === null) {
       return false;
     }
@@ -174,7 +177,7 @@ export const TrashModal = (props: {
               }}
               numberOfLines={1}
             >
-              Zbierz śmiecia
+              Zbierz odpad
             </Text>
           </View>
         </View>

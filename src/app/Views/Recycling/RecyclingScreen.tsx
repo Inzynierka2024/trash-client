@@ -167,7 +167,7 @@ export const RecyclingScreen = () => {
           ],
           [
             "stare, zniszczone kołdry, poduszki, kożuchy",
-            "śmieci, odpady komunalne",
+            "odpady komunalne",
             "puszki, żywność, drewno opałowe",
             "małe zabawki",
           ],
@@ -175,7 +175,7 @@ export const RecyclingScreen = () => {
       />
 
       <RecyclingInfo
-        name="Elektrośmieci"
+        name="Elektroodpady"
         color={ElementColors["e-waste"]}
         active={active === "e-waste"}
         setActive={() => {

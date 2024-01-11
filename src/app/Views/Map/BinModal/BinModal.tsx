@@ -273,7 +273,11 @@ export const BinModal = (props: {
                               const user_points = result["user_points"];
                               console.log("FIXME: handle points here");
 
-                              setBinData({ ...binData, Status: newStatus });
+                              setBinData({
+                                ...binData,
+                                Status: newStatus,
+                                CanUpdate: binData.CanUpdate - 1,
+                              });
                               setStatusOptionsVisible(false);
                             } else {
                               if (result.error.code === 400)

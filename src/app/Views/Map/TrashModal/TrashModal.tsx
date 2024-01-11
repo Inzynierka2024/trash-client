@@ -174,7 +174,7 @@ export const TrashModal = (props: {
               }}
               numberOfLines={1}
             >
-              Zbierz śmiecia
+              Zbierz odpad
             </Text>
           </View>
         </View>

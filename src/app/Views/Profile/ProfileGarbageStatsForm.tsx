@@ -42,13 +42,6 @@ export const ProfileGarbageStatsForm = () => {
   const [collectedData, setCollectedData] = useState < UserTrashMetadata[] > ([]);
   const [reportedData, setReportedData] = useState < UserTrashMetadata[] > ([]);
 
-  const [user, setUserData] = useState({
-    email: "",
-    location: "",
-    username: "",
-    points: 0,
-  });
-
   const [darkMode, _setDarkMode] = useState(
     useColorScheme() === "dark" ? true : false,
   );
@@ -100,7 +93,6 @@ export const ProfileGarbageStatsForm = () => {
       if (state.token) {
         const tempUser = await getUser();
         const tempGarbage = await getGarbage();
-        setUserData(tempUser);
         setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
         setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }
@@ -115,7 +107,6 @@ export const ProfileGarbageStatsForm = () => {
       if (isFocused) {
         const tempUser = await getUser();
         const tempGarbage = await getGarbage();
-        setUserData(tempUser);
         setReportedData(tempGarbage.data.added as UserTrashMetadata[]);
         setCollectedData(tempGarbage.data.collected as UserTrashMetadata[]);
       }

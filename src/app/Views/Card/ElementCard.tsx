@@ -136,8 +136,8 @@ export const ElementCard = (props: {
 
 const styles = StyleSheet.create({
   container: {
-    minWidth: 260,
-    width: "100%",
+    maxWidth: "100%",
+    alignItems: "center",
   },
   image: {
     aspectRatio: "3 / 4",
@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
     width: 80,
   },
   info: {
-    flex: 1,
+    minWidth: 180,
+    maxWidth: 240,
     padding: 6,
     paddingBottom: 16,
   },

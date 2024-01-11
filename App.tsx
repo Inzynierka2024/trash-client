@@ -58,35 +58,39 @@ export default function App() {
       <ThemeContext.Provider value={darkMode ? darkTheme : theme}>
         <StatusBar style={!darkMode ? "dark" : "light"} />
 
-        <View style={styles.debugButtonContainer}>
-          <Button
-            color="#000"
-            title="Debug"
-            onPress={() => setDebug(!debugEnabled)}
-          />
-        </View>
-
-        <Modal
-          animationType="slide"
-          visible={debugEnabled}
-          onRequestClose={() => setDebug(false)}
-        >
-          <View style={styles.debugMenu}>
-            <View style={styles.row}>
-              <TextInput
-                style={styles.textInput}
-                onChangeText={setAPI_URL}
-                value={API_URL}
-              />
+        {false && (
+          <>
+            <View style={styles.debugButtonContainer}>
               <Button
-                title="Update API_URL"
-                onPress={() => {
-                  updateAPIUrl();
-                }}
+                color="#000"
+                title="Debug"
+                onPress={() => setDebug(!debugEnabled)}
               />
             </View>
-          </View>
-        </Modal>
+
+            <Modal
+              animationType="slide"
+              visible={debugEnabled}
+              onRequestClose={() => setDebug(false)}
+            >
+              <View style={styles.debugMenu}>
+                <View style={styles.row}>
+                  <TextInput
+                    style={styles.textInput}
+                    onChangeText={setAPI_URL}
+                    value={API_URL}
+                  />
+                  <Button
+                    title="Update API_URL"
+                    onPress={() => {
+                      updateAPIUrl();
+                    }}
+                  />
+                </View>
+              </View>
+            </Modal>
+          </>
+        )}
 
         <AppNavigator darkMode={darkMode}></AppNavigator>
       </ThemeContext.Provider>

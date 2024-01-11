@@ -9,4 +9,5 @@ export interface BinMetadata {
   Type: BinTypes;
   Status: BinStatus;
   Username: string;
+  CanUpdate: number;
 }

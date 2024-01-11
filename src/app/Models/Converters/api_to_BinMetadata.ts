@@ -12,5 +12,6 @@ export default function (data): BinMetadata {
     Longitude: parseFloat(data["longitude"]),
     Type: data["type"],
     Status: data["status"],
+    CanUpdate: data["can_update"],
   };
 }

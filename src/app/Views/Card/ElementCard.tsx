@@ -79,7 +79,10 @@ export const ElementCard = (props: {
               }}
             >
               {address !== undefined &&
-                (address.display_name.split(",").slice(0, address.display_name.split(",").length - 3).join(","))}
+                address.display_name
+                  .split(",")
+                  .slice(0, address.display_name.split(",").length - 3)
+                  .join(",")}
               {address === undefined && "..."}
             </Text>
           )}
@@ -133,7 +136,8 @@ export const ElementCard = (props: {
 
 const styles = StyleSheet.create({
   container: {
-    width: 260,
+    minWidth: 260,
+    width: "100%",
   },
   image: {
     aspectRatio: "3 / 4",
@@ -153,5 +157,6 @@ const styles = StyleSheet.create({
   info: {
     flex: 1,
     padding: 6,
+    paddingBottom: 16,
   },
 });

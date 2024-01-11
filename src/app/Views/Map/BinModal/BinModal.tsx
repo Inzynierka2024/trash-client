@@ -253,7 +253,7 @@ export const BinModal = (props: {
                             if (result.error.code === 400)
                               Alert.alert(
                                 "Limit zmian stanu",
-                                "Osiągnałeś limit zmian stanu na dziś",
+                                "Osiągnałeś limit zmian stanu tego pojemnika na dziś",
                                 [],
                                 { cancelable: true },
                               );

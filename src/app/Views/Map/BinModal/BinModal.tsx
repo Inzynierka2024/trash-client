@@ -252,7 +252,7 @@ export const BinModal = (props: {
                           } else {
                             if (result.error.code === 400)
                               Alert.alert(
-                                "Błąd",
+                                "Limit zmian stanu",
                                 "Osiągnałeś limit zmian stanu na dziś",
                                 [],
                                 { cancelable: true },

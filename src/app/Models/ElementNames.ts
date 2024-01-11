@@ -5,9 +5,9 @@ export const ElementNames = {
   plastic: "Kosz na tworzywa sztuczne",
   paper: "Kosz na papier",
   glass: "Kosz na szkło",
-  "e-waste": "Zbieranie elektrośmieci",
+  "e-waste": "Zbieranie elektroodpadów",
   pszok: "PSZOK",
-  debris: "Śmietnik na gruz",
+  debris: "Zbiornik na gruz",
   cloth: "Kontener na odzież używaną",
   battery: "Zbieranie baterii",
 };

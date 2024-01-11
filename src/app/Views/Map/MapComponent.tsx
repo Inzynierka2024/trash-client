@@ -207,8 +207,8 @@ export const MapComponent = () => {
 
   const mapStyleURL =
     useColorScheme() === "dark"
-      ? `https://api.maptiler.com/maps/streets-v2-dark/style.json?key=${MAPTILER_API_KEY}`
-      : `https://api.maptiler.com/maps/openstreetmap/style.json?key=${MAPTILER_API_KEY}`;
+      ? `https://api.maptiler.com/maps/6bed9ef8-4014-47b5-bc64-632e8ec92846/style.json?key=${MAPTILER_API_KEY}`
+      : `https://api.maptiler.com/maps/f71c92e5-817e-4ec9-ba79-6fce312beccc/style.json?key=${MAPTILER_API_KEY}`;
 
   useEffect(() => {
     // Startup intervals

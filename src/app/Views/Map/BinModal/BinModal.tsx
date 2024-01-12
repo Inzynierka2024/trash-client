@@ -109,30 +109,23 @@ export const BinModal = (props: {
     >
       <View
         style={{
-          width: 260,
+          backgroundColor: themeFromContext.colors.background,
+          borderWidth: 4,
+          borderColor:
+            ElementColors[binData !== null ? binData.Type : "general"],
+          borderRadius: 4,
           alignItems: "center",
           justifyContent: "center",
-          position: "relative",
+          gap: 16,
         }}
       >
-        <Loading visible={loading} />
-
-        <View
-          style={{
-            backgroundColor: themeFromContext.colors.background,
-            borderWidth: 4,
-            borderColor:
-              ElementColors[binData !== null ? binData.Type : "general"],
-            borderRadius: 4,
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 16,
-            flex: 1,
-            position: "absolute",
-            zIndex: 9,
-          }}
-        >
-          {binData !== null && (
+        {binData === null && (
+          <Text style={{ color: textColor, textAlign: "center" }}>
+            Ładowanie...
+          </Text>
+        )}
+        {binData !== null && (
+          <>
             <ElementCard
               lat={binData.Latitude}
               lng={binData.Longitude}
@@ -143,58 +136,38 @@ export const BinModal = (props: {
               distance={distance}
               imageEnabled={false}
             />
-          )}
 
-          {!isStatic && !statusOptionsVisible && (
-            <View style={{ flexDirection: "row", gap: 16 }}>
-              <View
-                style={{
-                  flexDirection: "column",
-                  gap: 8,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {!canChangeStatus && (
-                  <Text style={{ color: textColor }}>
-                    Jesteś za daleko by zmienić stan
+            {!isStatic && (
+              <>
+                {binData.CanUpdate <= 0 && (
+                  <Text
+                    style={{
+                      color: textColor,
+                      textAlign: "center",
+                      width: 200,
+                    }}
+                  >
+                    Osiągnałeś limit zmian stanu tego pojemnika na dziś
                   </Text>
                 )}
+                {binData.CanUpdate > 0 && (
+                  <Text
+                    style={{
+                      color: textColor,
+                      textAlign: "center",
+                      width: 200,
+                    }}
+                  >
+                    Dzisiaj możesz zmienić stan tego pojemnika jeszcze{" "}
+                    {binData.CanUpdate === 1
+                      ? `${binData.CanUpdate} raz`
+                      : `${binData.CanUpdate} razy`}
+                  </Text>
+                )}
+              </>
+            )}
 
-                <ActionButton
-                  disabled={!canChangeStatus}
-                  width={48}
-                  iconName={"update"}
-                  backgroundColor={palette.lightyellow}
-                  onPress={() => {
-                    setStatusOptionsVisible(true);
-                  }}
-                />
-
-                <Text
-                  style={{
-                    color: textColor,
-                    textAlign: "center",
-                    marginBottom: 12,
-                  }}
-                  numberOfLines={1}
-                >
-                  Zmień stan
-                </Text>
-              </View>
-            </View>
-          )}
-
-          {!isStatic && statusOptionsVisible && (
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 16,
-              }}
-            >
-              <BinStatusButtons status={newStatus} setStatus={setNewStatus} />
+            {!isStatic && !statusOptionsVisible && (
               <View style={{ flexDirection: "row", gap: 16 }}>
                 <View
                   style={{
@@ -204,14 +177,21 @@ export const BinModal = (props: {
                     justifyContent: "center",
                   }}
                 >
+                  {!canChangeStatus && (
+                    <Text style={{ color: textColor }}>
+                      Jesteś za daleko by zmienić stan
+                    </Text>
+                  )}
+
                   <ActionButton
-                    disabled={false}
+                    disabled={
+                      !canChangeStatus || (!!binData && binData.CanUpdate <= 0)
+                    }
                     width={48}
-                    iconName={"close"}
-                    backgroundColor={palette.lightred}
+                    iconName={"update"}
+                    backgroundColor={palette.lightyellow}
                     onPress={() => {
-                      setNewStatus(binData.Status);
-                      setStatusOptionsVisible(false);
+                      setStatusOptionsVisible(true);
                     }}
                   />
 
@@ -223,70 +203,121 @@ export const BinModal = (props: {
                     }}
                     numberOfLines={1}
                   >
-                    Anuluj
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "column",
-                    gap: 8,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <ActionButton
-                    disabled={false}
-                    width={48}
-                    iconName={"check"}
-                    onPress={() => {
-                      update_bin_status(props.currentBin.id, newStatus).then(
-                        (result) => {
-                          if (result.isOk) {
-                            const added_points = result["added_points"];
-                            const user_points = result["user_points"];
-                            console.log("FIXME: handle points here");
-
-                            setBinData({ ...binData, Status: newStatus });
-                            setStatusOptionsVisible(false);
-                          } else {
-                            if (result.error.code === 400)
-                              Alert.alert(
-                                "Limit zmian stanu",
-                                "Osiągnałeś limit zmian stanu na dziś",
-                                [],
-                                { cancelable: true },
-                              );
-                            else
-                              Alert.alert(
-                                "Błąd",
-                                "Wystąpił błąd podczas zmiany stanu",
-                                [],
-                                { cancelable: true },
-                              );
-
-                            setStatusOptionsVisible(false);
-                          }
-                        },
-                      );
-                    }}
-                  />
-
-                  <Text
-                    style={{
-                      color: textColor,
-                      textAlign: "center",
-                      marginBottom: 12,
-                    }}
-                    numberOfLines={1}
-                  >
-                    Potwierdź
+                    Zmień stan
                   </Text>
                 </View>
               </View>
-            </View>
-          )}
-        </View>
+            )}
+
+            {!isStatic && statusOptionsVisible && (
+              <View
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 16,
+                }}
+              >
+                <BinStatusButtons status={newStatus} setStatus={setNewStatus} />
+                <View style={{ flexDirection: "row", gap: 16 }}>
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      gap: 8,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ActionButton
+                      disabled={false}
+                      width={48}
+                      iconName={"close"}
+                      backgroundColor={palette.lightred}
+                      onPress={() => {
+                        setNewStatus(binData.Status);
+                        setStatusOptionsVisible(false);
+                      }}
+                    />
+
+                    <Text
+                      style={{
+                        color: textColor,
+                        textAlign: "center",
+                        marginBottom: 12,
+                      }}
+                      numberOfLines={1}
+                    >
+                      Anuluj
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      gap: 8,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ActionButton
+                      disabled={false}
+                      width={48}
+                      iconName={"check"}
+                      onPress={() => {
+                        if (binData.Status === newStatus) return;
+
+                        update_bin_status(props.currentBin.id, newStatus).then(
+                          (result) => {
+                            if (result.isOk) {
+                              const added_points = result["added_points"];
+                              const user_points = result["user_points"];
+                              console.log("FIXME: handle points here");
+
+                              setBinData({
+                                ...binData,
+                                Status: newStatus,
+                                CanUpdate: binData.CanUpdate - 1,
+                              });
+                              setStatusOptionsVisible(false);
+                            } else {
+                              if (result.error.code === 400)
+                                Alert.alert(
+                                  "Limit zmian stanu",
+                                  "Osiągnałeś limit zmian stanu tego pojemnika na dziś",
+                                  [],
+                                  { cancelable: true },
+                                );
+                              else
+                                Alert.alert(
+                                  "Błąd",
+                                  "Wystąpił błąd podczas zmiany stanu",
+                                  [],
+                                  { cancelable: true },
+                                );
+
+                              setStatusOptionsVisible(false);
+                            }
+                          },
+                        );
+                      }}
+                    />
+
+                    <Text
+                      style={{
+                        color: textColor,
+                        textAlign: "center",
+                        marginBottom: 12,
+                      }}
+                      numberOfLines={1}
+                    >
+                      Potwierdź
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            )}
+          </>
+        )}
       </View>
     </Modal>
   );

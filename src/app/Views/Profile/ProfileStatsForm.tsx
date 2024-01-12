@@ -142,7 +142,7 @@ export const ProfileStatsForm = () => {
     editIcon: {
       position: "absolute",
       marginTop: 25,
-      top: 10,
+      top: 195,
       right: 16,
       zIndex: 10,
       padding: 8,
@@ -166,7 +166,11 @@ export const ProfileStatsForm = () => {
       alignItems: "center",
       marginBottom: 20,
       margin: 10,
-      padding: 10
+      padding: 10,
+      position: "absolute",
+      marginTop: 25,
+      top: 30,
+      left: 30,
     },
     userIcon: {
       width: 100,
@@ -245,24 +249,26 @@ export const ProfileStatsForm = () => {
       <Loading visible={loading} />
 
       <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <View style={styles.pointsContainer}>
+            <Image source={rankingIcon} style={styles.pointsIcon} />
+            <Text style={styles.readOnly}>{ranking.rank}</Text>
+          </View>
+          <View style={styles.pointsContainer}>
+            <Image source={pointsIcon} style={styles.pointsIcon} />
+            <Text style={styles.readOnly}>{ranking.points}</Text>
+          </View>
+        </View>
+        <View style={styles.element}>
+
+        </View>
         <Image source={ll_icon} style={styles.userIcon} />
 
         <TouchableOpacity style={styles.editIcon} onPress={navigateToEditForm}>
           <Icon name="edit" size={24} color="#000" />
         </TouchableOpacity>
 
-        <View style={styles.element}>
-          <View style={styles.headerContainer}>
-            <View style={styles.pointsContainer}>
-              <Image source={rankingIcon} style={styles.pointsIcon} />
-              <Text style={styles.readOnly}>{ranking.rank}</Text>
-            </View>
-            <View style={styles.pointsContainer}>
-              <Image source={pointsIcon} style={styles.pointsIcon} />
-              <Text style={styles.readOnly}>{ranking.points}</Text>
-            </View>
-          </View>
-        </View>
+
 
         <View style={styles.element}>
           <Image source={profileIcon} style={styles.icon} />

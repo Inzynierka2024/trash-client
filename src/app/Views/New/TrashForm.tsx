@@ -1,6 +1,6 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { View, Text, Image, Modal, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
@@ -9,6 +9,7 @@ import { Loading } from "../../Utils/Loading";
 import { ElementColors } from "../../Models/ElementColors";
 import { ElementCard } from "../Card/ElementCard";
 import { useAuth } from "../../Logic/AuthContext";
+import Modal from "react-native-modal";
 
 export const TrashForm = (props: {
   location: MapLibreGL.Location;
@@ -22,7 +23,7 @@ export const TrashForm = (props: {
   const [locationData, setLocationData] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },
   });
-  const [imageData, setImageData] = useState("");
+  const [imageData, setImageData] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState<string | null>(null);
@@ -37,12 +38,11 @@ export const TrashForm = (props: {
 
   function setData(imgData: string) {
     setLocationData(props.location);
-
     setImageData(imgData);
   }
 
   function close() {
-    setImageData("");
+    setImageData(null);
   }
 
   function sendForm() {
@@ -71,11 +71,22 @@ export const TrashForm = (props: {
         justifyContent: "center",
       }}
     >
-      <CameraContainer setData={setData} enabled={imageData !== ""} />
+      <CameraContainer setData={setData} enabled={imageData !== null} />
       <Modal
-        transparent={true}
-        visible={imageData !== ""}
-        style={{ width: 100 }}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        isVisible={imageData !== null}
+        onBackButtonPress={() => {
+          close();
+        }}
+        onBackdropPress={() => {
+          close();
+        }}
+        backdropOpacity={0}
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
         <View
           style={{
@@ -88,14 +99,15 @@ export const TrashForm = (props: {
 
           <View
             style={{
-              margin: 20,
-              borderColor: ElementColors.garbage,
+              backgroundColor: themeFromContext.colors.background,
               borderWidth: 4,
-              backgroundColor: background,
+              borderColor: ElementColors.garbage,
               borderRadius: 4,
+              alignSelf: "center",
               alignItems: "center",
-              shadowColor: "#000",
-              paddingVertical: 16,
+              justifyContent: "center",
+              gap: 16,
+              paddingBottom: 12,
             }}
           >
             <Text style={[styles.intentTitle, { color: textColor }]}>
@@ -106,7 +118,7 @@ export const TrashForm = (props: {
               lat={locationData.coords.latitude}
               lng={locationData.coords.longitude}
               type="garbage"
-              imageEnabled={true}
+              imageEnabled={imageData !== "" && imageData !== null}
               imageData={imageData}
               timestamp={new Date()}
               addedBy={username}
@@ -114,7 +126,6 @@ export const TrashForm = (props: {
 
             <View
               style={{
-                marginTop: 36,
                 flexDirection: "row",
                 width: "100%",
                 gap: 32,
@@ -141,10 +152,8 @@ export const TrashForm = (props: {
             <View
               style={{
                 flexDirection: "row",
-                width: 250,
                 justifyContent: "center",
                 gap: 16,
-                marginTop: 12,
               }}
             >
               <Text
@@ -171,7 +180,7 @@ const styles = StyleSheet.create({
   intentTitle: {
     fontSize: 16,
     fontWeight: "500",
-    marginBottom: 12,
+    marginTop: 6,
   },
   statusTitle: {
     fontSize: 14,

@@ -82,7 +82,8 @@ export const ElementCard = (props: {
                 address.display_name
                   .split(",")
                   .slice(0, address.display_name.split(",").length - 3)
-                  .join(",")}
+                  .join(",")
+                  .substring(0, 350)}
               {address === undefined && "..."}
             </Text>
           )}

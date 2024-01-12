@@ -30,6 +30,8 @@ import binCollectionsReducer, {
 import get_heatmap_data from "../../Logic/API/get_heatmap_data";
 import { ToggleHeatmapButton } from "./Buttons/ToggleHeatmapButton";
 import { HeatmapControls } from "./Heatmap/HeatmapControls";
+// @ts-ignore
+import { MAPTILER_API_KEY } from "@env";
 
 export interface MarkerData {
   id: number;
@@ -40,8 +42,6 @@ export interface MarkerData {
 
 export const MapComponent = () => {
   const themeFromContext = useContext(ThemeContext);
-
-  const MAPTILER_API_KEY = "vX05uJQEE4mrjJmQSrG4";
 
   const [userState, setUserState] = useState<MapLibreGL.Location>({
     coords: { latitude: 0, longitude: 0 },

@@ -101,7 +101,7 @@ export const RecyclingScreen = () => {
             "zużyte chusteczki",
             "zatłuszczony, zabrudzony papier",
             "kartony po mleku i napojach",
-            "piely",
+            "pieluchy",
             "ubrania",
           ],
         ]}
@@ -192,7 +192,7 @@ export const RecyclingScreen = () => {
             "żarówki, świetlówki",
             "inne sprzęty zasilane na prąd lub na baterie",
           ],
-          ["akumulatory samochodowe", "baterie"],
+          [],
         ]}
       />
 

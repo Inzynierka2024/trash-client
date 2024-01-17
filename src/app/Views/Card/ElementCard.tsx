@@ -9,6 +9,7 @@ import { ElementColors } from "../../Models/ElementColors";
 import { BinStatus, BinStatusNames } from "../../Models/BinStatus";
 import get_address from "../../Logic/API/get_address";
 import { Address } from "../../Models/Address";
+import { FontAwesome } from "@expo/vector-icons";
 
 export const ElementCard = (props: {
   lat: number;
@@ -42,14 +43,22 @@ export const ElementCard = (props: {
 
   return (
     <View style={styles.container}>
-      {props.imageEnabled === true && (
-        <Image
-          source={{
-            uri: "data:image/jpg;base64," + props.imageData,
-          }}
-          style={styles.image}
-        />
-      )}
+      {props.imageEnabled === true &&
+        (props.imageData !== "" ? (
+          <Image
+            source={{
+              uri: "data:image/jpg;base64," + props.imageData,
+            }}
+            style={styles.image}
+          />
+        ) : (
+          <View style={styles.noImageContainer}>
+            <FontAwesome name={"image"} size={80} color={textColor} />
+            <Text style={[styles.noImageText, { color: textColor }]}>
+              Brak zdjęcia
+            </Text>
+          </View>
+        ))}
 
       <View style={styles.row}>
         <Image
@@ -161,4 +170,13 @@ const styles = StyleSheet.create({
     padding: 6,
     paddingBottom: 16,
   },
+  noImageContainer: {
+    aspectRatio: "3 / 4",
+    resizeMode: "contain",
+    width: 260,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
+  },
+  noImageText: {},
 });

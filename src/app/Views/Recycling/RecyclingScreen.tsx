@@ -66,12 +66,12 @@ export const RecyclingScreen = () => {
             "zgniecione butelki",
             "plastikowe opakowania",
             "puszki",
-            "folię",
+            "folia",
             "metale kolorowe",
             "kapsle, zakrętki",
           ],
           [
-            "butelek z zawartością",
+            "butelki z zawartością",
             "zabawki",
             "opakowania po farbach i lakierach",
             "opakowania po olejach silnikowych",
@@ -101,8 +101,8 @@ export const RecyclingScreen = () => {
             "zużyte chusteczki",
             "zatłuszczony, zabrudzony papier",
             "kartony po mleku i napojach",
-            "pieluch",
-            "ubrań",
+            "piely",
+            "ubrania",
           ],
         ]}
       />
@@ -119,12 +119,12 @@ export const RecyclingScreen = () => {
         content={[
           ["butelki, słoiki", "szklane opakowania"],
           [
-            "ceramikę, porcelanę, fajans",
-            "zniczy",
-            "luster, szyb",
-            "żarówek",
-            "monitorów",
-            "termometrów, strzykawek",
+            "ceramika, porcelana, fajans",
+            "znicze",
+            "lustra, szyby",
+            "żarówki",
+            "monitory",
+            "termometry, strzykawki",
           ],
         ]}
       />
@@ -141,10 +141,10 @@ export const RecyclingScreen = () => {
         content={[
           [
             "odpadki kuchenne, resztki jedzenia",
-            "gałęzie, trawy, liście, trociny, korę drzew",
+            "gałęzie, trawy, liście, trociny, kora drzew",
             "niezaimpregnowane drewno",
           ],
-          ["odchody zwierząt", "popiół", "ziemię, kamienie", "płyt wiórowych"],
+          ["odchody zwierząt", "popiół", "ziemia, kamienie", "płyty wiórowe"],
         ]}
       />
 
@@ -159,9 +159,9 @@ export const RecyclingScreen = () => {
         height={224}
         content={[
           [
-            "suchą, nieporwaną, czytą odzież",
+            "sucha, nieporwana, czyta odzież",
             "związane, czyste, sparowane obuwie",
-            "czystą pościel",
+            "czysta pościel",
             "czyste zabawki",
             "pluszaki",
           ],
@@ -192,7 +192,7 @@ export const RecyclingScreen = () => {
             "żarówki, świetlówki",
             "inne sprzęty zasilane na prąd lub na baterie",
           ],
-          [],
+          ["akumulatory samochodowe", "baterie"],
         ]}
       />
 

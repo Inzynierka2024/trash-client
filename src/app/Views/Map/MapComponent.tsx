@@ -59,7 +59,7 @@ export const MapComponent = () => {
   }, [heatmapOpen]);
 
   const [heatmapPeriod, _setHeatmapPeriod] = useState<[Date, Date] | null>(
-    null
+    null,
   );
 
   const setHeatmapPeriod = (date: Date) => {
@@ -122,7 +122,7 @@ export const MapComponent = () => {
   // Bin markers
   const [binMarkers, binDispatch] = useReducer(
     binMarkersReducer,
-    initialBinMarkers
+    initialBinMarkers,
   );
 
   function clearBinMarkers() {
@@ -169,7 +169,7 @@ export const MapComponent = () => {
 
     CameraRef.flyTo(
       [userState.coords.latitude, userState.coords.longitude],
-      500
+      500,
     );
 
     triggerUpdate("camera");
@@ -306,7 +306,7 @@ export const MapComponent = () => {
 
   const [binCollections, binClctDispatch] = useReducer(
     binCollectionsReducer,
-    initialBinCollections
+    initialBinCollections,
   );
   function setBinCollection(type: BinTypes, markers: MarkerData[]) {
     binClctDispatch({
@@ -520,9 +520,33 @@ export const MapComponent = () => {
             <MapLibreGL.HeatmapLayer
               id="heatmapLayer"
               style={{
-                heatmapRadius: 50,
+                heatmapRadius: [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  0,
+                  1,
+                  2,
+                  2,
+                  5,
+                  5,
+                  10,
+                  35,
+                ],
                 heatmapWeight: 0.5,
-                heatmapIntensity: 0.5,
+                heatmapIntensity: [
+                  "interpolate",
+                  ["linear"],
+                  ["zoom"],
+                  0,
+                  0.1,
+                  0.5,
+                  0.3,
+                  1,
+                  0.5,
+                  10,
+                  0.8,
+                ],
                 heatmapColor: [
                   "interpolate",
                   ["linear"],

@@ -101,7 +101,6 @@ const ReportedGarbageModal = ({ visible, onClose, item }) => {
                                     <Text style={styles.textStyle}>Zgłoszono: {item.creation_username}</Text>
                                     <Text style={styles.textStyle}>({TimestampToDate(item.creation_timestamp)})</Text>
                                 </View>
-                                <Text style={styles.textStyle}>Typ: {item.type}</Text>
                                 <Text style={styles.textStyle}>
                                     Odległość: {
                                         formatDistance(

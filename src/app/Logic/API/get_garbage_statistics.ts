@@ -24,7 +24,7 @@ export default async function (begdate, enddate, bounds = [[180, 90], [-180, -90
         return null;
     }
 
-    let typeCountMap = {};
+    let monthCountMap = {};
 
     const fetchPromises = historyResult.data["map_points"].map(point => 
         _fetch(`/garbage/${point.id}`, "GET", {})
@@ -35,12 +35,20 @@ export default async function (begdate, enddate, bounds = [[180, 90], [-180, -90
     results.forEach(detailResult => {
         if (detailResult.isOk) {
             const metadata = detailResult.data;
-            const type = metadata.type || 'Unknown';
-            typeCountMap[type] = (typeCountMap[type] || 0) + 1;
+            
+            const timestamp = metadata.creation_timestamp;
+            if (timestamp) {
+                const day = new Date(timestamp).getDate();
+                const month = new Date(timestamp).getMonth() + 1;
+                const year = new Date(timestamp).getFullYear();
+                const yearMonth = `${year}-${month.toString().padStart(2, '0')}-${day}`; 
+                
+                monthCountMap[yearMonth] = (monthCountMap[yearMonth] || 0) + 1;
+            }
         }
     });
     
-    console.log("(History) ", typeCountMap);
-    return typeCountMap;
+    console.log("(History) ", monthCountMap);
+    return monthCountMap;
     
 }

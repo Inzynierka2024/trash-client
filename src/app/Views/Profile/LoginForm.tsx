@@ -106,7 +106,7 @@ const LoginForm: React.FC = () => {
             ...styles.input,
             color: themeFromContext.colors.primaryText,
           }}
-          placeholder="Password"
+          placeholder="Hasło"
           placeholderTextColor={themeFromContext.colors.secondaryText}
           onChangeText={setPassword}
           value={password}
@@ -127,10 +127,10 @@ const LoginForm: React.FC = () => {
             color: themeFromContext.colors.secondaryText,
           }}
         >
-          Don't have an account?{" "}
+          Jeszcze nie masz konta?{" "}
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={[styles.text, styles.link]}>Register here</Text>
+          <Text style={[styles.text, styles.link]}>Zarejestruj się tutaj</Text>
         </TouchableOpacity>
       </View>
     </ThemeContext.Provider>

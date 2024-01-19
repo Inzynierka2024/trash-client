@@ -1,6 +1,7 @@
 import { BinTypes } from "./BinTypes";
 
-export const GarbageTypes: { [key in BinTypes]: string } = {
+export const GarbageTypes: { [key: string]: string } = {
+  garbage: "odpady",
   general: "zmieszane",
   bio: "bio",
   plastic: "metale i tworzywa sztuczne",

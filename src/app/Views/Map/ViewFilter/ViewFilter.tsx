@@ -77,7 +77,7 @@ export const ViewFilter = (props: {
             elementKey={"garbage"}
             toggleState={props.toggleElementVisibility}
             state={props.elementVisibilites["garbage"]}
-            name={ElementNames["garbage"]}
+            name={capitalize(GarbageTypes["garbage"])}
             color={ElementColors["garbage"]}
           />
 

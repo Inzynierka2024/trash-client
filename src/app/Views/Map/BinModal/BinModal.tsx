@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, Text, ToastAndroid, View } from "react-native";
 import { palette, ThemeContext } from "../../../../theme/theme";
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { MarkerData } from "../MapComponent";
@@ -269,9 +269,10 @@ export const BinModal = (props: {
                         update_bin_status(props.currentBin.id, newStatus).then(
                           (result) => {
                             if (result.isOk) {
-                              const added_points = result["added_points"];
-                              const user_points = result["user_points"];
-                              console.log("FIXME: handle points here");
+                              ToastAndroid.show(
+                                `Super! Otrzymałeś +${result.data.added_points} punktów.`,
+                                ToastAndroid.SHORT,
+                              );
 
                               setBinData({
                                 ...binData,

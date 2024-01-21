@@ -1,6 +1,6 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ToastAndroid } from "react-native";
 import { ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
@@ -51,6 +51,10 @@ export const TrashForm = (props: {
     create_new_trash(locationData, imageData)
       .then((data) => {
         console.log("Trash added", data);
+        ToastAndroid.show(
+          `Super! Otrzymałeś +${data.data.added_points} punktów.`,
+          ToastAndroid.SHORT,
+        );
         close();
         props.updateMap();
         props.setModal(false);

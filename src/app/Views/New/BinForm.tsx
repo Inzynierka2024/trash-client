@@ -1,6 +1,6 @@
 import MapLibreGL from "@maplibre/maplibre-react-native";
 import { useContext, useEffect, useState } from "react";
-import { View, Text, Image, Modal, Button, StyleSheet } from "react-native";
+import { View, Text, Image, Modal, Button, StyleSheet, ToastAndroid } from "react-native";
 import { palette, ThemeContext } from "../../../theme/theme";
 import { CameraContainer } from "./CameraContainer";
 import { CameraButton } from "./CameraButton";
@@ -47,6 +47,10 @@ export const BinForm = (props: {
     add_new_bin(props.location, props.type, status)
       .then((data) => {
         console.log("Bin added", data);
+        ToastAndroid.show(
+          `Super! Otrzymałeś +${data.data.added_points} punktów.`,
+          ToastAndroid.SHORT,
+        );
         close();
         props.updateMap();
         props.setModal(false);
